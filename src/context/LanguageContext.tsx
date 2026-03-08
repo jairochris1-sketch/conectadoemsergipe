@@ -127,7 +127,7 @@ const translations: Record<Language, Record<string, string>> = {
     "login": "entrar",
     "register": "registrarse",
     "search": "Buscar...",
-    "index.description": "Thefacebook es un directorio en línea que conecta personas a través de redes sociales en universidades.",
+    "index.description": "Conectados en Sergipe es una red social que conecta personas a través de comunidades en Sergipe.",
     "index.cta": "para empezar.",
     "index.register": "Regístrate",
     "index.or": "o",
