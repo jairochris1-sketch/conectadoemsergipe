@@ -153,23 +153,23 @@ const Marketplace = () => {
         }}
       />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
-      <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="bg-card border border-border p-3">
-          <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
-            <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="max-w-[760px] mx-auto px-3 py-4">
+        <div className="bg-card border border-border p-4">
+          <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
+            <h2 className="text-xl font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
               {t("marketplace.title")}
             </h2>
             {user && (
-              <div className="flex gap-1">
+              <div className="flex gap-2">
                 <button
                   onClick={() => navigate("/seller-dashboard")}
-                  className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:bg-accent"
+                  className="bg-muted text-foreground border border-border px-4 py-2 text-sm cursor-pointer hover:bg-accent rounded-sm"
                 >
                   📢 {t("ads.my_ads")}
                 </button>
                 <button
                   onClick={() => setShowForm(!showForm)}
-                  className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                  className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 rounded-sm"
                 >
                   {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
                 </button>
@@ -185,12 +185,12 @@ const Marketplace = () => {
             />
           )}
 
-          <div className="flex flex-wrap gap-1 mb-3 text-[11px]">
+          <div className="flex flex-wrap gap-1.5 mb-4 text-sm">
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => { setCategory(c); trackCategoryFilter(c); }}
-                className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
+                className={`px-3 py-1 border border-border cursor-pointer text-xs rounded-sm ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
                 {t(CATEGORY_KEYS[c])}
               </button>
@@ -199,10 +199,10 @@ const Marketplace = () => {
 
           {recommendations.length > 0 && category === "All" && (
             <div className="mb-4">
-              <h3 className="text-[13px] font-bold text-primary mb-2 border-b border-border pb-1" style={{ fontFamily: 'Georgia, serif' }}>
+              <h3 className="text-lg font-bold text-primary mb-3 border-b border-border pb-2" style={{ fontFamily: 'Georgia, serif' }}>
                 ⭐ {t("marketplace.recommended")}
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {recommendations.map((item) => (
                   <MarketplaceItemCard
                     key={`rec-${item.id}`}
@@ -219,7 +219,7 @@ const Marketplace = () => {
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-3">
             {filtered.map((item) => (
               <MarketplaceItemCard
                 key={item.id}
@@ -233,7 +233,7 @@ const Marketplace = () => {
               />
             ))}
             {filtered.length === 0 && (
-              <p className="text-[11px] text-muted-foreground">{t("marketplace.no_items")}</p>
+              <p className="text-sm text-muted-foreground">{t("marketplace.no_items")}</p>
             )}
           </div>
         </div>
