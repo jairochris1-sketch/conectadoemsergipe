@@ -531,6 +531,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
         );
       })()}
     </div>
+    </div>
   );
 };
 
