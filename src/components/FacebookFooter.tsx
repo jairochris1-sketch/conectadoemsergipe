@@ -9,7 +9,7 @@ const FacebookFooter = () => {
       <p className="mt-1">
         <a href="#">{t("footer.about")}</a> · <a href="#">{t("footer.contact")}</a> · <a href="#">{t("footer.privacy")}</a> · <a href="#">{t("footer.terms")}</a>
       </p>
-      <p className="mt-1">thefacebook © 2004</p>
+      <p className="mt-1">conectadoemsergipe © 2026</p>
     </div>
   );
 };
