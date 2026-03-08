@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, Mail, Menu, Sun, Moon } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Search, Mail, Menu, Sun, Moon, ArrowLeft, Home, User, ShoppingBag, MessageSquare, Shield, Star, LogOut, LogIn, UserPlus } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -25,12 +25,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { isModerator } = useModerator();
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
+
+  const isHomePage = location.pathname === "/";
 
   const toggleDarkMode = () => {
     const next = !darkMode;
@@ -112,6 +115,77 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     </>
   );
 
+  // Mobile menu items with icons for better UX
+  const mobileNavItems = (onNav?: () => void) => (
+    <div className="flex flex-col gap-1">
+      {isLoggedIn ? (
+        <>
+          <Link to="/" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <Home className="w-5 h-5 shrink-0" />
+            <span>{t("home")}</span>
+          </Link>
+          <Link to="/profile" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <User className="w-5 h-5 shrink-0" />
+            <span>{t("profile")}</span>
+          </Link>
+          <Link to="/marketplace" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <ShoppingBag className="w-5 h-5 shrink-0" />
+            <span>{t("marketplace")}</span>
+          </Link>
+          <Link to="/messages" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <MessageSquare className="w-5 h-5 shrink-0" />
+            <span className="flex items-center gap-2">
+              {t("messages")}
+              {unreadCount > 0 && (
+                <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                  {unreadCount}
+                </span>
+              )}
+            </span>
+          </Link>
+          {isAdmin && (
+            <Link to="/admin" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline font-bold transition-colors">
+              <Shield className="w-5 h-5 shrink-0" />
+              <span className="flex items-center gap-2">
+                {t("admin.panel")}
+                {pendingReports > 0 && (
+                  <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                    {pendingReports}
+                  </span>
+                )}
+              </span>
+            </Link>
+          )}
+          {isModerator && !isAdmin && (
+            <Link to="/moderator" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline font-bold transition-colors">
+              <Star className="w-5 h-5 shrink-0" />
+              <span>Colaborador</span>
+            </Link>
+          )}
+          <div className="border-t border-primary-foreground/20 my-2" />
+          <button
+            onClick={() => { onLogout?.(); onNav?.(); }}
+            className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 bg-transparent border-none cursor-pointer text-left transition-colors"
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            <span>{t("logout")}</span>
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <LogIn className="w-5 h-5 shrink-0" />
+            <span>{t("login")}</span>
+          </Link>
+          <Link to="/register" onClick={onNav} className="flex items-center gap-3 text-primary-foreground text-[14px] py-2.5 px-3 rounded-md hover:bg-primary-foreground/10 no-underline transition-colors">
+            <UserPlus className="w-5 h-5 shrink-0" />
+            <span>{t("register")}</span>
+          </Link>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <div
       className="bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat"
@@ -122,11 +196,23 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       <div className="max-w-[760px] mx-auto px-2 py-1">
         {/* Top row: logo + search */}
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
-            <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
-              Conectadoemsergipe
-            </h1>
-          </Link>
+          <div className="flex items-center gap-2">
+            {/* Back button - shown on all pages except home */}
+            {!isHomePage && (
+              <button
+                onClick={() => navigate(-1)}
+                className="bg-primary-foreground/10 hover:bg-primary-foreground/20 border-none cursor-pointer p-1.5 rounded-md flex items-center justify-center transition-colors"
+                title="Voltar"
+              >
+                <ArrowLeft className="w-4 h-4 text-primary-foreground" />
+              </button>
+            )}
+            <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+              <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+                Conectadoemsergipe
+              </h1>
+            </Link>
+          </div>
 
           {!isMobile && (
             <div className="flex items-center gap-2">
@@ -175,35 +261,40 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               )}
               <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="bg-transparent border-none cursor-pointer p-1">
+                  <button className="bg-primary-foreground/10 hover:bg-primary-foreground/20 border-none cursor-pointer p-1.5 rounded-md transition-colors">
                     <Menu className="w-5 h-5 text-primary-foreground" />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="right" className="bg-primary border-primary/80 w-[260px] p-4">
-                  <SheetTitle className="text-primary-foreground text-[14px] mb-3">Menu</SheetTitle>
+                <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-4">
+                  <SheetTitle className="text-primary-foreground text-[16px] mb-1 font-bold" style={{ fontFamily: 'Georgia, serif' }}>
+                    Menu
+                  </SheetTitle>
+                  {isLoggedIn && userName && (
+                    <p className="text-primary-foreground/70 text-[12px] mb-3">
+                      {t("welcome")}, <b className="text-primary-foreground">{userName}</b>
+                    </p>
+                  )}
                   <form onSubmit={handleSearch} className="flex items-center mb-4">
-                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("search")} className="border border-border px-2 py-1 text-[12px] text-foreground bg-card flex-1" />
-                    <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center">
-                      <Search className="w-3 h-3 text-foreground" />
+                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("search")} className="border border-border px-2 py-1.5 text-[13px] text-foreground bg-card flex-1 rounded-l-md" />
+                    <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1.5 cursor-pointer flex items-center rounded-r-md">
+                      <Search className="w-4 h-4 text-foreground" />
                     </button>
                   </form>
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-2 mb-4 px-3">
                     {(["pt", "es", "en"] as Language[]).map((lang) => (
-                      <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-[11px] px-1 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                      <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-[12px] px-1.5 py-0.5 rounded ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
                         {LANG_LABELS[lang]}
                       </button>
                     ))}
                     <button
                       onClick={toggleDarkMode}
-                      className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-[2px]"
+                      className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-auto p-1"
                       title={darkMode ? "Modo claro" : "Modo noturno"}
                     >
                       {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     </button>
                   </div>
-                  <div className="flex flex-col gap-3">
-                    {navLinks(() => setMenuOpen(false))}
-                  </div>
+                  {mobileNavItems(() => setMenuOpen(false))}
                 </SheetContent>
               </Sheet>
             </div>
