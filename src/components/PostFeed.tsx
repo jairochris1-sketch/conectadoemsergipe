@@ -470,7 +470,9 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </div>
                       <div className="bg-accent rounded px-2 py-1 min-w-0">
                         <p className="text-[10px]">
-                          <span className="font-bold">{c.authorName}</span>{" "}{c.content}
+                          <span className="font-bold">{c.authorName}</span>
+                          <VerificationBadge {...(badges.get(c.authorId) || {})} />
+                          {" "}{c.content}
                         </p>
                         <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>
