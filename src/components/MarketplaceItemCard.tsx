@@ -66,6 +66,7 @@ const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: str
 
 const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl: string; title: string }) => {
   const [current, setCurrent] = useState(0);
+  const [open, setOpen] = useState(false);
   const allImages = images && images.length > 0 ? images : imageUrl ? [imageUrl] : [];
 
   if (allImages.length === 0) {
@@ -73,22 +74,67 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
   }
 
   return (
-    <div className="relative w-full h-full">
-      <img src={allImages[current]} alt={title} className="w-full h-full object-cover" />
-      {allImages.length > 1 && (
-        <>
-          <button
-            onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c - 1 + allImages.length) % allImages.length); }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
-          >‹</button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c + 1) % allImages.length); }}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
-          >›</button>
-          <span className="absolute bottom-0 right-0 bg-black/60 text-white text-[8px] px-1">{current + 1}/{allImages.length}</span>
-        </>
-      )}
-    </div>
+    <>
+      <div className="relative w-full h-full">
+        <img
+          src={allImages[current]}
+          alt={title}
+          className="w-full h-full object-cover cursor-zoom-in"
+          onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        />
+        {allImages.length > 1 && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c - 1 + allImages.length) % allImages.length); }}
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
+            >‹</button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c + 1) % allImages.length); }}
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
+            >›</button>
+            <span className="absolute bottom-0 right-0 bg-black/60 text-white text-[8px] px-1">{current + 1}/{allImages.length}</span>
+          </>
+        )}
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-black/95 border-none flex flex-col items-center justify-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <img
+            src={allImages[current]}
+            alt={title}
+            className="max-w-full max-h-[75vh] object-contain rounded"
+          />
+          {allImages.length > 1 && (
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setCurrent((c) => (c - 1 + allImages.length) % allImages.length)}
+                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded text-lg"
+              >‹</button>
+              <span className="text-white text-sm">{current + 1} / {allImages.length}</span>
+              <button
+                onClick={() => setCurrent((c) => (c + 1) % allImages.length)}
+                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded text-lg"
+              >›</button>
+            </div>
+          )}
+          {allImages.length > 1 && (
+            <div className="flex gap-1 overflow-x-auto max-w-full py-1">
+              {allImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`${title} ${i + 1}`}
+                  onClick={() => setCurrent(i)}
+                  className={`w-12 h-12 object-cover cursor-pointer rounded border-2 transition-all ${
+                    i === current ? "border-white opacity-100" : "border-transparent opacity-50 hover:opacity-80"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
