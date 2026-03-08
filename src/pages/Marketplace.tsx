@@ -98,7 +98,7 @@ const Marketplace = () => {
       category: d.category,
       city: d.city || "",
       imageUrl: d.image_url || "",
-      images: (d as any).images || [],
+      images: Array.isArray((d as any).images) ? ((d as any).images as string[]) : [],
       whatsapp: (d as any).whatsapp || "",
       isSponsored: sponsoredSet.has(d.id),
       sold: d.sold || false,
