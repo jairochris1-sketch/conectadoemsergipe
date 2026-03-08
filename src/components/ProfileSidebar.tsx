@@ -14,17 +14,17 @@ const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate, createdA
   const { t } = useLanguage();
 
   return (
-    <div className="bg-card border border-border p-2 w-full">
-      <div className="border-b border-border pb-1 mb-2">
-        <h3 className="text-[13px] font-bold text-primary">{name}</h3>
+    <div className="bg-card border border-border p-3 w-full">
+      <div className="border-b border-border pb-2 mb-3">
+        <h3 className="text-lg font-bold text-primary">{name}</h3>
       </div>
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-3">
         <img
           src={photoUrl}
           alt={name}
-          className="w-[100px] h-[100px] border border-border object-cover"
+          className="w-[120px] h-[120px] border border-border object-cover rounded-sm"
         />
-        <div className="text-[11px] w-full">
+        <div className="text-sm w-full">
           {school && (
             <p className="mb-1"><b>{t("school")}:</b> {school}</p>
           )}
@@ -37,7 +37,7 @@ const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate, createdA
           <p className="text-muted-foreground">{bio}</p>
         </div>
       </div>
-      <div className="mt-3 border-t border-border pt-2 text-[11px]">
+      <div className="mt-3 border-t border-border pt-2 text-sm">
         <p className="font-bold text-primary mb-1">{t("sidebar.info")}</p>
         {createdAt && (
           <p>📅 {t("sidebar.member_since_label") || "Membro desde"}: {new Date(createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>

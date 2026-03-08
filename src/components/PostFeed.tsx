@@ -22,9 +22,8 @@ const abbreviateCity = (city: string) => {
   if (!city) return "";
   const parts = city.split(" ");
   if (parts.length <= 2) return city;
-  // e.g. "Nossa Senhora da Glória" -> "N. S. da Glória"
   const lastWord = parts[parts.length - 1];
-  const abbreviated = parts.slice(0, -1).map((w, i) => {
+  const abbreviated = parts.slice(0, -1).map((w) => {
     if (["de", "da", "do", "das", "dos", "e"].includes(w.toLowerCase())) return w;
     return w[0].toUpperCase() + ".";
   }).join(" ");
@@ -51,7 +50,6 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banReason, setBanReason] = useState("");
   const { containsForbiddenWord } = useForbiddenWords();
 
-  // Collect all unique user IDs from posts and comments for badge fetching
   const allUserIds = useMemo(() => {
     const ids = new Set(posts.map(p => p.authorId));
     Object.values(comments).forEach(cs => cs.forEach(c => ids.add(c.authorId)));
@@ -96,7 +94,6 @@ const PostFeed = ({ userName }: PostFeedProps) => {
       }
       const { data } = supabase.storage.from("post-images").getPublicUrl(path);
       imageUrl = data.publicUrl;
-      console.log("Image uploaded successfully:", imageUrl);
     }
 
     await createPost(newPost.trim(), imageUrl);
@@ -159,89 +156,89 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   };
 
   return (
-    <div className="bg-card border border-border p-2 w-full">
-      <div className="border-b border-border pb-1 mb-2">
-        <h3 className="text-[13px] font-bold text-primary">{t("the_wall")}</h3>
+    <div className="bg-card border border-border p-3 w-full">
+      <div className="border-b border-border pb-2 mb-3">
+        <h3 className="text-lg font-bold text-primary">{t("the_wall")}</h3>
       </div>
       {userName && (
-        <div className="mb-3 border border-border p-2 bg-accent">
-          <p className="text-[11px] font-bold mb-1">{t("write_something")}</p>
+        <div className="mb-4 border border-border p-3 bg-accent">
+          <p className="text-sm font-bold mb-2">{t("write_something")}</p>
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            className="w-full border border-border p-1 text-[11px] resize-none bg-card"
+            className="w-full border border-border p-2 text-sm resize-none bg-card rounded-sm"
             rows={3}
             placeholder={t("whats_on_mind")}
           />
           {postImage && (
-            <div className="relative inline-block mt-1">
-              <img src={postImage.preview} alt="Preview" className="max-h-[100px] border border-border" />
+            <div className="relative inline-block mt-2">
+              <img src={postImage.preview} alt="Preview" className="max-h-[120px] border border-border rounded" />
               <button
                 onClick={() => setPostImage(null)}
-                className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-4 h-4 text-[9px] flex items-center justify-center leading-none"
+                className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-5 h-5 text-xs flex items-center justify-center leading-none"
               >
                 ×
               </button>
             </div>
           )}
-          <div className="flex gap-2 mt-1 items-center">
-            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50">
+          <div className="flex gap-2 mt-2 items-center">
+            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 disabled:opacity-50 rounded-sm">
               {uploading ? t("post.uploading") : t("post")}
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="bg-muted text-foreground border border-border px-2 py-1 text-[11px] cursor-pointer hover:opacity-90 inline-flex items-center gap-1"
+              className="bg-muted text-foreground border border-border px-3 py-2 text-sm cursor-pointer hover:opacity-90 inline-flex items-center gap-1.5 rounded-sm"
               title={t("post.add_photo")}
             >
-              <ImagePlus className="w-3 h-3" /> {t("post.add_photo")}
+              <ImagePlus className="w-5 h-5" /> {t("post.add_photo")}
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-            <span className="text-[9px] text-muted-foreground">{t("post.max_5mb")}</span>
+            <span className="text-xs text-muted-foreground">{t("post.max_5mb")}</span>
           </div>
         </div>
       )}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {posts.map((post, index) => (
           <div key={post.id}>
             {index > 0 && index % 3 === 0 && <InlineBannerAd />}
-            <div className="border-b border-border pb-2">
-            <div className="flex items-start gap-2">
-              <div className="w-[32px] h-[32px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+            <div className="border-b border-border pb-3">
+            <div className="flex items-start gap-3">
+              <div className="w-[44px] h-[44px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden rounded-sm">
                 {post.authorPhoto ? (
                   <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[8px] text-muted-foreground">{t("photo")}</span>
+                  <span className="text-xs text-muted-foreground">{t("photo")}</span>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px]">
-                  <Link to={`/user/${post.authorId}`} className="font-bold">{post.authorName}</Link>
+                <p className="text-sm">
+                  <Link to={`/user/${post.authorId}`} className="font-bold text-base">{post.authorName}</Link>
                   <VerificationBadge {...(badges.get(post.authorId) || {})} />
                   {post.authorCity && (
-                    <span className="text-muted-foreground text-[10px]"> · {abbreviateCity(post.authorCity)}</span>
+                    <span className="text-muted-foreground text-xs"> · {abbreviateCity(post.authorCity)}</span>
                   )}
                 </p>
                 {editingPostId === post.id ? (
-                  <div className="mt-1">
+                  <div className="mt-2">
                     <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      className="w-full border border-border p-1 text-[11px] resize-none bg-card"
+                      className="w-full border border-border p-2 text-sm resize-none bg-card rounded-sm"
                       rows={2}
                     />
-                    <div className="flex gap-1 mt-1">
-                      <button onClick={saveEdit} className="bg-primary text-primary-foreground border-none px-2 py-[2px] text-[10px] cursor-pointer hover:opacity-90 flex items-center gap-1">
-                        <Check className="w-3 h-3" /> {t("save")}
+                    <div className="flex gap-2 mt-2">
+                      <button onClick={saveEdit} className="bg-primary text-primary-foreground border-none px-3 py-1.5 text-sm cursor-pointer hover:opacity-90 flex items-center gap-1 rounded-sm">
+                        <Check className="w-4 h-4" /> {t("save")}
                       </button>
-                      <button onClick={cancelEdit} className="bg-muted text-foreground border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:opacity-90 flex items-center gap-1">
-                        <X className="w-3 h-3" /> {t("cancel")}
+                      <button onClick={cancelEdit} className="bg-muted text-foreground border border-border px-3 py-1.5 text-sm cursor-pointer hover:opacity-90 flex items-center gap-1 rounded-sm">
+                        <X className="w-4 h-4" /> {t("cancel")}
                       </button>
                     </div>
                   </div>
                 ) : (
                   <>
                     {post.content && (
-                      <p className="text-[11px] mt-[2px]">
+                      <p className="text-sm mt-1">
                         {post.content.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
                           /^https?:\/\//.test(part) ? (
                             <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all hover:opacity-80">{part}</a>
@@ -253,7 +250,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       <img
                         src={post.imageUrl}
                         alt="Post"
-                        className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded cursor-pointer hover:opacity-90 transition-opacity block mx-auto"
+                        className="mt-2 w-full max-w-[600px] object-contain border border-border rounded-md cursor-pointer hover:opacity-90 transition-opacity block"
                         onClick={async () => {
                           setLightboxPost(post.id);
                           if (!comments[post.id]) {
@@ -265,38 +262,38 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     )}
                   </>
                 )}
-                <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
+                <p className="text-xs text-muted-foreground mt-1.5">{formatDate(post.timestamp)}</p>
 
                 {/* Own post actions */}
                 {user && post.authorId === user.id && editingPostId !== post.id && (
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex gap-3 mt-1.5">
                     <button
                       onClick={() => startEdit(post.id, post.content)}
-                      className="text-[9px] text-primary bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-[2px]"
+                      className="text-xs text-primary bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-1"
                     >
-                      <Pencil className="w-3 h-3" /> {t("post.edit")}
+                      <Pencil className="w-4 h-4" /> {t("post.edit")}
                     </button>
                     <button
                       onClick={() => handleDeleteOwn(post.id)}
-                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-[2px]"
+                      className="text-xs text-destructive bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-1"
                     >
-                      <Trash2 className="w-3 h-3" /> {t("post.delete")}
+                      <Trash2 className="w-4 h-4" /> {t("post.delete")}
                     </button>
                   </div>
                 )}
 
                 {/* Admin actions */}
                 {isAdmin && post.authorId !== user?.id && (
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex gap-3 mt-1.5">
                     <button
                       onClick={async () => { await deletePost(post.id); await refreshPosts(); }}
-                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline"
+                      className="text-xs text-destructive bg-transparent border-none cursor-pointer hover:underline"
                     >
                       {t("admin.delete_post")}
                     </button>
                     <button
                       onClick={() => setBanModal({ userId: post.authorId, userName: post.authorName })}
-                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline"
+                      className="text-xs text-destructive bg-transparent border-none cursor-pointer hover:underline"
                     >
                       {t("admin.ban_user")}
                     </button>
@@ -307,7 +304,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     contentType="post"
                     contentId={post.id}
                     reportedUserId={post.authorId}
-                    className="text-[9px] mt-1"
+                    className="text-xs mt-1.5"
                   />
                 )}
               </div>
@@ -316,7 +313,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             {/* Comments toggle */}
             <button
               onClick={() => toggleComments(post.id)}
-              className="text-[10px] text-primary mt-1 bg-transparent border-none cursor-pointer hover:underline"
+              className="text-sm text-primary mt-2 bg-transparent border-none cursor-pointer hover:underline"
             >
               {openComments[post.id] ? t("comments.hide") : t("comments.show")}
               {comments[post.id] && ` (${comments[post.id].length})`}
@@ -324,39 +321,39 @@ const PostFeed = ({ userName }: PostFeedProps) => {
 
             {/* Comments section */}
             {openComments[post.id] && (
-              <div className="ml-8 mt-1 space-y-1">
+              <div className="ml-10 mt-2 space-y-2">
                 {(comments[post.id] || []).map((c) => (
-                  <div key={c.id} className="border-l-2 border-border pl-2 py-1 flex gap-2">
-                    <div className="shrink-0 w-[22px] h-[22px] bg-muted border border-border rounded-full overflow-hidden mt-[1px]">
+                  <div key={c.id} className="border-l-2 border-border pl-3 py-1.5 flex gap-2">
+                    <div className="shrink-0 w-[28px] h-[28px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
                       {c.authorPhoto ? (
                         <img src={c.authorPhoto} alt={c.authorName} className="w-full h-full object-cover" />
                       ) : (
-                        <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                        <span className="text-[10px] text-muted-foreground flex items-center justify-center h-full">👤</span>
                       )}
                     </div>
                     <div>
-                      <p className="text-[10px]">
+                      <p className="text-sm">
                         <Link to={`/user/${c.authorId}`} className="font-bold">{c.authorName}</Link>
                         <VerificationBadge {...(badges.get(c.authorId) || {})} />
                         {" "}{c.content}
                       </p>
-                      <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
+                      <p className="text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                     </div>
                   </div>
                 ))}
                 {user && (
-                  <div className="flex gap-1 mt-1">
+                  <div className="flex gap-2 mt-2">
                     <input
                       type="text"
                       value={commentTexts[post.id] || ""}
                       onChange={(e) => setCommentTexts((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                      className="flex-1 border border-border p-1 text-[10px] bg-card"
+                      className="flex-1 border border-border p-2 text-sm bg-card rounded-sm"
                       placeholder={t("comments.placeholder")}
                       onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.id)}
                     />
                     <button
                       onClick={() => handleAddComment(post.id)}
-                      className="bg-primary text-primary-foreground border-none px-2 py-1 text-[10px] cursor-pointer hover:opacity-90"
+                      className="bg-primary text-primary-foreground border-none px-3 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm"
                     >
                       {t("comments.send")}
                     </button>
@@ -368,19 +365,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           </div>
         ))}
         {posts.length === 0 && (
-          <p className="text-[11px] text-muted-foreground">{t("friends.none")}</p>
+          <p className="text-sm text-muted-foreground">{t("friends.none")}</p>
         )}
       </div>
 
       {/* Ban Modal */}
       {banModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-card border border-border p-4 max-w-[300px] w-full">
-            <h4 className="text-[13px] font-bold text-primary mb-2">{t("admin.ban_user")}: {banModal.userName}</h4>
-            <div className="space-y-2 text-[11px]">
+          <div className="bg-card border border-border p-5 max-w-[360px] w-full rounded-md">
+            <h4 className="text-base font-bold text-primary mb-3">{t("admin.ban_user")}: {banModal.userName}</h4>
+            <div className="space-y-3 text-sm">
               <div>
                 <label className="block font-bold mb-1">{t("admin.ban_days")}:</label>
-                <select value={banDays} onChange={(e) => setBanDays(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card">
+                <select value={banDays} onChange={(e) => setBanDays(e.target.value)} className="w-full border border-border p-2 text-sm bg-card rounded-sm">
                   <option value="1">1 {t("admin.day")}</option>
                   <option value="3">3 {t("admin.days")}</option>
                   <option value="7">7 {t("admin.days")}</option>
@@ -390,7 +387,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
               <div>
                 <label className="block font-bold mb-1">{t("admin.ban_reason")}:</label>
-                <textarea value={banReason} onChange={(e) => setBanReason(e.target.value)} className="w-full border border-border p-1 text-[11px] resize-none bg-card" rows={2} />
+                <textarea value={banReason} onChange={(e) => setBanReason(e.target.value)} className="w-full border border-border p-2 text-sm resize-none bg-card rounded-sm" rows={2} />
               </div>
               <div className="flex gap-2">
                 <button
@@ -408,11 +405,11 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     setBanReason("");
                     setBanDays("1");
                   }}
-                  className="bg-destructive text-destructive-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                  className="bg-destructive text-destructive-foreground border-none px-4 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm"
                 >
                   {t("admin.confirm_ban")}
                 </button>
-                <button onClick={() => setBanModal(null)} className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
+                <button onClick={() => setBanModal(null)} className="bg-muted text-foreground border border-border px-4 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm">
                   {t("cancel")}
                 </button>
               </div>
@@ -432,12 +429,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           >
             <button
               onClick={() => setLightboxPost(null)}
-              className="absolute top-3 right-3 text-white/80 hover:text-white text-2xl bg-transparent border-none cursor-pointer z-10"
+              className="absolute top-3 right-3 text-white/80 hover:text-white text-3xl bg-transparent border-none cursor-pointer z-10"
             >
               ✕
             </button>
             <div
-              className="flex w-[95vw] max-w-[1100px] h-[90vh] max-h-[700px] bg-card rounded overflow-hidden shadow-lg"
+              className="flex w-[95vw] max-w-[1100px] h-[90vh] max-h-[700px] bg-card rounded-md overflow-hidden shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Left: Image */}
@@ -449,30 +446,30 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 />
               </div>
               {/* Right: Post info + Comments */}
-              <div className="w-[320px] shrink-0 flex flex-col border-l border-border bg-card">
+              <div className="w-[340px] shrink-0 flex flex-col border-l border-border bg-card">
                 {/* Author header */}
-                <div className="flex items-center gap-2 p-3 border-b border-border">
-                  <div className="w-[32px] h-[32px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
+                <div className="flex items-center gap-3 p-4 border-b border-border">
+                  <div className="w-[40px] h-[40px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
                     {post.authorPhoto ? (
                       <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-[8px] text-muted-foreground flex items-center justify-center h-full">{t("photo")}</span>
+                      <span className="text-xs text-muted-foreground flex items-center justify-center h-full">{t("photo")}</span>
                     )}
                   </div>
                   <div>
                     <div className="flex items-center gap-0">
-                      <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
+                      <Link to={`/user/${post.authorId}`} className="text-sm font-bold hover:underline" onClick={() => setLightboxPost(null)}>
                         {post.authorName}
                       </Link>
                       <VerificationBadge {...(badges.get(post.authorId) || {})} />
                     </div>
-                    <p className="text-[10px] text-muted-foreground">{formatDate(post.timestamp)}</p>
+                    <p className="text-xs text-muted-foreground">{formatDate(post.timestamp)}</p>
                   </div>
                 </div>
                 {/* Post content */}
                 {post.content && (
-                  <div className="px-3 py-2 border-b border-border">
-                    <p className="text-[11px]">
+                  <div className="px-4 py-3 border-b border-border">
+                    <p className="text-sm">
                       {post.content.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
                         /^https?:\/\//.test(part) ? (
                           <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all hover:opacity-80">{part}</a>
@@ -482,38 +479,38 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                   </div>
                 )}
                 {/* Comments list */}
-                <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
                   {(comments[post.id] || []).length === 0 && (
-                    <p className="text-[10px] text-muted-foreground">{t("comments.show")}</p>
+                    <p className="text-sm text-muted-foreground">{t("comments.show")}</p>
                   )}
                   {(comments[post.id] || []).map((c) => (
                     <div key={c.id} className="flex gap-2">
-                      <div className="shrink-0 w-[24px] h-[24px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
+                      <div className="shrink-0 w-[28px] h-[28px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
                         {c.authorPhoto ? (
                           <img src={c.authorPhoto} alt={c.authorName} className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                          <span className="text-[10px] text-muted-foreground flex items-center justify-center h-full">👤</span>
                         )}
                       </div>
-                      <div className="bg-accent rounded px-2 py-1 min-w-0">
-                        <p className="text-[10px]">
+                      <div className="bg-accent rounded px-3 py-1.5 min-w-0">
+                        <p className="text-sm">
                           <span className="font-bold">{c.authorName}</span>
                           <VerificationBadge {...(badges.get(c.authorId) || {})} />
                           {" "}{c.content}
                         </p>
-                        <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
+                        <p className="text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 {/* Add comment */}
                 {user && (
-                  <div className="flex gap-1 p-2 border-t border-border">
+                  <div className="flex gap-2 p-3 border-t border-border">
                     <input
                       type="text"
                       value={commentTexts[post.id] || ""}
                       onChange={(e) => setCommentTexts((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                      className="flex-1 border border-border p-1 text-[10px] bg-card rounded"
+                      className="flex-1 border border-border p-2 text-sm bg-card rounded-sm"
                       placeholder={t("comments.placeholder")}
                       onKeyDown={async (e) => {
                         if (e.key === "Enter") {
@@ -523,7 +520,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     />
                     <button
                       onClick={() => handleAddComment(post.id)}
-                      className="bg-primary text-primary-foreground border-none px-2 py-1 text-[10px] cursor-pointer hover:opacity-90 rounded"
+                      className="bg-primary text-primary-foreground border-none px-3 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm"
                     >
                       {t("comments.send")}
                     </button>
