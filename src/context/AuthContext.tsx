@@ -118,6 +118,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data.school !== undefined) updates.school = data.school;
     if (data.name !== undefined) updates.name = data.name;
     if (data.photoUrl !== undefined) updates.photo_url = data.photoUrl;
+    if (data.birthdate !== undefined) updates.birthdate = data.birthdate;
+    if (data.city !== undefined) updates.city = data.city;
 
     await supabase.from("profiles").update(updates).eq("user_id", user.id);
     setUser({ ...user, ...data });
