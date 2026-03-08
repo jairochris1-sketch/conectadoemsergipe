@@ -4,6 +4,7 @@ import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
+import BannerAd from "@/components/BannerAd";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
