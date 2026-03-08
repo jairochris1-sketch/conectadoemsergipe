@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -6,6 +6,8 @@ import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import ReportButton from "@/components/ReportButton";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
 import { toast } from "sonner";
