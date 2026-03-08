@@ -12,7 +12,7 @@ interface BadgeInfo {
 const badgeCache = new Map<string, BadgeInfo>();
 
 export const useVerificationBadge = (userId: string | undefined) => {
-  const [badge, setBadge] = useState<BadgeInfo>({ verified: false, businessVerified: false, isAdmin: false });
+  const [badge, setBadge] = useState<BadgeInfo>({ verified: false, businessVerified: false, isAdmin: false, isModerator: false });
 
   useEffect(() => {
     if (!userId) return;
