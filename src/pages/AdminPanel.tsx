@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import AdminPageEditor from "@/components/AdminPageEditor";
+import AdminFooterImage from "@/components/AdminFooterImage";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -40,7 +41,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -146,6 +147,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               {t("admin.pages_tab")}
             </button>
+            <button onClick={() => setTab("footer")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "footer" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              📷 Rodapé
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -161,8 +166,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" ? (
+          {loading && tab !== "pages" && tab !== "footer" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "footer" ? (
+            <AdminFooterImage />
           ) : tab === "pages" ? (
             <AdminPageEditor />
           ) : tab === "reports" ? (
