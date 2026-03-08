@@ -7,6 +7,7 @@ import { useBatchVerificationBadges, useVerificationBadge } from "@/hooks/useVer
 import { useOnlineStatus, OnlineIndicator } from "@/hooks/usePresence";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSocial } from "@/context/SocialContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Conversation {
@@ -30,6 +31,7 @@ interface Message {
 const Messages = () => {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const { isFriend } = useSocial();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChat = searchParams.get("with");
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -183,8 +185,10 @@ const Messages = () => {
     };
   }, [user, activeChat, loadConversations]);
 
+  const canMessage = activeChat ? isFriend(activeChat) : false;
+
   const sendMessage = async () => {
-    if (!user || !activeChat || !newMessage.trim()) return;
+    if (!user || !activeChat || !newMessage.trim() || !canMessage) return;
     await supabase.from("messages").insert({
       sender_id: user.id,
       receiver_id: activeChat,
@@ -316,22 +320,30 @@ const Messages = () => {
                   </div>
 
                   {/* Input */}
-                  <div className="border-t border-border p-2 flex gap-1">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                      placeholder={t("messages.placeholder")}
-                      className="flex-1 border border-border p-1 text-[11px] bg-card"
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-                    >
-                      {t("messages.send")}
-                    </button>
-                  </div>
+                  {canMessage ? (
+                    <div className="border-t border-border p-2 flex gap-1">
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder={t("messages.placeholder")}
+                        className="flex-1 border border-border p-1 text-[11px] bg-card"
+                      />
+                      <button
+                        onClick={sendMessage}
+                        className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                      >
+                        {t("messages.send")}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-t border-border p-2 text-center">
+                      <p className="text-[11px] text-muted-foreground">
+                        ⚠ {t("messages.friends_only") || "Apenas amigos podem trocar mensagens."}
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>

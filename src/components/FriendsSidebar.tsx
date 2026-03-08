@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
@@ -76,7 +77,7 @@ const FriendsSidebar = () => {
                 )}
               </div>
               <div>
-                <a href="#" className="font-bold">{friend.name}</a>
+                <Link to={`/user/${friend.id}`} className="font-bold hover:underline">{friend.name}</Link>
                 <VerificationBadge {...(badges.get(friend.id) || {})} />
               </div>
             </div>
@@ -87,7 +88,7 @@ const FriendsSidebar = () => {
       </div>
       {friends.length > 0 && (
         <div className="mt-3 border-t border-border pt-2">
-          <a href="#" className="text-[11px]">{t("see_all_friends")}</a>
+          <Link to="/search" className="text-[11px]">{t("see_all_friends")}</Link>
         </div>
       )}
     </div>
