@@ -14,6 +14,8 @@ interface BannerAd {
   click_count: number;
   impression_count: number;
   sort_order: number;
+  starts_at: string;
+  ends_at: string | null;
   created_at: string;
 }
 
@@ -23,6 +25,27 @@ const POSITIONS = [
   { value: "right", label: "Lateral direita" },
   { value: "feed", label: "Entre posts" },
 ];
+
+const formatDateInput = (dateStr: string | null) => {
+  if (!dateStr) return "";
+  return new Date(dateStr).toISOString().slice(0, 16);
+};
+
+const formatDateDisplay = (dateStr: string | null) => {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("pt-BR", {
+    day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+  });
+};
+
+const getBannerStatus = (b: BannerAd) => {
+  if (!b.is_active) return { label: "Inativo", color: "text-muted-foreground" };
+  const now = new Date();
+  const start = new Date(b.starts_at);
+  if (start > now) return { label: "Agendado", color: "text-yellow-600" };
+  if (b.ends_at && new Date(b.ends_at) < now) return { label: "Expirado", color: "text-destructive" };
+  return { label: "Ativo", color: "text-green-600" };
+};
 
 const AdminBannerManager = () => {
   const { user } = useAuth();
@@ -39,6 +62,8 @@ const AdminBannerManager = () => {
     link_url: "",
     position: "both",
     sort_order: 0,
+    starts_at: "",
+    ends_at: "",
   });
 
   const fetchBanners = async () => {
@@ -54,7 +79,7 @@ const AdminBannerManager = () => {
   useEffect(() => { fetchBanners(); }, []);
 
   const resetForm = () => {
-    setForm({ title: "", image_url: "", link_url: "", position: "both", sort_order: 0 });
+    setForm({ title: "", image_url: "", link_url: "", position: "both", sort_order: 0, starts_at: "", ends_at: "" });
     setEditing(null);
     setShowForm(false);
   };
@@ -79,23 +104,22 @@ const AdminBannerManager = () => {
 
   const handleSave = async () => {
     if (!form.image_url) { toast.error("Adicione uma imagem"); return; }
+    const payload = {
+      title: form.title,
+      image_url: form.image_url,
+      link_url: form.link_url,
+      position: form.position,
+      sort_order: form.sort_order,
+      starts_at: form.starts_at ? new Date(form.starts_at).toISOString() : new Date().toISOString(),
+      ends_at: form.ends_at ? new Date(form.ends_at).toISOString() : null,
+    };
     if (editing) {
-      const { error } = await supabase.from("banner_ads").update({
-        title: form.title,
-        image_url: form.image_url,
-        link_url: form.link_url,
-        position: form.position,
-        sort_order: form.sort_order,
-      }).eq("id", editing);
+      const { error } = await supabase.from("banner_ads").update(payload).eq("id", editing);
       if (error) { toast.error("Erro ao atualizar"); return; }
       toast.success("Banner atualizado!");
     } else {
       const { error } = await supabase.from("banner_ads").insert({
-        title: form.title,
-        image_url: form.image_url,
-        link_url: form.link_url,
-        position: form.position,
-        sort_order: form.sort_order,
+        ...payload,
         created_by: user?.id,
       });
       if (error) { toast.error("Erro ao criar banner"); return; }
@@ -124,6 +148,8 @@ const AdminBannerManager = () => {
       link_url: b.link_url,
       position: b.position,
       sort_order: b.sort_order,
+      starts_at: formatDateInput(b.starts_at),
+      ends_at: formatDateInput(b.ends_at),
     });
     setEditing(b.id);
     setShowForm(true);
@@ -186,7 +212,7 @@ const AdminBannerManager = () => {
               placeholder="https://exemplo.com"
             />
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <div>
               <label className="text-[10px] text-muted-foreground">Posição</label>
               <select
@@ -209,6 +235,26 @@ const AdminBannerManager = () => {
               />
             </div>
           </div>
+          <div className="flex gap-3 flex-wrap">
+            <div>
+              <label className="text-[10px] text-muted-foreground">📅 Início da campanha</label>
+              <input
+                type="datetime-local"
+                value={form.starts_at}
+                onChange={(e) => setForm((f) => ({ ...f, starts_at: e.target.value }))}
+                className="w-full border border-border px-2 py-1 text-[11px] bg-card text-foreground"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-muted-foreground">📅 Fim da campanha (opcional)</label>
+              <input
+                type="datetime-local"
+                value={form.ends_at}
+                onChange={(e) => setForm((f) => ({ ...f, ends_at: e.target.value }))}
+                className="w-full border border-border px-2 py-1 text-[11px] bg-card text-foreground"
+              />
+            </div>
+          </div>
           <div className="flex gap-2 pt-1">
             <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
               {editing ? "Salvar" : "Criar"}
@@ -226,37 +272,46 @@ const AdminBannerManager = () => {
         <p className="text-[11px] text-muted-foreground">Nenhum banner cadastrado.</p>
       ) : (
         <div className="space-y-2">
-          {banners.map((b) => (
-            <div key={b.id} className={`border border-border p-2 text-[11px] flex gap-3 items-start ${!b.is_active ? "opacity-50" : ""}`}>
-              <img src={b.image_url} alt={b.title} className="w-[80px] h-[60px] object-cover border border-border shrink-0" />
-              <div className="flex-1 min-w-0 space-y-[2px]">
-                <p className="font-bold truncate">{b.title || "(sem título)"}</p>
-                <p className="text-muted-foreground truncate">{b.link_url || "Sem link"}</p>
-                <p className="text-muted-foreground">
-                  Posição: <b>{POSITIONS.find((p) => p.value === b.position)?.label || b.position}</b> · Ordem: {b.sort_order}
-                </p>
-                <p className="text-muted-foreground">
-                  👁 {b.impression_count} impressões · 🖱 {b.click_count} cliques
-                </p>
+          {banners.map((b) => {
+            const status = getBannerStatus(b);
+            return (
+              <div key={b.id} className={`border border-border p-2 text-[11px] flex gap-3 items-start ${!b.is_active || status.label === "Expirado" ? "opacity-50" : ""}`}>
+                <img src={b.image_url} alt={b.title} className="w-[80px] h-[60px] object-cover border border-border shrink-0" />
+                <div className="flex-1 min-w-0 space-y-[2px]">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold truncate">{b.title || "(sem título)"}</p>
+                    <span className={`text-[9px] font-bold ${status.color}`}>● {status.label}</span>
+                  </div>
+                  <p className="text-muted-foreground truncate">{b.link_url || "Sem link"}</p>
+                  <p className="text-muted-foreground">
+                    Posição: <b>{POSITIONS.find((p) => p.value === b.position)?.label || b.position}</b> · Ordem: {b.sort_order}
+                  </p>
+                  <p className="text-muted-foreground">
+                    📅 {formatDateDisplay(b.starts_at)} → {formatDateDisplay(b.ends_at)}
+                  </p>
+                  <p className="text-muted-foreground">
+                    👁 {b.impression_count} impressões · 🖱 {b.click_count} cliques
+                  </p>
+                </div>
+                <div className="flex flex-col gap-1 shrink-0">
+                  <button onClick={() => toggleActive(b.id, b.is_active)}
+                    className="flex items-center gap-1 bg-muted border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:bg-accent"
+                    title={b.is_active ? "Desativar" : "Ativar"}>
+                    {b.is_active ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    {b.is_active ? "Desativar" : "Ativar"}
+                  </button>
+                  <button onClick={() => startEdit(b)}
+                    className="flex items-center gap-1 bg-muted border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:bg-accent">
+                    <Pencil className="w-3 h-3" /> Editar
+                  </button>
+                  <button onClick={() => deleteBanner(b.id)}
+                    className="flex items-center gap-1 bg-destructive/10 text-destructive border border-destructive/30 px-2 py-[2px] text-[10px] cursor-pointer hover:bg-destructive/20">
+                    <Trash2 className="w-3 h-3" /> Excluir
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-col gap-1 shrink-0">
-                <button onClick={() => toggleActive(b.id, b.is_active)}
-                  className="flex items-center gap-1 bg-muted border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:bg-accent"
-                  title={b.is_active ? "Desativar" : "Ativar"}>
-                  {b.is_active ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                  {b.is_active ? "Desativar" : "Ativar"}
-                </button>
-                <button onClick={() => startEdit(b)}
-                  className="flex items-center gap-1 bg-muted border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:bg-accent">
-                  <Pencil className="w-3 h-3" /> Editar
-                </button>
-                <button onClick={() => deleteBanner(b.id)}
-                  className="flex items-center gap-1 bg-destructive/10 text-destructive border border-destructive/30 px-2 py-[2px] text-[10px] cursor-pointer hover:bg-destructive/20">
-                  <Trash2 className="w-3 h-3" /> Excluir
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

@@ -13,21 +13,24 @@ const InlineBannerAd = () => {
   const tracked = useRef(false);
 
   useEffect(() => {
+    const now = new Date().toISOString();
     supabase
       .from("banner_ads")
-      .select("id, title, image_url, link_url")
+      .select("id, title, image_url, link_url, ends_at")
       .eq("is_active", true)
       .or("position.eq.feed,position.eq.both")
+      .lte("starts_at", now)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
-        if (data && data.length > 0) {
-          const selected = data[Math.floor(Math.random() * data.length)];
-          setBanner(selected);
+        const active = (data || []).filter(
+          (b: any) => !b.ends_at || new Date(b.ends_at) > new Date()
+        );
+        if (active.length > 0) {
+          setBanner(active[Math.floor(Math.random() * active.length)]);
         }
       });
   }, []);
 
-  // Track impression once
   useEffect(() => {
     if (!banner || tracked.current) return;
     tracked.current = true;
