@@ -24,6 +24,10 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [bannerImage, setBannerImage] = useState("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [suggestions, setSuggestions] = useState<{ user_id: string; name: string; photo_url: string | null }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const navigate = useNavigate();
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
@@ -61,12 +65,75 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       });
   }, []);
 
+  // Close suggestions on click outside
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Debounced search for autocomplete
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    if (value.trim().length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    searchTimeoutRef.current = setTimeout(async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, name, photo_url")
+        .ilike("name", `%${value.trim()}%`)
+        .limit(5);
+      setSuggestions(data || []);
+      setShowSuggestions((data || []).length > 0);
+    }, 250);
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowSuggestions(false);
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setMenuOpen(false);
     }
+  };
+
+  const handleSelectSuggestion = (userId: string) => {
+    setShowSuggestions(false);
+    setSearchQuery("");
+    setMenuOpen(false);
+    navigate(`/user/${userId}`);
+  };
+
+  const SuggestionsDropdown = () => {
+    if (!showSuggestions || suggestions.length === 0) return null;
+    return (
+      <div className="absolute top-full left-0 right-0 bg-card border border-border shadow-lg z-50 mt-[1px]">
+        {suggestions.map((s) => (
+          <button
+            key={s.user_id}
+            onClick={() => handleSelectSuggestion(s.user_id)}
+            className="flex items-center gap-2 w-full px-2 py-1.5 text-left hover:bg-accent bg-transparent border-none cursor-pointer"
+          >
+            <div className="w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-sm">
+              {s.photo_url ? (
+                <img src={s.photo_url} alt={s.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-[7px] text-muted-foreground">👤</span>
+              )}
+            </div>
+            <span className="text-[11px] text-foreground font-medium truncate">{s.name}</span>
+          </button>
+        ))}
+      </div>
+    );
   };
 
   const navLinks = (onNav?: () => void) => (
