@@ -33,6 +33,7 @@ const Index = () => {
               createdAt={user?.createdAt}
             />
             <BannerAdColumn position="left" />
+            <MarketplaceHighlights />
           </div>
         </div>
 
