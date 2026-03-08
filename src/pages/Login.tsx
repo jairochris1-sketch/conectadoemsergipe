@@ -32,7 +32,7 @@ const Login = () => {
             className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
             style={{ fontFamily: "Georgia, serif" }}
           >
-            [ thefacebook ]
+            [ conectadosemsergipe ]
           </h1>
           <div className="flex justify-center gap-4 text-[11px] mt-1">
             <Link to="/login" className="text-primary-foreground">{t("login")}</Link>
