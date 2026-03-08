@@ -71,6 +71,7 @@ const FriendsSidebar = () => {
               </div>
               <div>
                 <a href="#" className="font-bold">{friend.name}</a>
+                <VerificationBadge {...(badges.get(friend.id) || {})} />
               </div>
             </div>
           ))

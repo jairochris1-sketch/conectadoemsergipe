@@ -61,6 +61,7 @@ const SearchPage = () => {
                       </div>
                       <div>
                         <Link to={`/user/${p.id}`} className="font-bold">{p.name}</Link>
+                        <VerificationBadge {...(badges.get(p.id) || {})} />
                         <p className="text-muted-foreground">{p.school}</p>
                       </div>
                     </div>
