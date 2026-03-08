@@ -20,7 +20,7 @@ const Index = () => {
         {/* Left ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
           <div className="sticky top-3">
-            <BannerAd position="left" />
+            <BannerAdColumn position="left" />
           </div>
         </div>
 
