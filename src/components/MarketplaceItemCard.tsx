@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import ReportButton from "@/components/ReportButton";
 import { CATEGORY_KEYS } from "@/pages/Marketplace";
 import {
   AlertDialog,
@@ -110,6 +111,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
             </AlertDialog>
           </div>
         )}
+        {currentUserId && !isOwner && (
+          <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-[8px]" />
+          </div>
+        )}
       </div>
     );
   }
@@ -188,6 +194,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+          </div>
+        )}
+        {currentUserId && !isOwner && (
+          <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-[9px]" />
           </div>
         )}
       </div>

@@ -4,6 +4,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
+import ReportButton from "@/components/ReportButton";
 
 interface PostFeedProps {
   userName?: string;
@@ -103,6 +104,14 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       {t("admin.ban_user")}
                     </button>
                   </div>
+                )}
+                {user && post.authorId !== user.id && (
+                  <ReportButton
+                    contentType="post"
+                    contentId={post.id}
+                    reportedUserId={post.authorId}
+                    className="text-[9px] mt-1"
+                  />
                 )}
               </div>
             </div>
