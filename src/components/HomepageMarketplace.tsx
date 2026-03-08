@@ -140,28 +140,29 @@ const HomepageMarketplace = () => {
       )}
 
       {/* Products grid */}
-      {(() => {
+      {loading ? (
+        <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
+      ) : (() => {
         const filtered = category === "All" ? items : items.filter((i) => i.category === category);
-        return loading ? (
-          <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
-        ) : filtered.length === 0 ? (
-        <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {items.map((item) => (
-            <MarketplaceItemCard
-              key={item.id}
-              item={item}
-              variant="grid"
-              currentUserId={user?.id}
-              onTrackClick={noopTrack}
-              onDelete={handleDelete}
-              onMarkSold={handleMarkSold}
-              onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
-            />
-          ))}
-        </div>
-      )}
+        return filtered.length === 0 ? (
+          <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {filtered.map((item) => (
+              <MarketplaceItemCard
+                key={item.id}
+                item={item}
+                variant="grid"
+                currentUserId={user?.id}
+                onTrackClick={noopTrack}
+                onDelete={handleDelete}
+                onMarkSold={handleMarkSold}
+                onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+              />
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Footer link */}
       {items.length > 0 && (
