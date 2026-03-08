@@ -174,6 +174,8 @@ const AdminPanel = () => {
 
           {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "badges" ? (
+            <AdminBadgeManager />
           ) : tab === "footer" ? (
             <div>
               <AdminFooterImage />
