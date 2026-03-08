@@ -37,7 +37,7 @@ const PublicProfile = () => {
     if (!userId) return;
     supabase
       .from("profiles")
-      .select("user_id, name, bio, photo_url, school, city, birthdate")
+      .select("user_id, name, bio, photo_url, school, city, birthdate, created_at")
       .eq("user_id", userId)
       .single()
       .then(({ data }) => {
