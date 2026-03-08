@@ -23,10 +23,10 @@ const Login = () => {
     supabase
       .from("site_settings")
       .select("value")
-      .eq("key", "footer_image")
+      .eq("key", "login_banner")
       .single()
       .then(({ data }) => {
-        if (data && (data as any).value) setFooterImage((data as any).value);
+        if (data && (data as any).value) setBannerImage((data as any).value);
       });
   }, []);
 
