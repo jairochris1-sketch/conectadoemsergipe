@@ -21,7 +21,7 @@ interface BanRecord {
 const AdminPanel = () => {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
-  const { isAdmin, unbanUser } = useAdmin();
+  const { isAdmin, adminLoading, unbanUser } = useAdmin();
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"active" | "expired">("active");
