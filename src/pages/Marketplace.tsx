@@ -19,6 +19,8 @@ export interface MarketItem {
   category: string;
   city: string;
   imageUrl: string;
+  images?: string[];
+  whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
 }
@@ -94,6 +96,8 @@ const Marketplace = () => {
       category: d.category,
       city: d.city || "",
       imageUrl: d.image_url || "",
+      images: (d as any).images || [],
+      whatsapp: (d as any).whatsapp || "",
       isSponsored: sponsoredSet.has(d.id),
       sold: d.sold || false,
     }));
