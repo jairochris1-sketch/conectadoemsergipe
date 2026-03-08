@@ -136,6 +136,13 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.image": "Foto do produto:",
     "marketplace.contact": "Contatar vendedor",
     "marketplace.recommended": "Recomendado para você",
+    "marketplace.delete_item": "Excluir",
+    "marketplace.mark_sold": "Vendido",
+    "marketplace.sold_label": "VENDIDO",
+    "marketplace.delete_confirm_title": "Excluir anúncio?",
+    "marketplace.delete_confirm_desc": "Tem certeza que deseja excluir este anúncio? Esta ação não pode ser desfeita.",
+    "marketplace.nsfw_blocked": "Imagem bloqueada: conteúdo impróprio detectado",
+    "marketplace.checking_image": "Verificando imagem...",
     // Ads
     "ads.title": "Painel de Anúncios",
     "ads.credits": "créditos",
