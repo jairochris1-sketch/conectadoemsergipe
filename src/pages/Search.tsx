@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import FollowButton from "@/components/FollowButton";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 
 const MOCK_SHOPS = [
   { name: "Harvard Book Store", description: "Textbooks and supplies" },
