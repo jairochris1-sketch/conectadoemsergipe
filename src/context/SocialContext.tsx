@@ -44,6 +44,8 @@ interface SocialContextType {
   refreshPosts: () => Promise<void>;
   refreshFriendships: () => Promise<void>;
   searchProfiles: (query: string) => Promise<{ id: string; name: string; school: string; photo: string }[]>;
+  getComments: (postId: string) => Promise<Comment[]>;
+  addComment: (postId: string, content: string) => Promise<void>;
 }
 
 const SocialContext = createContext<SocialContextType | null>(null);
