@@ -24,11 +24,15 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 async function fetchProfile(userId: string): Promise<User | null> {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("user_id", userId)
     .single();
+  if (error) {
+    console.error("fetchProfile error:", error.message);
+    return null;
+  }
   if (!data) return null;
   return {
     id: data.user_id,
