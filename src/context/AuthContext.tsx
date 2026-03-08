@@ -131,8 +131,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
-  const updateProfile = async (data: Partial<User>) => {
-    if (!user) return;
+  const updateProfile = async (data: Partial<User>): Promise<boolean> => {
+    if (!user) return false;
     const updates: Record<string, any> = {};
     if (data.bio !== undefined) updates.bio = data.bio;
     if (data.school !== undefined) updates.school = data.school;
@@ -141,21 +141,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data.birthdate !== undefined) updates.birthdate = data.birthdate;
     if (data.city !== undefined) updates.city = data.city;
 
-    if (Object.keys(updates).length === 0) return;
+    if (Object.keys(updates).length === 0) return false;
 
     const { error } = await supabase.from("profiles").update(updates).eq("user_id", user.id);
     if (error) {
       console.error("updateProfile error:", error.message);
-      return;
+      return false;
     }
-    
-    // Re-fetch profile to ensure consistency
+
     const refreshed = await fetchProfile(user.id);
     if (refreshed) {
       setUser(refreshed);
     } else {
       setUser({ ...user, ...data });
     }
+    return true;
   };
 
   return (

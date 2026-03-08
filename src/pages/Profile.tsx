@@ -41,13 +41,18 @@ const Profile = () => {
   };
 
   const handleSave = async () => {
-    await updateProfile({
+    const success = await updateProfile({
       name: editName,
       bio: editBio,
       school: editSchool,
       city: editCity,
       birthdate: editBirthdate,
     });
+    if (success) {
+      toast.success("Perfil atualizado com sucesso!");
+    } else {
+      toast.error("Erro ao salvar o perfil. Tente novamente.");
+    }
     setEditing(false);
   };
 
