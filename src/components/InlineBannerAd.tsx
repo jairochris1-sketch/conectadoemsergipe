@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface InlineBannerAdData {
@@ -10,6 +10,7 @@ interface InlineBannerAdData {
 
 const InlineBannerAd = () => {
   const [banner, setBanner] = useState<InlineBannerAdData | null>(null);
+  const tracked = useRef(false);
 
   useEffect(() => {
     supabase
@@ -20,11 +21,23 @@ const InlineBannerAd = () => {
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
         if (data && data.length > 0) {
-          // Pick a random banner
-          setBanner(data[Math.floor(Math.random() * data.length)]);
+          const selected = data[Math.floor(Math.random() * data.length)];
+          setBanner(selected);
         }
       });
   }, []);
+
+  // Track impression once
+  useEffect(() => {
+    if (!banner || tracked.current) return;
+    tracked.current = true;
+    supabase.rpc("increment_banner_impressions", { _banner_id: banner.id });
+  }, [banner]);
+
+  const handleClick = () => {
+    if (!banner) return;
+    supabase.rpc("increment_banner_clicks", { _banner_id: banner.id });
+  };
 
   if (!banner) return null;
 
@@ -35,6 +48,7 @@ const InlineBannerAd = () => {
         href={banner.link_url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={handleClick}
         className="ad-link block overflow-hidden hover:opacity-90 transition-opacity"
       >
         <img

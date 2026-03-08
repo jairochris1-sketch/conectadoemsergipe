@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface BannerAdData {
@@ -10,12 +10,13 @@ interface BannerAdData {
 
 interface BannerAdProps {
   position: "left" | "right";
-  rotationInterval?: number; // ms, default 8000
+  rotationInterval?: number;
 }
 
 const BannerAd = ({ position, rotationInterval = 8000 }: BannerAdProps) => {
   const [banners, setBanners] = useState<BannerAdData[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
     supabase
@@ -29,7 +30,15 @@ const BannerAd = ({ position, rotationInterval = 8000 }: BannerAdProps) => {
       });
   }, [position]);
 
-  // Auto-rotation
+  // Track impression when banner becomes visible
+  useEffect(() => {
+    if (banners.length === 0) return;
+    const current = banners[currentIndex];
+    if (!current || trackedImpressions.current.has(current.id)) return;
+    trackedImpressions.current.add(current.id);
+    supabase.rpc("increment_banner_impressions", { _banner_id: current.id });
+  }, [currentIndex, banners]);
+
   useEffect(() => {
     if (banners.length <= 1) return;
     const timer = setInterval(() => {
@@ -39,14 +48,8 @@ const BannerAd = ({ position, rotationInterval = 8000 }: BannerAdProps) => {
   }, [banners.length, rotationInterval]);
 
   const handleClick = useCallback((bannerId: string) => {
-    // Fire and forget impression tracking
-    supabase
-      .from("banner_ads")
-      .update({ click_count: banners.find(b => b.id === bannerId)?.id ? undefined : 0 })
-      .eq("id", bannerId)
-      .then(() => {});
-    // Use RPC or just increment via edge — for now just track client-side
-  }, [banners]);
+    supabase.rpc("increment_banner_clicks", { _banner_id: bannerId });
+  }, []);
 
   if (banners.length === 0) {
     return (
