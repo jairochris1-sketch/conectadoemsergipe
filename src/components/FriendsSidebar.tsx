@@ -39,6 +39,7 @@ const FriendsSidebar = () => {
                     )}
                   </div>
                   <span className="font-bold truncate">{req.fromName}</span>
+                  <VerificationBadge {...(badges.get(req.fromId) || {})} />
                 </div>
                 <div className="flex gap-1 mt-1">
                   <button onClick={() => acceptFriendRequest(req.id)} className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90">
