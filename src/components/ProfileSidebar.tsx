@@ -9,7 +9,7 @@ interface ProfileSidebarProps {
   birthdate?: string;
 }
 
-const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) => {
+const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate }: ProfileSidebarProps) => {
   const { t } = useLanguage();
 
   return (
