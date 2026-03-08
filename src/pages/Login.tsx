@@ -14,7 +14,7 @@ const Login = () => {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
   const [forgotError, setForgotError] = useState("");
-  const [footerImage, setFooterImage] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
@@ -23,10 +23,10 @@ const Login = () => {
     supabase
       .from("site_settings")
       .select("value")
-      .eq("key", "footer_image")
+      .eq("key", "login_banner")
       .single()
       .then(({ data }) => {
-        if (data && (data as any).value) setFooterImage((data as any).value);
+        if (data && (data as any).value) setBannerImage((data as any).value);
       });
   }, []);
 
@@ -62,6 +62,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-card">
+      {/* Banner image from admin */}
+      {bannerImage && (
+        <div className="max-w-[760px] mx-auto">
+          <img
+            src={bannerImage}
+            alt="Banner"
+            className="w-full h-auto object-cover block"
+          />
+        </div>
+      )}
+
       {/* Blue header bar */}
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
@@ -265,15 +276,6 @@ const Login = () => {
         </div>
         <p className="mt-1">{t("footer.production")}</p>
         <p>conectadosemsergipe © 2026</p>
-        {footerImage && (
-          <div className="mt-3 flex justify-center">
-            <img
-              src={footerImage}
-              alt="Footer"
-              className="max-w-[300px] max-h-[200px] object-contain"
-            />
-          </div>
-        )}
       </div>
     </div>
   );

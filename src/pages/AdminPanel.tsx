@@ -149,7 +149,7 @@ const AdminPanel = () => {
             </button>
             <button onClick={() => setTab("footer")}
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "footer" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
-              📷 Rodapé
+              🖼️ Banner Login
             </button>
           </div>
 

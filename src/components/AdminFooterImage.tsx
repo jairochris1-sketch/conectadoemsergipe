@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/context/LanguageContext";
 
-const AdminFooterImage = () => {
-  const { t } = useLanguage();
+const AdminBannerImage = () => {
   const [currentImage, setCurrentImage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
@@ -12,7 +10,7 @@ const AdminFooterImage = () => {
     supabase
       .from("site_settings")
       .select("value")
-      .eq("key", "footer_image")
+      .eq("key", "login_banner")
       .single()
       .then(({ data }) => {
         if (data && (data as any).value) setCurrentImage((data as any).value);
@@ -27,7 +25,7 @@ const AdminFooterImage = () => {
     setMessage("");
 
     const ext = file.name.split(".").pop();
-    const fileName = `footer-image-${Date.now()}.${ext}`;
+    const fileName = `login-banner-${Date.now()}.${ext}`;
 
     const { error: uploadError } = await supabase.storage
       .from("site-assets")
@@ -45,13 +43,26 @@ const AdminFooterImage = () => {
 
     const publicUrl = urlData.publicUrl;
 
-    await supabase
+    // Upsert: try update first, if no rows affected, insert
+    const { data: existing } = await supabase
       .from("site_settings")
-      .update({ value: publicUrl, updated_at: new Date().toISOString() })
-      .eq("key", "footer_image");
+      .select("id")
+      .eq("key", "login_banner")
+      .single();
+
+    if (existing) {
+      await supabase
+        .from("site_settings")
+        .update({ value: publicUrl, updated_at: new Date().toISOString() })
+        .eq("key", "login_banner");
+    } else {
+      await supabase
+        .from("site_settings")
+        .insert({ key: "login_banner", value: publicUrl });
+    }
 
     setCurrentImage(publicUrl);
-    setMessage("Imagem atualizada com sucesso!");
+    setMessage("Banner atualizado com sucesso!");
     setUploading(false);
   };
 
@@ -59,26 +70,26 @@ const AdminFooterImage = () => {
     await supabase
       .from("site_settings")
       .update({ value: "", updated_at: new Date().toISOString() })
-      .eq("key", "footer_image");
+      .eq("key", "login_banner");
     setCurrentImage("");
-    setMessage("Imagem removida.");
+    setMessage("Banner removido.");
   };
 
   return (
     <div className="space-y-3">
       <p className="text-[12px] font-bold text-foreground">
-        📷 Imagem do Rodapé (Tela de Login)
+        🖼️ Banner do Topo (Tela de Login)
       </p>
       <p className="text-[10px] text-muted-foreground">
-        Esta imagem aparece no rodapé da página de login, abaixo dos links.
+        Esta imagem aparece no topo da página de login, acima da barra azul.
       </p>
 
       {currentImage && (
         <div className="border border-border p-2 inline-block">
           <img
             src={currentImage}
-            alt="Footer atual"
-            className="max-w-[200px] max-h-[120px] object-contain"
+            alt="Banner atual"
+            className="max-w-[300px] max-h-[120px] object-contain"
           />
         </div>
       )}
@@ -111,4 +122,4 @@ const AdminFooterImage = () => {
   );
 };
 
-export default AdminFooterImage;
+export default AdminBannerImage;
