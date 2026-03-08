@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import SearchPage from "./pages/Search";
 import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
+import AdminPanel from "./pages/AdminPanel";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/admin" element={<AdminPanel />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

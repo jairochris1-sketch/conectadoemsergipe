@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
+import { useAdmin } from "@/hooks/useAdmin";
 
 interface FacebookHeaderProps {
   isLoggedIn: boolean;
@@ -15,6 +16,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { isAdmin } = useAdmin();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +68,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               <Link to="/" className="text-primary-foreground">{t("home")}</Link>
               <Link to="/profile" className="text-primary-foreground">{t("profile")}</Link>
               <Link to="/marketplace" className="text-primary-foreground">{t("marketplace")}</Link>
+              {isAdmin && <Link to="/admin" className="text-primary-foreground font-bold">{t("admin.panel")}</Link>}
               <button onClick={onLogout} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline">
                 {t("logout")}
               </button>
