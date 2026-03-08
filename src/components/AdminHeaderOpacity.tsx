@@ -78,7 +78,7 @@ const AdminHeaderOpacity = () => {
           backgroundColor: "hsl(var(--primary))",
         }}
       >
-        Preview: [ conectadosemsergipe ]
+        Preview: Conectadoemsergipe
       </div>
       {!bannerImage && (
         <p className="text-[9px] text-muted-foreground italic">

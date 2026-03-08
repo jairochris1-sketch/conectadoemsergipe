@@ -79,7 +79,7 @@ const Login = () => {
                 className="text-[20px] sm:text-[28px] font-bold text-primary-foreground tracking-[-1px]"
                 style={{ fontFamily: "Georgia, serif" }}
               >
-                [ conectadosemsergipe ]
+                Conectadoemsergipe
               </h1>
             </div>
             {/* Right: nav links */}
@@ -277,7 +277,7 @@ const Login = () => {
           </Link>
         </div>
         <p className="mt-1">{t("footer.production")}</p>
-        <p>conectadosemsergipe © 2026</p>
+        <p>Conectadoemsergipe © 2026</p>
       </div>
     </div>
   );
