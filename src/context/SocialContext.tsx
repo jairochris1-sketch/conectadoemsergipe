@@ -120,12 +120,15 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     setFriendRequests(
       data.map((f) => {
         const requester = profileMap.get(f.requester_id);
+        const addressee = profileMap.get(f.addressee_id);
         return {
           id: f.id,
           fromId: f.requester_id,
           fromName: requester?.name || "User",
           fromPhoto: requester?.photo_url || "",
           toId: f.addressee_id,
+          toName: addressee?.name || "User",
+          toPhoto: addressee?.photo_url || "",
           status: f.status as "pending" | "accepted" | "rejected",
         };
       })
