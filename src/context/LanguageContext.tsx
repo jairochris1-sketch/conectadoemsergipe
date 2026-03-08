@@ -182,6 +182,7 @@ const translations: Record<Language, Record<string, string>> = {
     // ProfileSidebar
     "sidebar.info": "Info",
     "sidebar.member_since": "Membro desde: Fevereiro 2004",
+    "sidebar.member_since_label": "Membro desde",
     "sidebar.status": "Status: Estudante",
     "sidebar.looking_for": "Buscando: Amizade",
     // Friends
@@ -421,6 +422,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.terms": "términos",
     "sidebar.info": "Info",
     "sidebar.member_since": "Miembro desde: Febrero 2004",
+    "sidebar.member_since_label": "Miembro desde",
     "sidebar.status": "Estado: Estudiante",
     "sidebar.looking_for": "Buscando: Amistad",
     "friends.requests": "Solicitudes de Amistad",
@@ -659,6 +661,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.terms": "terms",
     "sidebar.info": "Info",
     "sidebar.member_since": "Member since: February 2004",
+    "sidebar.member_since_label": "Member since",
     "sidebar.status": "Status: Student",
     "sidebar.looking_for": "Looking for: Friendship",
     "friends.requests": "Friend Requests",
