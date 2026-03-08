@@ -58,6 +58,7 @@ const Marketplace = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { recommendations, trackView } = useMarketplaceRecommendations();
 
   const loadItems = useCallback(async () => {
     const { data } = await supabase
