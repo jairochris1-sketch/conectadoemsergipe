@@ -101,7 +101,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         <div className="flex items-center justify-between">
           <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
             <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
-              [ conectadosemsergipe ]
+              Conectadoemsergipe
             </h1>
           </Link>
 

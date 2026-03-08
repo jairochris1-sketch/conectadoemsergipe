@@ -63,7 +63,7 @@ const ResetPassword = () => {
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
           <h1 className="text-[28px] font-bold text-primary-foreground tracking-[-1px]" style={{ fontFamily: "Georgia, serif" }}>
-            [ conectadosemsergipe ]
+            Conectadoemsergipe
           </h1>
         </div>
       </div>

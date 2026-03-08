@@ -277,7 +277,7 @@ const Login = () => {
           </Link>
         </div>
         <p className="mt-1">{t("footer.production")}</p>
-        <p>conectadosemsergipe © 2026</p>
+        <p>Conectadoemsergipe © 2026</p>
       </div>
     </div>
   );
