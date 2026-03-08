@@ -13,6 +13,7 @@ import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import ProfileMarketplaceStrip from "@/components/ProfileMarketplaceStrip";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
