@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_credits: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       bans: {
         Row: {
           banned_by: string
@@ -281,6 +305,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      sponsored_campaigns: {
+        Row: {
+          budget: number
+          clicks: number
+          created_at: string
+          ends_at: string
+          id: string
+          impressions: number
+          item_id: string
+          spent: number
+          status: string
+          target_category: string | null
+          target_city: string | null
+          user_id: string
+        }
+        Insert: {
+          budget?: number
+          clicks?: number
+          created_at?: string
+          ends_at?: string
+          id?: string
+          impressions?: number
+          item_id: string
+          spent?: number
+          status?: string
+          target_category?: string | null
+          target_city?: string | null
+          user_id: string
+        }
+        Update: {
+          budget?: number
+          clicks?: number
+          created_at?: string
+          ends_at?: string
+          id?: string
+          impressions?: number
+          item_id?: string
+          spent?: number
+          status?: string
+          target_category?: string | null
+          target_city?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsored_campaigns_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
