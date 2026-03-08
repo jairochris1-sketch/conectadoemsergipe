@@ -5,6 +5,7 @@ interface BadgeInfo {
   verified: boolean;
   businessVerified: boolean;
   isAdmin: boolean;
+  isModerator: boolean;
 }
 
 // Cache for badge info to avoid repeated queries
