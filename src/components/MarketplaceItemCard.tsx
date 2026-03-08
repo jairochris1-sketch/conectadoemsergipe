@@ -263,16 +263,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
   return (
     <div
       className={`relative border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors ${
-        item.sold ? "opacity-60 border-muted" : item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
+        item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
       }`}
       onClick={() => onTrackClick(item.id, item.category)}
     >
-      {item.sold && (
-        <span className="absolute top-0 left-0 text-[8px] font-bold text-destructive-foreground bg-destructive px-[6px] py-[1px] z-10">
-          {t("marketplace.sold_label")}
-        </span>
-      )}
-      {item.isSponsored && !item.sold && (
+      {item.isSponsored && (
         <span className="absolute top-0 right-0 text-[8px] font-bold text-primary-foreground bg-primary px-[6px] py-[1px]">
           ⭐ {t("ads.sponsored")}
         </span>
@@ -295,10 +290,10 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
         </p>
         <div className="flex gap-1 mt-1 flex-wrap items-center">
-          {item.whatsapp && !item.sold && (
+          {item.whatsapp && (
             <WhatsAppButton whatsapp={item.whatsapp} title={item.title} t={t} />
           )}
-          {currentUserId && item.sellerId && item.sellerId !== currentUserId && !item.sold && (
+          {currentUserId && item.sellerId && item.sellerId !== currentUserId && (
             <button
               onClick={(e) => { e.stopPropagation(); onContact(item.sellerId); }}
               className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
@@ -308,18 +303,26 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           )}
         </div>
         {isOwner && (
-          <div className="flex gap-1 mt-1">
-            {!item.sold && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onMarkSold(item.id); }}
-                className="bg-accent text-foreground border border-border px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-80"
-              >
-                ✅ {t("marketplace.mark_sold")}
-              </button>
-            )}
+          <div className="flex flex-col gap-1 mt-1" onClick={(e) => e.stopPropagation()}>
+            <label className="flex items-center gap-1.5 cursor-pointer text-[9px] text-muted-foreground">
+              <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-3.5 w-3.5" />
+              {t("marketplace.mark_sold_check")}
+            </label>
+            <AlertDialog open={showSoldConfirm} onOpenChange={(open) => { if (!open) handleCancelSold(); }}>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{t("marketplace.sold_confirm_title")}</AlertDialogTitle>
+                  <AlertDialogDescription>{t("marketplace.sold_confirm_desc")}</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel onClick={handleCancelSold}>{t("marketplace.cancel")}</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleConfirmSold}>{t("marketplace.confirm_sold")}</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button onClick={(e) => e.stopPropagation()} className="bg-destructive text-destructive-foreground border-none px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-80">
+                <button className="bg-destructive text-destructive-foreground border-none px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-80">
                   🗑 {t("marketplace.delete_item")}
                 </button>
               </AlertDialogTrigger>
