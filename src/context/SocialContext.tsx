@@ -220,9 +220,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
       .filter((r) => r.status === "accepted" && (r.fromId === user.id || r.toId === user.id))
       .map((r) => {
         if (r.fromId === user.id) {
-          // Need to find addressee profile - we have it in the requests data indirectly
-          // For now use the data we have
-          return { id: r.toId, name: "Friend", photo: "" };
+          return { id: r.toId, name: r.toName, photo: r.toPhoto };
         }
         return { id: r.fromId, name: r.fromName, photo: r.fromPhoto };
       });
