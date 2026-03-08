@@ -201,9 +201,9 @@ const Marketplace = () => {
 
           {recommendations.length > 0 && category === "All" && (
             <div className="mb-4">
-              <h3 className="text-lg font-bold text-primary mb-3 border-b border-border pb-2" style={{ fontFamily: 'Georgia, serif' }}>
+              <div className="fb-section-title mb-2">
                 ⭐ {t("marketplace.recommended")}
-              </h3>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {recommendations.map((item) => (
                   <MarketplaceItemCard
