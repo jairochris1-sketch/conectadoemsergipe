@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AdminHeaderOpacity = () => {
   const [opacity, setOpacity] = useState(85);
+  const [bannerImage, setBannerImage] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
