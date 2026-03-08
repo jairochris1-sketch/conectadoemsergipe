@@ -10,7 +10,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
-import { sergipeCities } from "@/lib/sergipeCities";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
