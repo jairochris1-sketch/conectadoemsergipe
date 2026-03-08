@@ -51,8 +51,10 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only profile */}
-          <div className="md:hidden mb-3">
+          <PostFeed userName={user?.name} />
+
+          {/* Mobile-only: Profile below feed */}
+          <div className="md:hidden mt-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -64,9 +66,7 @@ const Index = () => {
             />
           </div>
 
-          <PostFeed userName={user?.name} />
-
-          {/* Mobile-only friends */}
+          {/* Mobile-only: Friends below profile */}
           <div className="md:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
