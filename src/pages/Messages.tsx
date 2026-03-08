@@ -7,6 +7,7 @@ import { useBatchVerificationBadges, useVerificationBadge } from "@/hooks/useVer
 import { useOnlineStatus, OnlineIndicator } from "@/hooks/usePresence";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSocial } from "@/context/SocialContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Conversation {
