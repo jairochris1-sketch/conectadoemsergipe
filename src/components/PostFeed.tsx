@@ -13,20 +13,15 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const { posts, createPost } = useSocial();
   const { user } = useAuth();
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!newPost.trim() || !user) return;
-    createPost(user.id, user.name, user.photoUrl, newPost.trim());
+    await createPost(newPost.trim());
     setNewPost("");
   };
 
   const formatDate = (date: Date) => {
     return date.toLocaleString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
+      month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true,
     });
   };
 
@@ -35,7 +30,6 @@ const PostFeed = ({ userName }: PostFeedProps) => {
       <div className="border-b border-border pb-1 mb-2">
         <h3 className="text-[13px] font-bold text-primary">{t("the_wall")}</h3>
       </div>
-
       {userName && (
         <div className="mb-3 border border-border p-2 bg-accent">
           <p className="text-[11px] font-bold mb-1">{t("write_something")}</p>
@@ -46,15 +40,11 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             rows={3}
             placeholder={t("whats_on_mind")}
           />
-          <button
-            onClick={handlePost}
-            className="mt-1 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-          >
+          <button onClick={handlePost} className="mt-1 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
             {t("post")}
           </button>
         </div>
       )}
-
       <div className="space-y-2">
         {posts.map((post) => (
           <div key={post.id} className="border-b border-border pb-2">
@@ -68,14 +58,16 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px]">
-                  <a href="#" className="font-bold">{post.authorName}</a>
-                  {" "}{post.content}
+                  <a href="#" className="font-bold">{post.authorName}</a>{" "}{post.content}
                 </p>
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
               </div>
             </div>
           </div>
         ))}
+        {posts.length === 0 && (
+          <p className="text-[11px] text-muted-foreground">{t("friends.none")}</p>
+        )}
       </div>
     </div>
   );

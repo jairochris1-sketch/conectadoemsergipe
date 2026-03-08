@@ -7,12 +7,11 @@ const FriendsSidebar = () => {
   const { user } = useAuth();
   const { getFriends, getPendingRequests, acceptFriendRequest, rejectFriendRequest } = useSocial();
 
-  const friends = user ? getFriends(user.id) : [];
-  const pendingRequests = user ? getPendingRequests(user.id) : [];
+  const friends = getFriends();
+  const pendingRequests = getPendingRequests();
 
   return (
     <div className="bg-card border border-border p-2 w-full">
-      {/* Pending friend requests */}
       {pendingRequests.length > 0 && (
         <div className="mb-3">
           <div className="border-b border-border pb-1 mb-2">
@@ -34,16 +33,10 @@ const FriendsSidebar = () => {
                   <span className="font-bold truncate">{req.fromName}</span>
                 </div>
                 <div className="flex gap-1 mt-1">
-                  <button
-                    onClick={() => acceptFriendRequest(req.id)}
-                    className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
-                  >
+                  <button onClick={() => acceptFriendRequest(req.id)} className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90">
                     {t("friends.accept")}
                   </button>
-                  <button
-                    onClick={() => rejectFriendRequest(req.id)}
-                    className="bg-muted text-foreground border border-border px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
-                  >
+                  <button onClick={() => rejectFriendRequest(req.id)} className="bg-muted text-foreground border border-border px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90">
                     {t("friends.reject")}
                   </button>
                 </div>
@@ -53,7 +46,6 @@ const FriendsSidebar = () => {
         </div>
       )}
 
-      {/* Friends list */}
       <div className="border-b border-border pb-1 mb-2">
         <h3 className="text-[13px] font-bold text-primary">{t("friends")} ({friends.length})</h3>
       </div>
