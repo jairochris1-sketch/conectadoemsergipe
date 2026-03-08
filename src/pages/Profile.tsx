@@ -69,6 +69,8 @@ const Profile = () => {
                   <p><b>{t("name")}:</b> {user.name}</p>
                   <p><b>{t("email")}:</b> {user.email}</p>
                   <p><b>{t("school")}:</b> {user.school}</p>
+                  {user.city && <p><b>{t("city")}:</b> {user.city}</p>}
+                  {user.birthdate && <p><b>{t("birthdate")}:</b> {new Date(user.birthdate).toLocaleDateString()}</p>}
                   <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                   <p><b>{t("friends")}:</b> {friends.length}</p>
                 </div>

@@ -27,6 +27,12 @@ const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate }: Profil
           {school && (
             <p className="mb-1"><b>{t("school")}:</b> {school}</p>
           )}
+          {city && (
+            <p className="mb-1"><b>{t("city")}:</b> {city}</p>
+          )}
+          {birthdate && (
+            <p className="mb-1"><b>{t("birthdate")}:</b> {new Date(birthdate).toLocaleDateString()}</p>
+          )}
           <p className="text-muted-foreground">{bio}</p>
         </div>
       </div>

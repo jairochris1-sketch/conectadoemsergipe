@@ -4,6 +4,7 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -11,6 +12,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [school, setSchool] = useState("");
   const [phone, setPhone] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [city, setCity] = useState("");
   const [error, setError] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -18,7 +21,21 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await register(name, email, password, school, phone || undefined);
+
+    // Validate age >= 16
+    if (birthdate) {
+      const birth = new Date(birthdate);
+      const today = new Date();
+      let age = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+      if (age < 16) {
+        setError(t("register.min_age"));
+        return;
+      }
+    }
+
+    const result = await register(name, email, password, school, birthdate, city, phone || undefined);
     if (result) {
       navigate("/");
     } else {
@@ -48,6 +65,19 @@ const Register = () => {
             <div>
               <label className="block font-bold mb-1">{t("register.phone")}</label>
               <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" placeholder={t("register.phone_placeholder")} />
+            </div>
+            <div>
+              <label className="block font-bold mb-1">{t("register.birthdate")}</label>
+              <input type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required />
+            </div>
+            <div>
+              <label className="block font-bold mb-1">{t("register.city")}</label>
+              <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required>
+                <option value="">{t("register.select_city")}</option>
+                {SERGIPE_CITIES.map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block font-bold mb-1">{t("register.password")}</label>
