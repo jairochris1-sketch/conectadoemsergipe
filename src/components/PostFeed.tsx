@@ -67,11 +67,13 @@ const PostFeed = ({ userName }: PostFeedProps) => {
     let imageUrl: string | undefined;
 
     if (postImage) {
-      const ext = "jpg";
-      const path = `posts/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage.from("avatars").upload(path, postImage.blob, { upsert: true, contentType: "image/jpeg" });
-      if (!error) {
-        const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+      const path = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+      const { error } = await supabase.storage.from("post-images").upload(path, postImage.blob, { upsert: true, contentType: "image/jpeg" });
+      if (error) {
+        console.error("Upload error:", error);
+        toast.error(t("post.image_error"));
+      } else {
+        const { data } = supabase.storage.from("post-images").getPublicUrl(path);
         imageUrl = data.publicUrl;
       }
     }
