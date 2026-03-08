@@ -3,17 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 
 const AdminHeaderOpacity = () => {
   const [opacity, setOpacity] = useState(85);
+  const [bannerImage, setBannerImage] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     supabase
       .from("site_settings")
-      .select("value")
-      .eq("key", "header_overlay_opacity")
-      .single()
+      .select("key, value")
+      .in("key", ["header_overlay_opacity", "login_banner"])
       .then(({ data }) => {
-        if (data && (data as any).value) setOpacity(Number((data as any).value));
+        data?.forEach((row: any) => {
+          if (row.key === "header_overlay_opacity" && row.value) setOpacity(Number(row.value));
+          if (row.key === "login_banner" && row.value) setBannerImage(row.value);
+        });
       });
   }, []);
 
@@ -67,14 +70,21 @@ const AdminHeaderOpacity = () => {
       </div>
 
       <div
-        className="h-[40px] rounded border border-border flex items-center justify-center text-primary-foreground text-[11px] font-bold bg-cover bg-center"
+        className="h-[40px] rounded border border-border flex items-center justify-center text-primary-foreground text-[11px] font-bold bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100}))`,
+          backgroundImage: bannerImage
+            ? `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100})), url(${bannerImage})`
+            : `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100}))`,
           backgroundColor: "hsl(var(--primary))",
         }}
       >
         Preview: [ conectadosemsergipe ]
       </div>
+      {!bannerImage && (
+        <p className="text-[9px] text-muted-foreground italic">
+          Nenhuma imagem de fundo configurada. Envie uma acima para ver o preview real.
+        </p>
+      )}
 
       <div className="flex items-center gap-2">
         <button
