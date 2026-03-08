@@ -2,6 +2,7 @@ import FacebookHeader from "@/components/FacebookHeader";
 import ProfileSidebar from "@/components/ProfileSidebar";
 import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
+import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -45,6 +46,7 @@ const Index = () => {
           </div>
           <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />
+            {user && <FriendSuggestions />}
           </div>
         </div>
       </div>
