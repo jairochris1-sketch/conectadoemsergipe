@@ -88,7 +88,7 @@ const FriendsSidebar = () => {
       </div>
       {friends.length > 0 && (
         <div className="mt-3 border-t border-border pt-2">
-          <Link to="/amigos" className="text-[11px]">{t("see_all_friends")}</Link>
+          <Link to="/amigos" className="text-[11px] text-primary hover:underline">{t("see_all_friends")}</Link>
         </div>
       )}
     </div>
