@@ -168,12 +168,20 @@ const Marketplace = () => {
               {t("marketplace.title")}
             </h2>
             {user && (
-              <button
-                onClick={() => setShowForm(!showForm)}
-                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-              >
-                {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
-              </button>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => navigate("/seller-dashboard")}
+                  className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:bg-accent"
+                >
+                  📢 {t("ads.my_ads")}
+                </button>
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                >
+                  {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
+                </button>
+              </div>
             )}
           </div>
 
