@@ -109,6 +109,14 @@ const translations: Record<Language, Record<string, string>> = {
     "sidebar.member_since": "Membro desde: Fevereiro 2004",
     "sidebar.status": "Status: Estudante",
     "sidebar.looking_for": "Buscando: Amizade",
+    // Friends
+    "friends.requests": "Pedidos de Amizade",
+    "friends.accept": "Aceitar",
+    "friends.reject": "Recusar",
+    "friends.add": "Adicionar",
+    "friends.already": "Amigos",
+    "friends.pending": "Pendente",
+    "friends.none": "Nenhum amigo ainda.",
   },
   es: {
     "welcome": "bienvenido",
@@ -199,6 +207,13 @@ const translations: Record<Language, Record<string, string>> = {
     "sidebar.member_since": "Miembro desde: Febrero 2004",
     "sidebar.status": "Estado: Estudiante",
     "sidebar.looking_for": "Buscando: Amistad",
+    "friends.requests": "Solicitudes de Amistad",
+    "friends.accept": "Aceptar",
+    "friends.reject": "Rechazar",
+    "friends.add": "Agregar",
+    "friends.already": "Amigos",
+    "friends.pending": "Pendiente",
+    "friends.none": "Aún no hay amigos.",
   },
   en: {
     "welcome": "welcome",
@@ -289,6 +304,13 @@ const translations: Record<Language, Record<string, string>> = {
     "sidebar.member_since": "Member since: February 2004",
     "sidebar.status": "Status: Student",
     "sidebar.looking_for": "Looking for: Friendship",
+    "friends.requests": "Friend Requests",
+    "friends.accept": "Accept",
+    "friends.reject": "Reject",
+    "friends.add": "Add Friend",
+    "friends.already": "Friends",
+    "friends.pending": "Pending",
+    "friends.none": "No friends yet.",
   },
 };
 
