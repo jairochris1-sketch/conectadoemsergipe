@@ -48,7 +48,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "featured">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
