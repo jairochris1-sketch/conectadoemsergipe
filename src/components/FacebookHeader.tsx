@@ -120,7 +120,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
     >
-      <div className="max-w-[760px] mx-auto px-2 py-1">
+      <div className="max-w-[1140px] mx-auto px-2 py-1">
         {/* Top row: logo + search */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
