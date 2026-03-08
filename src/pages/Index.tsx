@@ -22,7 +22,7 @@ const Index = () => {
       <div className="w-full flex justify-center gap-3 px-2 py-3">
         {/* Left column: Profile + Ads */}
         <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
-          <div className="sticky top-[92px] flex flex-col gap-3 max-h-[calc(100vh-92px)] overflow-y-auto">
+          <div className="sticky top-3 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -82,7 +82,7 @@ const Index = () => {
 
         {/* Right column: Friends + Ads */}
         <div className="hidden md:block w-[220px] shrink-0">
-          <div className="sticky top-[92px] flex flex-col gap-3 max-h-[calc(100vh-92px)] overflow-y-auto">
+          <div className="sticky top-3 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
             <BannerAdColumn position="right" />
