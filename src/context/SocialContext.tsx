@@ -29,6 +29,8 @@ export interface FriendRequest {
   fromName: string;
   fromPhoto: string;
   toId: string;
+  toName: string;
+  toPhoto: string;
   status: "pending" | "accepted" | "rejected";
 }
 
@@ -118,12 +120,15 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     setFriendRequests(
       data.map((f) => {
         const requester = profileMap.get(f.requester_id);
+        const addressee = profileMap.get(f.addressee_id);
         return {
           id: f.id,
           fromId: f.requester_id,
           fromName: requester?.name || "User",
           fromPhoto: requester?.photo_url || "",
           toId: f.addressee_id,
+          toName: addressee?.name || "User",
+          toPhoto: addressee?.photo_url || "",
           status: f.status as "pending" | "accepted" | "rejected",
         };
       })
@@ -215,9 +220,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
       .filter((r) => r.status === "accepted" && (r.fromId === user.id || r.toId === user.id))
       .map((r) => {
         if (r.fromId === user.id) {
-          // Need to find addressee profile - we have it in the requests data indirectly
-          // For now use the data we have
-          return { id: r.toId, name: "Friend", photo: "" };
+          return { id: r.toId, name: r.toName, photo: r.toPhoto };
         }
         return { id: r.fromId, name: r.fromName, photo: r.fromPhoto };
       });
