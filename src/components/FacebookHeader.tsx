@@ -182,7 +182,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
   return (
     <div
-      className="bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat"
+      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat"
       style={bannerImage ? {
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
