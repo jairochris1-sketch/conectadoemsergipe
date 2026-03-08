@@ -66,8 +66,8 @@ const translations: Record<Language, Record<string, string>> = {
     "login.about": "sobre",
     "login.welcome_bar": "Bem-vindo ao Conectados em Sergipe!",
     // Register
-    "register.title": "Cadastro no [ thefacebook ]",
-    "register.description": "Thefacebook é um diretório social para estudantes universitários.",
+    "register.title": "Cadastro no [ Conectados em Sergipe ]",
+    "register.description": "Conectados em Sergipe é uma rede social para pessoas de Sergipe.",
     "register.full_name": "Nome Completo:",
     "register.email": "Email:",
     "register.password": "Senha:",
