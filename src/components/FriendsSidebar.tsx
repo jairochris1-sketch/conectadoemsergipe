@@ -65,11 +65,14 @@ const FriendsSidebar = () => {
         {friends.length > 0 ? (
           friends.map((friend) => (
             <div key={friend.id} className="flex items-center gap-2 text-[11px]">
-              <div className="w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+              <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                 {friend.photo ? (
                   <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-muted-foreground text-[8px]">{t("photo")}</span>
+                )}
+                {onlineUsers.has(friend.id) && (
+                  <span className="absolute -bottom-[1px] -right-[1px] w-[7px] h-[7px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
                 )}
               </div>
               <div>
