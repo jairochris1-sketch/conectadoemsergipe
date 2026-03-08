@@ -11,9 +11,8 @@ export const useAdmin = () => {
       setIsAdmin(false);
       return;
     }
-    supabase
-      .rpc("has_role", { _user_id: user.id, _role: "admin" })
-      .then(({ data }) => setIsAdmin(!!data));
+    (supabase.rpc as any)("has_role", { _user_id: user.id, _role: "admin" })
+      .then(({ data }: { data: boolean }) => setIsAdmin(!!data));
   }, [user]);
 
   const deletePost = async (postId: string) => {
