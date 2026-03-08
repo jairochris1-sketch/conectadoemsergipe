@@ -156,10 +156,9 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   };
 
   return (
-    <div className="bg-card border border-border p-3 w-full">
-      <div className="border-b border-border pb-2 mb-3">
-        <h3 className="text-lg font-bold text-primary">{t("the_wall")}</h3>
-      </div>
+    <div className="fb-box">
+      <div className="fb-box-header">{t("the_wall")}</div>
+      <div className="fb-box-body">
       {userName && (
         <div className="mb-4 border border-border p-3 bg-accent">
           <p className="text-sm font-bold mb-2">{t("write_something")}</p>
