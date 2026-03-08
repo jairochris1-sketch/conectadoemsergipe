@@ -22,6 +22,7 @@ import SellerDashboard from "./pages/SellerDashboard";
 import SitePage from "./pages/SitePage";
 import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
+import FriendsPage from "./pages/Friends";
 
 const queryClient = new QueryClient();
 
