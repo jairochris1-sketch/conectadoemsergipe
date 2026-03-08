@@ -29,6 +29,7 @@ const abbreviateCity = (city: string) => {
 
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [newPost, setNewPost] = useState("");
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [postImage, setPostImage] = useState<{ blob: Blob; preview: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
