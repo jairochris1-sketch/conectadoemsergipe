@@ -99,7 +99,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.clothing": "Roupas",
     "marketplace.other": "Outros",
     // Footer
-    "footer.production": "uma produção Mark Zuckerberg",
+    "footer.production": "uma produção Jairo dos Santos",
     "footer.about": "sobre",
     "footer.contact": "contato",
     "footer.privacy": "privacidade",
