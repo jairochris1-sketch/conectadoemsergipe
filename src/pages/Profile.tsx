@@ -6,6 +6,7 @@ import FriendsSidebar from "@/components/FriendsSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
+import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
