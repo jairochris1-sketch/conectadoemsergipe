@@ -19,7 +19,7 @@ interface AuthContextType {
   login: (identifier: string, password: string) => Promise<boolean>;
   register: (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
-  updateProfile: (data: Partial<User>) => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
