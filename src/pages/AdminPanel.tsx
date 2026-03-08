@@ -166,8 +166,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" ? (
+          {loading && tab !== "pages" && tab !== "footer" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "footer" ? (
+            <AdminFooterImage />
           ) : tab === "pages" ? (
             <AdminPageEditor />
           ) : tab === "reports" ? (
