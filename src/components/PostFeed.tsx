@@ -315,7 +315,9 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 {(comments[post.id] || []).map((c) => (
                   <div key={c.id} className="border-l-2 border-border pl-2 py-1">
                     <p className="text-[10px]">
-                      <span className="font-bold">{c.authorName}</span>{" "}{c.content}
+                      <span className="font-bold">{c.authorName}</span>
+                      <VerificationBadge {...(badges.get(c.authorId) || {})} />
+                      {" "}{c.content}
                     </p>
                     <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
                   </div>
