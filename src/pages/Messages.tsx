@@ -255,18 +255,24 @@ const Messages = () => {
                   {/* Chat header */}
                   {chatPartner && (
                     <div className="border-b border-border p-2 flex items-center gap-2">
-                      <div className="w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+                      <div className="relative w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                         {chatPartner.photo ? (
                           <img src={chatPartner.photo} alt={chatPartner.name} className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[8px]">👤</span>
                         )}
+                        {activeChat && onlineUsers.has(activeChat) && (
+                          <span className="absolute -bottom-[1px] -right-[1px] w-[6px] h-[6px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
+                        )}
                       </div>
-                      <div className="flex items-center gap-0">
+                      <div className="flex items-center gap-1">
                         <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
                           {chatPartner.name}
                         </Link>
                         <VerificationBadge {...activeChatBadge} />
+                        {activeChat && onlineUsers.has(activeChat) && (
+                          <span className="text-[9px] text-green-500 font-bold">online</span>
+                        )}
                       </div>
                     </div>
                   )}
