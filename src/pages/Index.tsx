@@ -41,14 +41,14 @@ const Index = () => {
         {/* Center: Feed */}
         <div className="flex-1 min-w-0 max-w-[600px]">
           {!user && (
-            <div className="bg-accent border border-border p-3 mb-3 text-center">
-              <h2 className="text-[16px] font-bold text-primary mb-1" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="bg-accent border border-border p-4 mb-3 text-center">
+              <h2 className="text-xl font-bold text-primary mb-2" style={{ fontFamily: 'Georgia, serif' }}>
                 Conectadoemsergipe
               </h2>
-              <p className="text-[11px] text-foreground mb-2">
+              <p className="text-sm text-foreground mb-2">
                 {t("index.description")}
               </p>
-              <p className="text-[11px]">
+              <p className="text-sm">
                 <a href="/register">{t("index.register")}</a> {t("index.or")} <a href="/login">{t("index.login")}</a> {t("index.cta")}
               </p>
             </div>

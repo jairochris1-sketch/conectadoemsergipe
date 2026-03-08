@@ -66,11 +66,11 @@ const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: str
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
-      className={`inline-flex items-center gap-1 bg-[hsl(142,70%,40%)] text-white border-none cursor-pointer hover:opacity-90 rounded-sm ${
-        size === "small" ? "px-1.5 py-[1px] text-[8px]" : "px-2 py-[2px] text-[10px]"
+      className={`inline-flex items-center gap-1.5 bg-[hsl(142,70%,40%)] text-white border-none cursor-pointer hover:opacity-90 rounded-sm ${
+        size === "small" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm"
       }`}
     >
-      <svg viewBox="0 0 24 24" fill="currentColor" className={size === "small" ? "w-3 h-3" : "w-3.5 h-3.5"}>
+      <svg viewBox="0 0 24 24" fill="currentColor" className={size === "small" ? "w-4 h-4" : "w-5 h-5"}>
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
       </svg>
       WhatsApp
@@ -98,8 +98,8 @@ const ShareButton = ({ item, t, size = "normal" }: { item: { title: string; pric
   return (
     <button
       onClick={handleShare}
-      className={`inline-flex items-center gap-1 bg-muted text-foreground border border-border cursor-pointer hover:bg-accent rounded-sm ${
-        size === "small" ? "px-1.5 py-[1px] text-[8px]" : "px-2 py-[2px] text-[10px]"
+      className={`inline-flex items-center gap-1.5 bg-muted text-foreground border border-border cursor-pointer hover:bg-accent rounded-sm ${
+        size === "small" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm"
       }`}
     >
       🔗 {t("marketplace.share")}
@@ -113,7 +113,7 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
   const allImages = images && images.length > 0 ? images : imageUrl ? [imageUrl] : [];
 
   if (allImages.length === 0) {
-    return <span className="text-[20px]">📦</span>;
+    return <span className="text-2xl">📦</span>;
   }
 
   return (
@@ -129,13 +129,13 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
           <>
             <button
               onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c - 1 + allImages.length) % allImages.length); }}
-              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 text-sm leading-none py-1"
             >‹</button>
             <button
               onClick={(e) => { e.stopPropagation(); setCurrent((c) => (c + 1) % allImages.length); }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-1 text-[10px] leading-none py-0.5"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-2 text-sm leading-none py-1"
             >›</button>
-            <span className="absolute bottom-0 right-0 bg-black/60 text-white text-[8px] px-1">{current + 1}/{allImages.length}</span>
+            <span className="absolute bottom-0 right-0 bg-black/60 text-white text-xs px-1.5">{current + 1}/{allImages.length}</span>
           </>
         )}
       </div>
@@ -151,24 +151,24 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setCurrent((c) => (c - 1 + allImages.length) % allImages.length)}
-                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded text-lg"
+                className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded text-lg"
               >‹</button>
               <span className="text-white text-sm">{current + 1} / {allImages.length}</span>
               <button
                 onClick={() => setCurrent((c) => (c + 1) % allImages.length)}
-                className="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded text-lg"
+                className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded text-lg"
               >›</button>
             </div>
           )}
           {allImages.length > 1 && (
-            <div className="flex gap-1 overflow-x-auto max-w-full py-1">
+            <div className="flex gap-1.5 overflow-x-auto max-w-full py-1">
               {allImages.map((img, i) => (
                 <img
                   key={i}
                   src={img}
                   alt={`${title} ${i + 1}`}
                   onClick={() => setCurrent(i)}
-                  className={`w-12 h-12 object-cover cursor-pointer rounded border-2 transition-all ${
+                  className={`w-14 h-14 object-cover cursor-pointer rounded border-2 transition-all ${
                     i === current ? "border-white opacity-100" : "border-transparent opacity-50 hover:opacity-80"
                   }`}
                 />
@@ -207,29 +207,29 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
   if (variant === "grid") {
     return (
       <div
-        className={`relative border p-2 cursor-pointer hover:bg-accent transition-colors ${
+        className={`relative border p-3 cursor-pointer hover:bg-accent transition-colors rounded-sm ${
           item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
         }`}
         onClick={() => onTrackClick(item.id, item.category)}
       >
         {item.isSponsored && (
-          <span className="absolute top-0 right-0 text-[7px] font-bold text-primary-foreground bg-primary px-[4px] py-[1px]">
+          <span className="absolute top-0 right-0 text-xs font-bold text-primary-foreground bg-primary px-2 py-0.5">
             ⭐ {t("ads.sponsored")}
           </span>
         )}
-        <div className="w-full h-[60px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-1">
+        <div className="w-full h-[100px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-2 rounded-sm">
           <ImageGallery images={item.images} imageUrl={item.imageUrl} title={item.title} />
         </div>
-        <p className="text-[10px] font-bold truncate">{item.title}</p>
-        <p className="text-[10px] font-bold text-primary">{formatPriceDisplay(item.price)}</p>
+        <p className="text-sm font-bold truncate">{item.title}</p>
+        <p className="text-sm font-bold text-primary">{formatPriceDisplay(item.price)}</p>
         {item.condition && (
-          <p className="text-[8px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</p>
+          <p className="text-xs text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</p>
         )}
-        <p className="text-[9px] text-muted-foreground truncate">
+        <p className="text-xs text-muted-foreground truncate">
           {item.city && <>📍 {item.city} · </>}
           {item.seller}
         </p>
-        <div className="flex gap-1 mt-1 flex-wrap">
+        <div className="flex gap-2 mt-2 flex-wrap">
           {item.whatsapp && (
             <WhatsAppButton whatsapp={item.whatsapp} title={item.title} t={t} size="small" />
           )}
@@ -237,16 +237,16 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           {currentUserId && item.sellerId && item.sellerId !== currentUserId && !item.whatsapp && (
             <button
               onClick={(e) => { e.stopPropagation(); onContact(item.sellerId); }}
-              className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-90"
+              className="bg-primary text-primary-foreground border-none px-3 py-1 text-xs cursor-pointer hover:opacity-90 rounded-sm"
             >
               💬 {t("marketplace.contact")}
             </button>
           )}
         </div>
         {isOwner && (
-          <div className="flex flex-col gap-1 mt-1" onClick={(e) => e.stopPropagation()}>
-            <label className="flex items-center gap-1.5 cursor-pointer text-[9px] text-muted-foreground">
-              <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-3.5 w-3.5" />
+          <div className="flex flex-col gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
+              <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-4 w-4" />
               {t("marketplace.mark_sold_check")}
             </label>
             <AlertDialog open={showSoldConfirm} onOpenChange={(open) => { if (!open) handleCancelSold(); }}>
@@ -263,7 +263,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
             </AlertDialog>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button className="bg-destructive text-destructive-foreground border-none px-2 py-[1px] text-[8px] cursor-pointer hover:opacity-80">
+                <button className="bg-destructive text-destructive-foreground border-none px-3 py-1 text-xs cursor-pointer hover:opacity-80 rounded-sm">
                   🗑 {t("marketplace.delete_item")}
                 </button>
               </AlertDialogTrigger>
@@ -281,8 +281,8 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           </div>
         )}
         {currentUserId && !isOwner && (
-          <div className="mt-1" onClick={(e) => e.stopPropagation()}>
-            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-[8px]" />
+          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-xs" />
           </div>
         )}
       </div>
@@ -292,26 +292,26 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
   // List variant
   return (
     <div
-      className={`relative border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors ${
+      className={`relative border p-3 flex gap-4 cursor-pointer hover:bg-accent/30 transition-colors rounded-sm ${
         item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
       }`}
       onClick={() => onTrackClick(item.id, item.category)}
     >
       {item.isSponsored && (
-        <span className="absolute top-0 right-0 text-[8px] font-bold text-primary-foreground bg-primary px-[6px] py-[1px]">
+        <span className="absolute top-0 right-0 text-xs font-bold text-primary-foreground bg-primary px-2 py-0.5">
           ⭐ {t("ads.sponsored")}
         </span>
       )}
-      <div className="w-[70px] h-[70px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+      <div className="w-[90px] h-[90px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden rounded-sm">
         <ImageGallery images={item.images} imageUrl={item.imageUrl} title={item.title} />
       </div>
-      <div className="text-[11px] flex-1">
+      <div className="text-sm flex-1">
         <div className="flex justify-between">
-          <a href="#" className="font-bold">{item.title}</a>
-          <span className="font-bold text-primary">{formatPriceDisplay(item.price)}</span>
+          <a href="#" className="font-bold text-base">{item.title}</a>
+          <span className="font-bold text-primary text-base">{formatPriceDisplay(item.price)}</span>
         </div>
         {item.condition && (
-          <span className="text-[9px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</span>
+          <span className="text-xs text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</span>
         )}
         <p className="text-muted-foreground mt-1">{item.description}</p>
         <p className="mt-1 flex items-center gap-1 flex-wrap">
@@ -319,7 +319,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           {item.city && <> · 📍 {item.city}</>}
           {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
         </p>
-        <div className="flex gap-1 mt-1 flex-wrap items-center">
+        <div className="flex gap-2 mt-2 flex-wrap items-center">
           {item.whatsapp && (
             <WhatsAppButton whatsapp={item.whatsapp} title={item.title} t={t} />
           )}
@@ -327,16 +327,16 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           {currentUserId && item.sellerId && item.sellerId !== currentUserId && (
             <button
               onClick={(e) => { e.stopPropagation(); onContact(item.sellerId); }}
-              className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
+              className="bg-primary text-primary-foreground border-none px-3 py-1.5 text-sm cursor-pointer hover:opacity-90 rounded-sm"
             >
               💬 {t("marketplace.contact")}
             </button>
           )}
         </div>
         {isOwner && (
-          <div className="flex flex-col gap-1 mt-1" onClick={(e) => e.stopPropagation()}>
-            <label className="flex items-center gap-1.5 cursor-pointer text-[9px] text-muted-foreground">
-              <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-3.5 w-3.5" />
+          <div className="flex flex-col gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+            <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
+              <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-4 w-4" />
               {t("marketplace.mark_sold_check")}
             </label>
             <AlertDialog open={showSoldConfirm} onOpenChange={(open) => { if (!open) handleCancelSold(); }}>
@@ -353,7 +353,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
             </AlertDialog>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button className="bg-destructive text-destructive-foreground border-none px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-80">
+                <button className="bg-destructive text-destructive-foreground border-none px-3 py-1 text-xs cursor-pointer hover:opacity-80 rounded-sm">
                   🗑 {t("marketplace.delete_item")}
                 </button>
               </AlertDialogTrigger>
@@ -371,8 +371,8 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           </div>
         )}
         {currentUserId && !isOwner && (
-          <div className="mt-1" onClick={(e) => e.stopPropagation()}>
-            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-[9px]" />
+          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-xs" />
           </div>
         )}
       </div>

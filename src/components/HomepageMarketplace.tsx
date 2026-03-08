@@ -91,24 +91,24 @@ const HomepageMarketplace = () => {
   const noopTrack = () => {};
 
   return (
-    <div className="bg-card border border-border p-3 mb-3">
+    <div className="bg-card border border-border p-4 mb-3">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
-        <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
+        <h2 className="text-xl font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
           🛒 Marketplace
         </h2>
-        <div className="flex gap-1">
+        <div className="flex gap-2">
           {user && (
             <button
               onClick={() => setShowForm(!showForm)}
-              className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+              className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 rounded-sm"
             >
               {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
             </button>
           )}
           <Link
             to="/marketplace"
-            className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] hover:bg-accent no-underline"
+            className="bg-muted text-foreground border border-border px-4 py-2 text-sm hover:bg-accent no-underline rounded-sm"
           >
             {t("see_all")}
           </Link>
@@ -116,12 +116,12 @@ const HomepageMarketplace = () => {
       </div>
 
       {/* Category filters */}
-      <div className="flex flex-wrap gap-1 mb-3">
+      <div className="flex flex-wrap gap-1.5 mb-3">
         {CATEGORIES.map((c) => (
           <button
             key={c}
             onClick={() => setCategory(c)}
-            className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${
+            className={`px-3 py-1 border border-border cursor-pointer text-xs rounded-sm ${
               category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
             }`}
           >
@@ -141,13 +141,13 @@ const HomepageMarketplace = () => {
 
       {/* Products grid */}
       {loading ? (
-        <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
+        <p className="text-sm text-muted-foreground py-4 text-center">Carregando...</p>
       ) : (() => {
         const filtered = category === "All" ? items : items.filter((i) => i.category === category);
         return filtered.length === 0 ? (
-          <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
+          <p className="text-sm text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {filtered.map((item) => (
               <MarketplaceItemCard
                 key={item.id}
@@ -169,7 +169,7 @@ const HomepageMarketplace = () => {
         <div className="mt-3 pt-2 border-t border-border text-center">
           <Link
             to="/marketplace"
-            className="inline-block w-full bg-primary text-primary-foreground text-[11px] font-bold py-1.5 px-3 hover:opacity-90 transition-opacity no-underline"
+            className="inline-block w-full bg-primary text-primary-foreground text-sm font-bold py-2.5 px-4 hover:opacity-90 transition-opacity no-underline rounded-sm"
           >
             🛒 {t("see_all")} →
           </Link>
