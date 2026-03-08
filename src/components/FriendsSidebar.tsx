@@ -65,7 +65,7 @@ const FriendsSidebar = () => {
       <div className="space-y-2">
         {friends.length > 0 ? (
           friends.map((friend) => (
-            <Link key={friend.id} to={`/user/${friend.id}`} className="flex items-center gap-2 text-[11px] no-underline text-foreground hover:bg-accent p-1 rounded">
+            <Link key={friend.id} to={`/user/${friend.id}`} className="flex items-center gap-2 text-[11px] no-underline text-primary hover:bg-accent p-1 rounded">
               <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                 {friend.photo ? (
                   <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" />
