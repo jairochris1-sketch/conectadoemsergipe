@@ -76,7 +76,7 @@ const Marketplace = () => {
 
   const handlePost = () => {
     if (!newItem.title || !newItem.price || !user) return;
-    setItems([{ id: Date.now(), ...newItem, seller: user.name, imageUrl: imagePreview }, ...items]);
+    setItems([{ id: Date.now(), ...newItem, seller: user.name, sellerId: user.id, imageUrl: imagePreview }, ...items]);
     setNewItem({ title: "", price: "", description: "", category: "Outros", city: "" });
     setImagePreview("");
     setShowForm(false);
