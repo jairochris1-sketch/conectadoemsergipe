@@ -163,6 +163,8 @@ const Profile = () => {
               </div>
             </div>
 
+            <ProfileMarketplaceStrip />
+
             <div className="fb-box">
               <div className="fb-box-header">
                 {t("friends")} ({friends.length})
