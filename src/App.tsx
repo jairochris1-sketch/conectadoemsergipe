@@ -8,10 +8,11 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import SearchPage from "./pages/Search";
+import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -25,6 +26,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/marketplace" element={<Marketplace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

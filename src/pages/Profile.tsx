@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
@@ -9,13 +9,20 @@ const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [bio, setBio] = useState(user?.bio || "");
-  const [photoUrl, setPhotoUrl] = useState(user?.photoUrl || "");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) return <Navigate to="/login" />;
 
   const handleSave = () => {
-    updateProfile({ bio, photoUrl });
+    updateProfile({ bio });
     setEditing(false);
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    updateProfile({ photoUrl: url });
   };
 
   return (
@@ -23,7 +30,6 @@ const Profile = () => {
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="flex gap-3">
-          {/* Profile main */}
           <div className="flex-1 min-w-0">
             <div className="bg-card border border-border p-3">
               <div className="border-b border-border pb-2 mb-3">
@@ -37,8 +43,23 @@ const Profile = () => {
                   <img
                     src={user.photoUrl || "/placeholder.svg"}
                     alt={user.name}
-                    className="w-[150px] h-[150px] border border-border object-cover"
+                    className="w-[150px] h-[150px] border border-border object-cover cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Clique para alterar a foto"
                   />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="mt-1 text-[10px] text-primary cursor-pointer bg-transparent border-none hover:underline w-full text-center"
+                  >
+                    Alterar foto
+                  </button>
                 </div>
                 <div className="text-[11px] space-y-1">
                   <p><b>Name:</b> {user.name}</p>
@@ -51,23 +72,13 @@ const Profile = () => {
 
               {!editing ? (
                 <button
-                  onClick={() => setEditing(true)}
+                  onClick={() => { setEditing(true); setBio(user.bio); }}
                   className="mt-3 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
                 >
                   Edit Profile
                 </button>
               ) : (
                 <div className="mt-3 border-t border-border pt-3 text-[11px] space-y-2">
-                  <div>
-                    <label className="block font-bold mb-1">Photo URL:</label>
-                    <input
-                      type="text"
-                      value={photoUrl}
-                      onChange={(e) => setPhotoUrl(e.target.value)}
-                      className="w-full border border-border p-1 text-[11px] bg-card"
-                      placeholder="https://example.com/photo.jpg"
-                    />
-                  </div>
                   <div>
                     <label className="block font-bold mb-1">Bio:</label>
                     <textarea
@@ -90,7 +101,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Right sidebar */}
           <div className="w-[180px] shrink-0">
             <FriendsSidebar />
           </div>
