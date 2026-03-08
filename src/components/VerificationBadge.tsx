@@ -15,22 +15,22 @@ const VerificationBadge = ({ verified, businessVerified, isAdmin, isModerator, s
     <>
       {isAdmin && (
         <span title="Administrador" className="inline-flex items-center ml-[2px]">
-          <Shield className={iconSize} style={{ color: "#dc2626" }} fill="currentColor" />
+          <Shield className={`${iconSize} text-destructive`} fill="currentColor" />
         </span>
       )}
       {isModerator && !isAdmin && (
         <span title="Colaborador" className="inline-flex items-center ml-[2px]">
-          <Star className={iconSize} style={{ color: "#e69500" }} fill="currentColor" />
+          <Star className={`${iconSize}`} style={{ color: "#e69500" }} fill="currentColor" />
         </span>
       )}
       {businessVerified && (
         <span title="Empresa Verificada" className="inline-flex items-center ml-[2px]">
-          <BadgeCheck className={iconSize} style={{ color: "#d4a017" }} fill="currentColor" stroke="white" />
+          <BadgeCheck className={`${iconSize}`} style={{ color: "#d4a017" }} fill="currentColor" stroke="white" />
         </span>
       )}
       {verified && !businessVerified && (
         <span title="Verificado" className="inline-flex items-center ml-[2px]">
-          <BadgeCheck className={iconSize} style={{ color: "#3b5998" }} fill="currentColor" stroke="white" />
+          <BadgeCheck className={`${iconSize} text-primary`} fill="currentColor" stroke="white" />
         </span>
       )}
     </>
