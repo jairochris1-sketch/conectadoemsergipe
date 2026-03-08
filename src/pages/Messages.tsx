@@ -320,22 +320,30 @@ const Messages = () => {
                   </div>
 
                   {/* Input */}
-                  <div className="border-t border-border p-2 flex gap-1">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                      placeholder={t("messages.placeholder")}
-                      className="flex-1 border border-border p-1 text-[11px] bg-card"
-                    />
-                    <button
-                      onClick={sendMessage}
-                      className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-                    >
-                      {t("messages.send")}
-                    </button>
-                  </div>
+                  {canMessage ? (
+                    <div className="border-t border-border p-2 flex gap-1">
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                        placeholder={t("messages.placeholder")}
+                        className="flex-1 border border-border p-1 text-[11px] bg-card"
+                      />
+                      <button
+                        onClick={sendMessage}
+                        className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                      >
+                        {t("messages.send")}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-t border-border p-2 text-center">
+                      <p className="text-[11px] text-muted-foreground">
+                        ⚠ {t("messages.friends_only") || "Apenas amigos podem trocar mensagens."}
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
