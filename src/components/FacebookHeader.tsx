@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Search, Mail, Menu, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Search, Mail, Menu, X } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
