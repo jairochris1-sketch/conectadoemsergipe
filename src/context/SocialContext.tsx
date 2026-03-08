@@ -9,6 +9,7 @@ export interface Post {
   authorPhoto: string;
   authorCity: string;
   content: string;
+  imageUrl: string | null;
   timestamp: Date;
 }
 
