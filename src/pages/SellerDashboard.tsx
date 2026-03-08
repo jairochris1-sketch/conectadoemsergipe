@@ -143,24 +143,26 @@ const SellerDashboard = () => {
       <SEOHead title="Painel do Vendedor" description="Gerencie suas campanhas e anúncios no marketplace do Conectados em Sergipe." path="/seller-dashboard" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="bg-card border border-border p-3">
+        <div className="fb-box">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
-            <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
+          <div className="fb-box-header flex items-center justify-between">
+            <span style={{ fontFamily: 'Georgia, serif', fontSize: '13px', fontWeight: 'bold' }}>
               📢 {t("ads.title")}
-            </h2>
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] bg-accent border border-border px-2 py-[2px]">
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] bg-[#fff9d7] border border-[#e2c822] px-2 py-[2px] text-black">
                 💰 {t("ads.credits")}: <b>{credits}</b>
               </span>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                className="bg-[#3b5998] text-white border border-[#29447e] px-2 py-[2px] text-[11px] font-bold cursor-pointer hover:bg-[#2d4373]"
               >
-                {showForm ? t("marketplace.cancel") : t("ads.new_campaign")}
+                {showForm ? t("marketplace.cancel") : "+ " + t("ads.new_campaign")}
               </button>
             </div>
           </div>
+
+          <div className="p-2">
 
           {/* Create campaign form */}
           {showForm && (
