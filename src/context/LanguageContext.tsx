@@ -478,6 +478,11 @@ const translations: Record<Language, Record<string, string>> = {
     "post.edit": "Editar",
     "post.delete": "Eliminar",
     "post.delete_confirm": "¿Estás seguro de que deseas eliminar esta publicación?",
+    "post.add_photo": "Foto",
+    "post.max_5mb": "máx. 5MB",
+    "post.uploading": "Subiendo...",
+    "post.image_too_large": "¡Imagen demasiado grande! Máximo 5MB.",
+    "post.image_error": "Error al procesar la imagen.",
   },
   en: {
     "welcome": "welcome",
