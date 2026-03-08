@@ -5,6 +5,8 @@ interface ProfileSidebarProps {
   bio: string;
   photoUrl: string;
   school?: string;
+  city?: string;
+  birthdate?: string;
 }
 
 const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) => {
