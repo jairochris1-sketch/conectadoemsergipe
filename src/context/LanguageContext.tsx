@@ -80,6 +80,12 @@ const translations: Record<Language, Record<string, string>> = {
     "register.already": "Já tem uma conta?",
     "register.login_here": "Entre aqui",
     "register.email_exists": "Já existe uma conta com este email.",
+    "register.birthdate": "Data de Nascimento:",
+    "register.city": "Cidade:",
+    "register.select_city": "Selecione sua cidade",
+    "register.min_age": "Você precisa ter pelo menos 16 anos para se cadastrar.",
+    "city": "Cidade",
+    "birthdate": "Nascimento",
     // Search
     "search.results_for": "Resultados da busca por",
     "search.people": "Pessoas",
