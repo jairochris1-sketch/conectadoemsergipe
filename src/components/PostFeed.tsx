@@ -180,19 +180,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </button>
             </div>
           )}
-          <div className="flex gap-2 mt-2 items-center">
-            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 disabled:opacity-50 rounded-sm">
+          <div className="flex gap-1.5 mt-1.5 items-center">
+            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] font-medium cursor-pointer hover:opacity-90 disabled:opacity-50">
               {uploading ? t("post.uploading") : t("post")}
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="bg-muted text-foreground border border-border px-3 py-2 text-sm cursor-pointer hover:opacity-90 inline-flex items-center gap-1.5 rounded-sm"
+              className="bg-muted text-foreground border border-border px-2 py-1 text-[11px] cursor-pointer hover:opacity-90 inline-flex items-center gap-1"
               title={t("post.add_photo")}
             >
-              <ImagePlus className="w-5 h-5" /> {t("post.add_photo")}
+              <ImagePlus className="w-3.5 h-3.5" /> {t("post.add_photo")}
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-            <span className="text-xs text-muted-foreground">{t("post.max_5mb")}</span>
+            <span className="text-[10px] text-muted-foreground">{t("post.max_5mb")}</span>
           </div>
         </div>
       )}
