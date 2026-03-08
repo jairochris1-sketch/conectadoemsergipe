@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
@@ -84,7 +85,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px]">
-                  <a href="#" className="font-bold">{post.authorName}</a>{" "}{post.content}
+                  <Link to={`/user/${post.authorId}`} className="font-bold">{post.authorName}</Link>{" "}{post.content}
                 </p>
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
                 {isAdmin && post.authorId !== user?.id && (

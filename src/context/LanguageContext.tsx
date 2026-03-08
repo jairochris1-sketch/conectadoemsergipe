@@ -152,6 +152,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.banned_until_label": "Banido até",
     "admin.unban": "Remover Ban",
     "admin.panel": "Admin",
+    "public_profile.not_found": "Usuário não encontrado.",
   },
   es: {
     "welcome": "bienvenido",
@@ -284,6 +285,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.banned_until_label": "Baneado hasta",
     "admin.unban": "Remover Ban",
     "admin.panel": "Admin",
+    "public_profile.not_found": "Usuario no encontrado.",
   },
   en: {
     "welcome": "welcome",
@@ -416,6 +418,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.banned_until_label": "Banned until",
     "admin.unban": "Remove Ban",
     "admin.panel": "Admin",
+    "public_profile.not_found": "User not found.",
   },
 };
 
