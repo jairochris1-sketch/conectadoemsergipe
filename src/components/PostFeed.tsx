@@ -253,7 +253,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       <img
                         src={post.imageUrl}
                         alt="Post"
-                        className="mt-1 max-w-[500px] max-h-[300px] object-contain border border-border rounded cursor-pointer hover:opacity-90 transition-opacity block mx-auto"
+                        className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded cursor-pointer hover:opacity-90 transition-opacity block mx-auto"
                         onClick={async () => {
                           setLightboxPost(post.id);
                           if (!comments[post.id]) {
