@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
+import FollowButton from "@/components/FollowButton";
 
 const MOCK_SHOPS = [
   { name: "Harvard Book Store", description: "Textbooks and supplies" },
@@ -60,7 +61,8 @@ const SearchPage = () => {
                       </div>
                     </div>
                     {user && user.id !== p.id && (
-                      <div>
+                      <div className="flex items-center gap-2">
+                        <FollowButton profileId={p.id} />
                         {isFriend(p.id) ? (
                           <span className="text-[10px] text-muted-foreground">✓ {t("friends.already")}</span>
                         ) : hasPendingRequest(p.id) ? (

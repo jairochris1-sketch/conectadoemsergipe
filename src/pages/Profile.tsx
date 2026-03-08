@@ -6,6 +6,7 @@ import FriendsSidebar from "@/components/FriendsSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
+import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 
 const Profile = () => {
@@ -19,6 +20,7 @@ const Profile = () => {
   if (!user) return <Navigate to="/login" />;
 
   const friends = getFriends();
+  const { followerCount, followingCount } = useFollowers(user?.id);
 
   const handleSave = async () => {
     await updateProfile({ bio });
@@ -72,6 +74,7 @@ const Profile = () => {
                   <p><b>{t("birthdate")}:</b> {user.birthdate ? new Date(user.birthdate).toLocaleDateString() : "-"}</p>
                   <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                   <p><b>{t("friends")}:</b> {friends.length}</p>
+                  <p><b>{t("admin.followers")}:</b> {followerCount}</p>
                 </div>
               </div>
               {!editing ? (
