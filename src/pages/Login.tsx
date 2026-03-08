@@ -77,7 +77,7 @@ const Login = () => {
                 />
               )}
               <h1
-                className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
+                className="text-[20px] sm:text-[28px] font-bold text-primary-foreground tracking-[-1px]"
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 [ conectadosemsergipe ]
