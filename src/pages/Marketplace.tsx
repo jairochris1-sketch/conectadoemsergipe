@@ -59,7 +59,7 @@ const Marketplace = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { recommendations, trackView } = useMarketplaceRecommendations();
+  const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
   const loadItems = useCallback(async () => {
     // Load active sponsored campaign item IDs
@@ -112,6 +112,13 @@ const Marketplace = () => {
   useEffect(() => { loadItems(); }, [loadItems]);
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+
+  // Track impressions for visible items
+  useEffect(() => {
+    filtered.slice(0, 10).forEach((item) => {
+      trackImpression(item.id, item.category);
+    });
+  }, [filtered, trackImpression]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -232,7 +239,7 @@ const Marketplace = () => {
             {CATEGORIES.map((c) => (
               <button
                 key={c}
-                onClick={() => setCategory(c)}
+                onClick={() => { setCategory(c); trackCategoryFilter(c); }}
                 className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
                 {t(CATEGORY_KEYS[c])}
@@ -253,7 +260,7 @@ const Marketplace = () => {
                     className={`relative border p-2 cursor-pointer hover:bg-accent transition-colors ${
                       item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
                     }`}
-                    onClick={() => trackView(item.id, item.category)}
+                    onClick={() => trackClick(item.id, item.category)}
                   >
                     {item.isSponsored && (
                       <span className="absolute top-0 right-0 text-[7px] font-bold text-primary-foreground bg-primary px-[4px] py-[1px]">
@@ -294,7 +301,7 @@ const Marketplace = () => {
                 className={`relative border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors ${
                   item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
                 }`}
-                onClick={() => trackView(item.id, item.category)}
+                onClick={() => trackClick(item.id, item.category)}
               >
                 {item.isSponsored && (
                   <span className="absolute top-0 right-0 text-[8px] font-bold text-primary-foreground bg-primary px-[6px] py-[1px]">
