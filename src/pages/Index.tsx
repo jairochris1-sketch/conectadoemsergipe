@@ -19,15 +19,24 @@ const Index = () => {
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
       <div className="w-full flex justify-center gap-3 px-2 py-3">
-        {/* Left ad space */}
-        <div className="hidden lg:block w-[160px] shrink-0">
-          <div className="sticky top-3">
+        {/* Left column: Profile + Ads */}
+        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
+          <div className="sticky top-3 flex flex-col gap-3">
+            <ProfileSidebar
+              name={user?.name || t("guest_user")}
+              bio={user?.bio || t("login_to_see")}
+              photoUrl={user?.photoUrl || "/placeholder.svg"}
+              school={user?.school}
+              city={user?.city}
+              birthdate={user?.birthdate}
+              createdAt={user?.createdAt}
+            />
             <BannerAdColumn position="left" />
           </div>
         </div>
 
-        {/* Main content area */}
-        <div className="w-full max-w-[1140px] shrink">
+        {/* Center: Feed */}
+        <div className="flex-1 min-w-0 max-w-[600px]">
           {!user && (
             <div className="bg-accent border border-border p-3 mb-3 text-center">
               <h2 className="text-[16px] font-bold text-primary mb-1" style={{ fontFamily: 'Georgia, serif' }}>
@@ -42,33 +51,33 @@ const Index = () => {
             </div>
           )}
 
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="w-full md:w-[200px] md:shrink-0">
-              <ProfileSidebar
-                name={user?.name || t("guest_user")}
-                bio={user?.bio || t("login_to_see")}
-                photoUrl={user?.photoUrl || "/placeholder.svg"}
-                school={user?.school}
-                city={user?.city}
-                birthdate={user?.birthdate}
-                createdAt={user?.createdAt}
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <PostFeed userName={user?.name} />
-            </div>
-            <div className="w-full md:w-[200px] md:shrink-0">
-              <FriendsSidebar />
-              {user && <FriendSuggestions />}
-            </div>
+          {/* Mobile-only profile */}
+          <div className="md:hidden mb-3">
+            <ProfileSidebar
+              name={user?.name || t("guest_user")}
+              bio={user?.bio || t("login_to_see")}
+              photoUrl={user?.photoUrl || "/placeholder.svg"}
+              school={user?.school}
+              city={user?.city}
+              birthdate={user?.birthdate}
+              createdAt={user?.createdAt}
+            />
+          </div>
+
+          <PostFeed userName={user?.name} />
+
+          {/* Mobile-only friends */}
+          <div className="md:hidden mt-3 space-y-3">
+            <FriendsSidebar />
+            {user && <FriendSuggestions />}
           </div>
         </div>
 
-        {/* Right ad space */}
-        <div className="hidden lg:block w-[160px] shrink-0">
-          <div className="sticky top-3">
-            <BannerAdColumn position="right" />
-          </div>
+        {/* Right column: Friends + Ads */}
+        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
+          <FriendsSidebar />
+          {user && <FriendSuggestions />}
+          <BannerAdColumn position="right" />
         </div>
       </div>
 
