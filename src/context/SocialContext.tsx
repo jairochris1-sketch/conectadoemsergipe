@@ -254,6 +254,8 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
         refreshPosts,
         refreshFriendships,
         searchProfiles,
+        getComments,
+        addComment,
       }}
     >
       {children}
