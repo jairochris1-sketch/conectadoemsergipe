@@ -224,7 +224,7 @@ const translations: Record<Language, Record<string, string>> = {
     "login": "login",
     "register": "register",
     "search": "Search...",
-    "index.description": "Thefacebook is an online directory that connects people through social networks at colleges.",
+    "index.description": "Conectados em Sergipe is a social network that connects people through communities in Sergipe.",
     "index.cta": "to get started.",
     "index.register": "Register",
     "index.or": "or",
