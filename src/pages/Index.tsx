@@ -19,10 +19,8 @@ const Index = () => {
       <div className="w-full flex justify-center gap-3 px-2 py-3">
         {/* Left ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
-          <div className="sticky top-3 space-y-3">
-            <div className="bg-card border border-border p-2 text-center text-[10px] text-muted-foreground min-h-[600px] flex items-center justify-center">
-              {t("ad_space") || "Espaço para anúncio"}
-            </div>
+          <div className="sticky top-3">
+            <BannerAd position="left" />
           </div>
         </div>
 
