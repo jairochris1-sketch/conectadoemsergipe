@@ -152,6 +152,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     {LANG_LABELS[lang]}
                   </button>
                 ))}
+                <button
+                  onClick={toggleDarkMode}
+                  className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-[2px]"
+                  title={darkMode ? "Modo claro" : "Modo noturno"}
+                >
+                  {darkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                </button>
               </div>
             </div>
           )}
