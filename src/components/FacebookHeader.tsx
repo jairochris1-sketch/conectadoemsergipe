@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
+import { useAdmin } from "@/hooks/useAdmin";
 
 interface FacebookHeaderProps {
   isLoggedIn: boolean;
