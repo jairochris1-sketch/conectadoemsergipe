@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import VerificationBadge from "@/components/VerificationBadge";
 import { useVerificationBadge } from "@/hooks/useVerificationBadges";
