@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import AdminPageEditor from "@/components/AdminPageEditor";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -39,7 +40,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -94,7 +95,7 @@ const AdminPanel = () => {
   useEffect(() => {
     if (!isAdmin) return;
     if (tab === "reports") fetchReports();
-    else fetchBans();
+    else if (tab === "active" || tab === "expired") fetchBans();
   }, [isAdmin, tab, reportTab]);
 
   if (!user) return <Navigate to="/login" />;
@@ -141,6 +142,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "reports" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🚩 {t("admin.reports")}
             </button>
+            <button onClick={() => setTab("pages")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              {t("admin.pages_tab")}
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -156,8 +161,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading ? (
+          {loading && tab !== "pages" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "pages" ? (
+            <AdminPageEditor />
           ) : tab === "reports" ? (
             reports.length === 0 ? (
               <p className="text-[11px] text-muted-foreground">{t("admin.no_reports")}</p>

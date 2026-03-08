@@ -18,6 +18,7 @@ import PublicProfile from "./pages/PublicProfile";
 import MessagesPage from "./pages/Messages";
 import ResetPassword from "./pages/ResetPassword";
 import SellerDashboard from "./pages/SellerDashboard";
+import SitePage from "./pages/SitePage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => {
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/seller-dashboard" element={<SellerDashboard />} />
+                <Route path="/page/:slug" element={<SitePage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
