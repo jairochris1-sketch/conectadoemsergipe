@@ -304,6 +304,13 @@ const translations: Record<Language, Record<string, string>> = {
     "sidebar.member_since": "Member since: February 2004",
     "sidebar.status": "Status: Student",
     "sidebar.looking_for": "Looking for: Friendship",
+    "friends.requests": "Friend Requests",
+    "friends.accept": "Accept",
+    "friends.reject": "Reject",
+    "friends.add": "Add Friend",
+    "friends.already": "Friends",
+    "friends.pending": "Pending",
+    "friends.none": "No friends yet.",
   },
 };
 
