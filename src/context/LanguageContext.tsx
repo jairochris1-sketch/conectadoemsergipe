@@ -476,6 +476,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.city": "City:",
     "marketplace.image": "Product photo:",
     "marketplace.contact": "Contact seller",
+    "marketplace.recommended": "Recommended for you",
     "footer.production": "a Jairo dos Santos production",
     "footer.about": "about",
     "footer.contact": "contact",
