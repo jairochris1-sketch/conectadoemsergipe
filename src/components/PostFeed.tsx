@@ -77,6 +77,10 @@ const PostFeed = ({ userName }: PostFeedProps) => {
 
   const handlePost = async () => {
     if ((!newPost.trim() && !postImage) || !user) return;
+    if (newPost.trim() && containsForbiddenWord(newPost)) {
+      toast.error("Palavras ou mensagem proibida segundo as regras do conectadoemsergipe.");
+      return;
+    }
     setUploading(true);
     let imageUrl: string | undefined;
 
