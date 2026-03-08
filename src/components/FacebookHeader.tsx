@@ -306,7 +306,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         )}
       </div>
     </div>
-    <div style={{ height: headerHeight }} />
+    <div className="mt-[80px]" />
     </>
   );
 };
