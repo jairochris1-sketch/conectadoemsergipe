@@ -193,6 +193,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                         {LANG_LABELS[lang]}
                       </button>
                     ))}
+                    <button
+                      onClick={toggleDarkMode}
+                      className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-[2px]"
+                      title={darkMode ? "Modo claro" : "Modo noturno"}
+                    >
+                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
                   </div>
                   <div className="flex flex-col gap-3">
                     {navLinks(() => setMenuOpen(false))}
