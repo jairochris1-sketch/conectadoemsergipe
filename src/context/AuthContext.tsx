@@ -71,17 +71,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (identifier: string, password: string): Promise<boolean> => {
-    // Check if identifier looks like a phone number
     const isPhone = identifier.startsWith("+") || /^\d{10,}$/.test(identifier.trim());
 
+    let result;
     if (isPhone) {
       const phone = identifier.startsWith("+") ? identifier : `+55${identifier}`;
-      const { error } = await supabase.auth.signInWithPassword({ phone, password });
-      return !error;
+      result = await supabase.auth.signInWithPassword({ phone, password });
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email: identifier, password });
-      return !error;
+      result = await supabase.auth.signInWithPassword({ email: identifier, password });
     }
+
+    if (result.error) {
+      console.error("Auth error:", result.error.message);
+      return false;
+    }
+    return true;
   };
 
   const register = async (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string): Promise<boolean> => {
