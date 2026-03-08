@@ -317,6 +317,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         )}
       </div>
     </div>
+    <div style={{ height: headerHeight }} />
+    </>
   );
 };
 
