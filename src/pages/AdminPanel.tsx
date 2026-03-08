@@ -64,6 +64,15 @@ const AdminPanel = () => {
   }, [isAdmin, tab]);
 
   if (!user) return <Navigate to="/login" />;
+  if (adminLoading) return (
+    <div className="min-h-screen bg-background">
+      <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
+      <div className="max-w-[760px] mx-auto px-2 py-3">
+        <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+      </div>
+      <FacebookFooter />
+    </div>
+  );
   if (!isAdmin) return <Navigate to="/" />;
 
   const handleUnban = async (banId: string) => {

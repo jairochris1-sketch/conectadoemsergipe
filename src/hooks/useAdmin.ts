@@ -5,14 +5,21 @@ import { useAuth } from "@/context/AuthContext";
 export const useAdmin = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       setIsAdmin(false);
+      setAdminLoading(false);
       return;
     }
+    setAdminLoading(true);
     (supabase.rpc as any)("has_role", { _user_id: user.id, _role: "admin" })
-      .then(({ data }: { data: boolean }) => setIsAdmin(!!data));
+      .then(({ data }: { data: boolean }) => {
+        setIsAdmin(!!data);
+        setAdminLoading(false);
+      })
+      .catch(() => setAdminLoading(false));
   }, [user]);
 
   const deletePost = async (postId: string) => {
@@ -45,5 +52,5 @@ export const useAdmin = () => {
     return data || [];
   };
 
-  return { isAdmin, deletePost, banUser, unbanUser, getActiveBans };
+  return { isAdmin, adminLoading, deletePost, banUser, unbanUser, getActiveBans };
 };
