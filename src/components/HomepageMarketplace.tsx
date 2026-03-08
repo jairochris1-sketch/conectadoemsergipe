@@ -91,88 +91,90 @@ const HomepageMarketplace = () => {
   const noopTrack = () => {};
 
   return (
-    <div className="fb-box mb-[10px]">
-      <div className="fb-box-header flex items-center justify-between">
-        <span>🛒 Marketplace</span>
-        <div className="flex gap-1.5">
+    <div className="bg-card border border-border p-4 mb-3">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
+        <h2 className="text-xl font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
+          🛒 Marketplace
+        </h2>
+        <div className="flex gap-2">
           {user && (
             <button
               onClick={() => setShowForm(!showForm)}
-              className="bg-primary text-primary-foreground border-none px-2.5 py-1 text-[11px] font-medium cursor-pointer hover:opacity-90"
+              className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 rounded-sm"
             >
               {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
             </button>
           )}
           <Link
             to="/marketplace"
-            className="bg-muted text-foreground border border-border px-2.5 py-1 text-[11px] hover:bg-accent no-underline"
+            className="bg-muted text-foreground border border-border px-4 py-2 text-sm hover:bg-accent no-underline rounded-sm"
           >
             {t("see_all")}
           </Link>
         </div>
       </div>
-      <div className="fb-box-body">
-        {/* Category filters */}
-        <div className="flex flex-wrap gap-1 mb-2">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCategory(c)}
-              className={`px-2 py-0.5 border border-border cursor-pointer text-[10px] ${
-                category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
-              }`}
-            >
-              {t(CATEGORY_KEYS[c])}
-            </button>
-          ))}
-        </div>
 
-        {/* Form */}
-        {showForm && user && (
-          <MarketplaceForm
-            user={user}
-            onClose={() => setShowForm(false)}
-            onItemPosted={loadItems}
-          />
-        )}
-
-        {/* Products grid */}
-        {loading ? (
-          <p className="text-[12px] text-muted-foreground py-3 text-center">Carregando...</p>
-        ) : (() => {
-          const filtered = category === "All" ? items : items.filter((i) => i.category === category);
-          return filtered.length === 0 ? (
-            <p className="text-[12px] text-muted-foreground py-3 text-center">{t("marketplace.no_items")}</p>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {filtered.map((item) => (
-                <MarketplaceItemCard
-                  key={item.id}
-                  item={item}
-                  variant="grid"
-                  currentUserId={user?.id}
-                  onTrackClick={noopTrack}
-                  onDelete={handleDelete}
-                  onMarkSold={handleMarkSold}
-                  onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
-                />
-              ))}
-            </div>
-          );
-        })()}
-
-        {/* Footer link */}
-        {items.length > 0 && (
-          <div className="mt-2 pt-2 border-t border-border text-center">
-            <Link
-              to="/marketplace"
-              className="inline-block w-full bg-primary text-primary-foreground text-[11px] font-bold py-1.5 px-3 hover:opacity-90 transition-opacity no-underline"
-            >
-              🛒 {t("see_all")} →
-            </Link>
-          </div>
-        )}
+      {/* Category filters */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c}
+            onClick={() => setCategory(c)}
+            className={`px-3 py-1 border border-border cursor-pointer text-xs rounded-sm ${
+              category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+            }`}
+          >
+            {t(CATEGORY_KEYS[c])}
+          </button>
+        ))}
       </div>
+
+      {/* Form */}
+      {showForm && user && (
+        <MarketplaceForm
+          user={user}
+          onClose={() => setShowForm(false)}
+          onItemPosted={loadItems}
+        />
+      )}
+
+      {/* Products grid */}
+      {loading ? (
+        <p className="text-sm text-muted-foreground py-4 text-center">Carregando...</p>
+      ) : (() => {
+        const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+        return filtered.length === 0 ? (
+          <p className="text-sm text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {filtered.map((item) => (
+              <MarketplaceItemCard
+                key={item.id}
+                item={item}
+                variant="grid"
+                currentUserId={user?.id}
+                onTrackClick={noopTrack}
+                onDelete={handleDelete}
+                onMarkSold={handleMarkSold}
+                onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+              />
+            ))}
+          </div>
+        );
+      })()}
+
+      {/* Footer link */}
+      {items.length > 0 && (
+        <div className="mt-3 pt-2 border-t border-border text-center">
+          <Link
+            to="/marketplace"
+            className="inline-block w-full bg-primary text-primary-foreground text-sm font-bold py-2.5 px-4 hover:opacity-90 transition-opacity no-underline rounded-sm"
+          >
+            🛒 {t("see_all")} →
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
