@@ -696,6 +696,9 @@ const translations: Record<Language, Record<string, string>> = {
     "messages.placeholder": "Type your message...",
     "messages.send": "Send",
     "messages.send_message": "Send message",
+    "post.edit": "Edit",
+    "post.delete": "Delete",
+    "post.delete_confirm": "Are you sure you want to delete this post?",
   },
 };
 
