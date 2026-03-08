@@ -208,74 +208,152 @@ const Messages = () => {
   if (!user) return <Navigate to="/login" />;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen sm:min-h-screen bg-background flex flex-col">
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
-      <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="bg-card border border-border">
-          <div className="border-b border-border p-2">
-            <h2 className="text-[14px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
-              {t("messages.title")}
-            </h2>
-          </div>
+      
+      {/* On mobile with active chat, make full screen chat */}
+      {activeChat ? (
+        <>
+          {/* Mobile: full screen chat */}
+          <div className="flex-1 flex flex-col sm:hidden" style={{ height: 'calc(100dvh - 60px)' }}>
+            {/* Chat header */}
+            {chatPartner && (
+              <div className="border-b border-border p-2 flex items-center gap-2 bg-card shrink-0">
+                <button
+                  onClick={() => setSearchParams({})}
+                  className="text-[11px] text-primary font-bold bg-transparent border-none cursor-pointer mr-1"
+                >
+                  ← Voltar
+                </button>
+                <div className="relative w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+                  {chatPartner.photo ? (
+                    <img src={chatPartner.photo} alt={chatPartner.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[8px]">👤</span>
+                  )}
+                  {activeChat && onlineUsers.has(activeChat) && (
+                    <span className="absolute -bottom-[1px] -right-[1px] w-[6px] h-[6px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
+                  )}
+                </div>
+                <div className="flex items-center gap-1">
+                  <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
+                    {chatPartner.name}
+                  </Link>
+                  <VerificationBadge {...activeChatBadge} />
+                  {activeChat && onlineUsers.has(activeChat) && (
+                    <span className="text-[9px] text-green-500 font-bold">online</span>
+                  )}
+                </div>
+              </div>
+            )}
 
-          <div className="flex" style={{ minHeight: "400px" }}>
-            {/* Conversations sidebar - hidden on mobile when chat is active */}
-            <div className={`w-full sm:w-[200px] border-r border-border overflow-y-auto ${activeChat ? "hidden sm:block" : "block"}`} style={{ maxHeight: "500px" }}>
-              {conversations.length === 0 ? (
-                <p className="text-[11px] text-muted-foreground p-2">{t("messages.no_conversations")}</p>
-              ) : (
-                conversations.map((conv) => (
-                  <button
-                    key={conv.oderId}
-                    onClick={() => setSearchParams({ with: conv.oderId })}
-                    className={`w-full text-left p-2 border-b border-border cursor-pointer flex items-center gap-2 hover:bg-accent ${
-                      activeChat === conv.oderId ? "bg-accent" : "bg-card"
+            {/* Messages - flex-1 to fill remaining space */}
+            <div className="flex-1 overflow-y-auto p-2 space-y-2">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`flex ${msg.sender_id === user.id ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[75%] px-2 py-1 text-[12px] rounded ${
+                      msg.sender_id === user.id
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-accent text-foreground border border-border"
                     }`}
                   >
-                    <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
-                      {conv.otherPhoto ? (
-                        <img src={conv.otherPhoto} alt={conv.otherName} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-[8px] text-muted-foreground">👤</span>
+                    <p className="break-words">{msg.content}</p>
+                    <p className={`text-[8px] mt-1 ${msg.sender_id === user.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                      {formatTime(msg.created_at)}
+                      {msg.sender_id === user.id && (
+                        <span className="ml-1">{msg.read ? "✓✓" : "✓"}</span>
                       )}
-                      {onlineUsers.has(conv.oderId) && (
-                        <span className="absolute -bottom-[1px] -right-[1px] w-[8px] h-[8px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold truncate flex items-center gap-0">
-                        {conv.otherName}
-                        <VerificationBadge {...(badges.get(conv.oderId) || {})} />
-                      </p>
-                      <p className="text-[9px] text-muted-foreground truncate">{conv.lastMessage}</p>
-                    </div>
-                    {conv.unreadCount > 0 && (
-                      <span className="bg-primary text-primary-foreground text-[9px] px-1 rounded-full shrink-0">
-                        {conv.unreadCount}
-                      </span>
-                    )}
-                  </button>
-                ))
-              )}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
             </div>
 
-            {/* Chat area - hidden on mobile when no chat is active */}
-            <div className={`flex-1 flex flex-col ${!activeChat ? "hidden sm:flex" : "flex"}`}>
-              {!activeChat ? (
-                <div className="flex-1 flex items-center justify-center">
-                  <p className="text-[11px] text-muted-foreground">{t("messages.select_conversation")}</p>
+            {/* Input - sticky at bottom */}
+            {canMessage ? (
+              <div className="border-t border-border p-2 flex gap-1 bg-card shrink-0">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                  placeholder={t("messages.placeholder")}
+                  className="flex-1 border border-border p-2 text-[12px] bg-card rounded"
+                />
+                <button
+                  onClick={sendMessage}
+                  className="bg-primary text-primary-foreground border-none px-4 py-2 text-[12px] cursor-pointer hover:opacity-90 rounded"
+                >
+                  {t("messages.send")}
+                </button>
+              </div>
+            ) : (
+              <div className="border-t border-border p-2 text-center bg-card shrink-0">
+                <p className="text-[11px] text-muted-foreground">
+                  ⚠ {t("messages.friends_only") || "Apenas amigos podem trocar mensagens."}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: standard layout with sidebar */}
+          <div className="hidden sm:block max-w-[760px] mx-auto px-2 py-3 w-full">
+            <div className="bg-card border border-border">
+              <div className="border-b border-border p-2">
+                <h2 className="text-[14px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
+                  {t("messages.title")}
+                </h2>
+              </div>
+              <div className="flex" style={{ minHeight: "400px" }}>
+                {/* Conversations sidebar */}
+                <div className="w-[200px] border-r border-border overflow-y-auto" style={{ maxHeight: "500px" }}>
+                  {conversations.length === 0 ? (
+                    <p className="text-[11px] text-muted-foreground p-2">{t("messages.no_conversations")}</p>
+                  ) : (
+                    conversations.map((conv) => (
+                      <button
+                        key={conv.oderId}
+                        onClick={() => setSearchParams({ with: conv.oderId })}
+                        className={`w-full text-left p-2 border-b border-border cursor-pointer flex items-center gap-2 hover:bg-accent ${
+                          activeChat === conv.oderId ? "bg-accent" : "bg-card"
+                        }`}
+                      >
+                        <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                          {conv.otherPhoto ? (
+                            <img src={conv.otherPhoto} alt={conv.otherName} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[8px] text-muted-foreground">👤</span>
+                          )}
+                          {onlineUsers.has(conv.oderId) && (
+                            <span className="absolute -bottom-[1px] -right-[1px] w-[8px] h-[8px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[11px] font-bold truncate flex items-center gap-0">
+                            {conv.otherName}
+                            <VerificationBadge {...(badges.get(conv.oderId) || {})} />
+                          </p>
+                          <p className="text-[9px] text-muted-foreground truncate">{conv.lastMessage}</p>
+                        </div>
+                        {conv.unreadCount > 0 && (
+                          <span className="bg-primary text-primary-foreground text-[9px] px-1 rounded-full shrink-0">
+                            {conv.unreadCount}
+                          </span>
+                        )}
+                      </button>
+                    ))
+                  )}
                 </div>
-              ) : (
-                <>
-                  {/* Chat header */}
+
+                {/* Chat area */}
+                <div className="flex-1 flex flex-col">
                   {chatPartner && (
                     <div className="border-b border-border p-2 flex items-center gap-2">
-                      <button
-                        onClick={() => setSearchParams({})}
-                        className="sm:hidden text-[11px] text-primary font-bold bg-transparent border-none cursor-pointer mr-1"
-                      >
-                        ← Voltar
-                      </button>
                       <div className="relative w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                         {chatPartner.photo ? (
                           <img src={chatPartner.photo} alt={chatPartner.name} className="w-full h-full object-cover" />
@@ -298,7 +376,6 @@ const Messages = () => {
                     </div>
                   )}
 
-                  {/* Messages */}
                   <div className="flex-1 overflow-y-auto p-2 space-y-2" style={{ maxHeight: "380px" }}>
                     {messages.map((msg) => (
                       <div
@@ -325,7 +402,6 @@ const Messages = () => {
                     <div ref={messagesEndRef} />
                   </div>
 
-                  {/* Input */}
                   {canMessage ? (
                     <div className="border-t border-border p-2 flex gap-1">
                       <input
@@ -350,13 +426,65 @@ const Messages = () => {
                       </p>
                     </div>
                   )}
-                </>
-              )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <FacebookFooter />
+          <div className="hidden sm:block">
+            <FacebookFooter />
+          </div>
+        </>
+      ) : (
+        /* No active chat - show conversation list */
+        <>
+          <div className="max-w-[760px] mx-auto px-2 py-3 w-full">
+            <div className="bg-card border border-border">
+              <div className="border-b border-border p-2">
+                <h2 className="text-[14px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
+                  {t("messages.title")}
+                </h2>
+              </div>
+              <div className="overflow-y-auto" style={{ maxHeight: "500px" }}>
+                {conversations.length === 0 ? (
+                  <p className="text-[11px] text-muted-foreground p-2">{t("messages.no_conversations")}</p>
+                ) : (
+                  conversations.map((conv) => (
+                    <button
+                      key={conv.oderId}
+                      onClick={() => setSearchParams({ with: conv.oderId })}
+                      className={`w-full text-left p-2 border-b border-border cursor-pointer flex items-center gap-2 hover:bg-accent bg-card`}
+                    >
+                      <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                        {conv.otherPhoto ? (
+                          <img src={conv.otherPhoto} alt={conv.otherName} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[8px] text-muted-foreground">👤</span>
+                        )}
+                        {onlineUsers.has(conv.oderId) && (
+                          <span className="absolute -bottom-[1px] -right-[1px] w-[8px] h-[8px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-bold truncate flex items-center gap-0">
+                          {conv.otherName}
+                          <VerificationBadge {...(badges.get(conv.oderId) || {})} />
+                        </p>
+                        <p className="text-[9px] text-muted-foreground truncate">{conv.lastMessage}</p>
+                      </div>
+                      {conv.unreadCount > 0 && (
+                        <span className="bg-primary text-primary-foreground text-[9px] px-1 rounded-full shrink-0">
+                          {conv.unreadCount}
+                        </span>
+                      )}
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+          <FacebookFooter />
+        </>
+      )}
     </div>
   );
 };

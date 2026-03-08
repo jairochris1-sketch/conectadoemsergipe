@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, Mail, Menu, Sun, Moon } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Search, Mail, Menu, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -25,6 +25,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { isModerator } = useModerator();
@@ -122,11 +123,22 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       <div className="max-w-[760px] mx-auto px-2 py-1">
         {/* Top row: logo + search */}
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
-            <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
-              Conectadoemsergipe
-            </h1>
-          </Link>
+          <div className="flex items-center gap-1">
+            {isMobile && location.pathname !== "/" && (
+              <button
+                onClick={() => navigate(-1)}
+                className="bg-transparent border-none cursor-pointer text-primary-foreground p-1 flex items-center"
+                aria-label="Voltar"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+              <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+                Conectadoemsergipe
+              </h1>
+            </Link>
+          </div>
 
           {!isMobile && (
             <div className="flex items-center gap-2">
