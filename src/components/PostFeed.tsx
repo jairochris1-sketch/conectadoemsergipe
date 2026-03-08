@@ -210,8 +210,8 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm">
-                  <Link to={`/user/${post.authorId}`} className="font-bold text-base">{post.authorName}</Link>
+                <p className="text-[12px]">
+                  <Link to={`/user/${post.authorId}`} className="font-bold text-[13px]">{post.authorName}</Link>
                   <VerificationBadge {...(badges.get(post.authorId) || {})} />
                   {post.authorCity && (
                     <span className="text-muted-foreground text-xs"> · {abbreviateCity(post.authorCity)}</span>
