@@ -48,6 +48,14 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
 
+  // Collect all unique user IDs from posts and comments for badge fetching
+  const allUserIds = useMemo(() => {
+    const ids = new Set(posts.map(p => p.authorId));
+    Object.values(comments).forEach(cs => cs.forEach(c => ids.add(c.authorId)));
+    return Array.from(ids);
+  }, [posts, comments]);
+  const badges = useBatchVerificationBadges(allUserIds);
+
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
