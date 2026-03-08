@@ -165,7 +165,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
                 {/* Nav links stacked */}
                 <div className="flex flex-col gap-3">
-                  {navLinks}
+                  {navLinks(() => setMenuOpen(false))}
                 </div>
               </SheetContent>
             </Sheet>
