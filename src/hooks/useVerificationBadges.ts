@@ -60,8 +60,8 @@ export const useBatchVerificationBadges = (userIds: string[]) => {
 
     const fetch = async () => {
       const [profileRes, rolesRes] = await Promise.all([
-        supabase.from("profiles").select("user_id, verified, business_verified").in("user_id", uncachedIds),
-        supabase.from("user_roles").select("user_id, role").in("user_id", uncachedIds).eq("role", "admin"),
+        supabase.from("profiles").select("user_id, verified, business_verified").in("user_id", uncachedIds) as any,
+        supabase.from("user_roles").select("user_id, role").in("user_id", uncachedIds).eq("role", "admin") as any,
       ]);
 
       const adminSet = new Set((rolesRes.data || []).map(r => r.user_id));
