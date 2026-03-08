@@ -51,25 +51,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Set up listener first (synchronous callback, defer async work)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
         console.log("onAuthStateChange event:", _event, "session:", !!session);
         if (session?.user) {
-          const profile = await fetchProfile(session.user.id);
-          console.log("Profile loaded:", profile?.name);
-          setUser(profile);
+          // Use setTimeout to avoid Supabase deadlock with async in callback
+          setTimeout(async () => {
+            const profile = await fetchProfile(session.user.id);
+            console.log("Profile loaded from onAuthStateChange:", profile?.name, profile);
+            setUser(profile);
+            setLoading(false);
+          }, 0);
         } else {
           setUser(null);
+          setLoading(false);
         }
-        setLoading(false);
       }
     );
 
+    // Then check current session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       console.log("getSession result:", !!session);
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
-        console.log("Profile from getSession:", profile?.name);
+        console.log("Profile from getSession:", profile?.name, profile);
         setUser(profile);
       }
       setLoading(false);
