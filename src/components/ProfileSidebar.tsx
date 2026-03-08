@@ -10,7 +10,7 @@ interface ProfileSidebarProps {
   createdAt?: string;
 }
 
-const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate }: ProfileSidebarProps) => {
+const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate, createdAt }: ProfileSidebarProps) => {
   const { t } = useLanguage();
 
   return (
