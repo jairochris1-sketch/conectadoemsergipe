@@ -568,6 +568,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_friend_suggestions: {
+        Args: { _limit?: number; _user_id: string }
+        Returns: {
+          city: string
+          mutual_count: number
+          name: string
+          photo_url: string
+          score: number
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
