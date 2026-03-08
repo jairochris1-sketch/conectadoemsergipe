@@ -17,10 +17,17 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(identifier, password);
-    if (success) {
-      navigate("/");
-    } else {
+    setError("");
+    try {
+      const success = await login(identifier, password);
+      console.log("Login result:", success);
+      if (success) {
+        navigate("/");
+      } else {
+        setError(t("login.invalid"));
+      }
+    } catch (err) {
+      console.error("Login error:", err);
       setError(t("login.invalid"));
     }
   };
