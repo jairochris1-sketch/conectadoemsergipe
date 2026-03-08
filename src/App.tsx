@@ -15,6 +15,7 @@ import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
 import PublicProfile from "./pages/PublicProfile";
+import MessagesPage from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
