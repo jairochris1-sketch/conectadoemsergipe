@@ -40,6 +40,7 @@ const App = () => {
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/user/:userId" element={<PublicProfile />} />
                 <Route path="/messages" element={<MessagesPage />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage, Language } from "@/context/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 
@@ -10,6 +11,10 @@ const Login = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotMessage, setForgotMessage] = useState("");
+  const [forgotError, setForgotError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
@@ -19,7 +24,6 @@ const Login = () => {
     setError("");
     try {
       const success = await login(identifier, password);
-      console.log("Login result:", success);
       if (success) {
         navigate("/");
       } else {
@@ -28,6 +32,20 @@ const Login = () => {
     } catch (err) {
       console.error("Login error:", err);
       setError(t("login.invalid"));
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotMessage("");
+    const { error } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) {
+      setForgotError(error.message);
+    } else {
+      setForgotMessage(t("login.forgot_sent"));
     }
   };
 
@@ -54,28 +72,64 @@ const Login = () => {
 
       <div className="max-w-[760px] mx-auto px-2 py-3 flex gap-0">
         <div className="w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
-          <form onSubmit={handleSubmit} className="space-y-1">
-            <div>
-              <label className="block font-bold">{t("login.email")}</label>
-              <input
-                type="text"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full border border-border p-[2px] text-[11px] bg-card"
-                placeholder={t("login.email_placeholder")}
-                required
-              />
-            </div>
-            <div>
-              <label className="block font-bold">{t("login.password")}</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-border p-[2px] text-[11px] bg-card" required />
-            </div>
-            {error && <p className="text-destructive text-[10px]">{error}</p>}
-            <div className="flex gap-1 pt-1">
-              <button type="button" onClick={() => navigate("/register")} className="bg-muted border border-border px-2 py-[2px] text-[11px] cursor-pointer">{t("register")}</button>
-              <button type="submit" className="bg-muted border border-border px-2 py-[2px] text-[11px] cursor-pointer">{t("login")}</button>
-            </div>
-          </form>
+          {!forgotMode ? (
+            <form onSubmit={handleSubmit} className="space-y-1">
+              <div>
+                <label className="block font-bold">{t("login.email")}</label>
+                <input
+                  type="text"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="w-full border border-border p-[2px] text-[11px] bg-card"
+                  placeholder={t("login.email_placeholder")}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block font-bold">{t("login.password")}</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-border p-[2px] text-[11px] bg-card" required />
+              </div>
+              {error && <p className="text-destructive text-[10px]">{error}</p>}
+              <div className="flex gap-1 pt-1">
+                <button type="button" onClick={() => navigate("/register")} className="bg-muted border border-border px-2 py-[2px] text-[11px] cursor-pointer">{t("register")}</button>
+                <button type="submit" className="bg-muted border border-border px-2 py-[2px] text-[11px] cursor-pointer">{t("login")}</button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setForgotMode(true)}
+                className="bg-transparent border-none text-primary text-[10px] cursor-pointer underline hover:no-underline mt-1 p-0"
+              >
+                {t("login.forgot_password")}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleForgotPassword} className="space-y-1">
+              <p className="font-bold text-[11px]">{t("login.forgot_title")}</p>
+              <p className="text-[10px] text-muted-foreground">{t("login.forgot_text")}</p>
+              <div>
+                <label className="block font-bold">Email:</label>
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  className="w-full border border-border p-[2px] text-[11px] bg-card"
+                  required
+                />
+              </div>
+              {forgotError && <p className="text-destructive text-[10px]">{forgotError}</p>}
+              {forgotMessage && <p className="text-[10px] text-primary">{forgotMessage}</p>}
+              <div className="flex gap-1 pt-1">
+                <button type="submit" className="bg-muted border border-border px-2 py-[2px] text-[11px] cursor-pointer">{t("login.forgot_send")}</button>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setForgotMode(false); setForgotMessage(""); setForgotError(""); }}
+                className="bg-transparent border-none text-primary text-[10px] cursor-pointer underline hover:no-underline mt-1 p-0"
+              >
+                {t("login.forgot_back")}
+              </button>
+            </form>
+          )}
         </div>
 
         <div className="flex-1 border border-border border-l-0 bg-card p-4">
