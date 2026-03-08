@@ -44,6 +44,7 @@ const App = () => {
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/seller-dashboard" element={<SellerDashboard />} />
+                <Route path="/page/:slug" element={<SitePage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
