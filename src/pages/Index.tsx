@@ -2,6 +2,7 @@ import FacebookHeader from "@/components/FacebookHeader";
 import ProfileSidebar from "@/components/ProfileSidebar";
 import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
+import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
