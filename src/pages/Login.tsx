@@ -84,7 +84,7 @@ const Login = () => {
               </h1>
             </div>
             {/* Right: nav links */}
-            <div className="flex items-center gap-3 text-[11px]">
+            <div className="flex items-center gap-3 text-[11px] flex-wrap justify-center">
               <Link to="/login" className="text-primary-foreground hover:underline">
                 {t("login")}
               </Link>
