@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
