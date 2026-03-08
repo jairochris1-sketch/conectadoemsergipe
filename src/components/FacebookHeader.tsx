@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Mail, Menu, X } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { useAdminReports } from "@/hooks/useAdminReports";
@@ -19,12 +20,24 @@ const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bannerImage, setBannerImage] = useState("");
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "login_banner")
+      .single()
+      .then(({ data }) => {
+        if (data && (data as any).value) setBannerImage((data as any).value);
+      });
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +91,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       <div className="max-w-[760px] mx-auto px-2 py-1">
         {/* Top row: logo + search */}
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0 flex items-center gap-2">
+            {bannerImage && (
+              <img
+                src={bannerImage}
+                alt=""
+                className="h-[28px] w-auto opacity-80"
+                style={{ filter: "grayscale(100%) hue-rotate(180deg)" }}
+              />
+            )}
             <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
               [ conectadosemsergipe ]
             </h1>
