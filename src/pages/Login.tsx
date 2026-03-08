@@ -15,6 +15,7 @@ const Login = () => {
   const [forgotMessage, setForgotMessage] = useState("");
   const [forgotError, setForgotError] = useState("");
   const [bannerImage, setBannerImage] = useState("");
+  const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
@@ -22,11 +23,13 @@ const Login = () => {
   useEffect(() => {
     supabase
       .from("site_settings")
-      .select("value")
-      .eq("key", "login_banner")
-      .single()
+      .select("key, value")
+      .in("key", ["login_banner", "header_overlay_opacity"])
       .then(({ data }) => {
-        if (data && (data as any).value) setBannerImage((data as any).value);
+        data?.forEach((row: any) => {
+          if (row.key === "login_banner" && row.value) setBannerImage(row.value);
+          if (row.key === "header_overlay_opacity" && row.value) setOverlayOpacity(Number(row.value) / 100);
+        });
       });
   }, []);
 
