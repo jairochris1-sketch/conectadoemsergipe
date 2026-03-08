@@ -62,6 +62,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-card">
+      {/* Banner image from admin */}
+      {bannerImage && (
+        <div className="max-w-[760px] mx-auto">
+          <img
+            src={bannerImage}
+            alt="Banner"
+            className="w-full h-auto object-cover block"
+          />
+        </div>
+      )}
+
       {/* Blue header bar */}
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
