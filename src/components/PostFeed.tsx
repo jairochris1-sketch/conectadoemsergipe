@@ -11,6 +11,7 @@ import InlineBannerAd from "@/components/InlineBannerAd";
 import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
+import { useForbiddenWords } from "@/hooks/useForbiddenWords";
 import { toast } from "sonner";
 
 interface PostFeedProps {
