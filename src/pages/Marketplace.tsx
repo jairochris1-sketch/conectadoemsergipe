@@ -19,6 +19,8 @@ export interface MarketItem {
   category: string;
   city: string;
   imageUrl: string;
+  images?: string[];
+  whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
 }
