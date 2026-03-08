@@ -354,6 +354,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 )}
               </div>
             )}
+           </div>
           </div>
         ))}
         {posts.length === 0 && (
