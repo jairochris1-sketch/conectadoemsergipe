@@ -38,6 +38,48 @@ export type Database = {
         }
         Relationships: []
       }
+      banner_ads: {
+        Row: {
+          click_count: number
+          created_at: string
+          created_by: string | null
+          id: string
+          image_url: string
+          impression_count: number
+          is_active: boolean
+          link_url: string
+          position: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          click_count?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url: string
+          impression_count?: number
+          is_active?: boolean
+          link_url?: string
+          position?: string
+          sort_order?: number
+          title?: string
+        }
+        Update: {
+          click_count?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_url?: string
+          impression_count?: number
+          is_active?: boolean
+          link_url?: string
+          position?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
       bans: {
         Row: {
           banned_by: string
