@@ -10,11 +10,13 @@ const AdminHeaderOpacity = () => {
   useEffect(() => {
     supabase
       .from("site_settings")
-      .select("value")
-      .eq("key", "header_overlay_opacity")
-      .single()
+      .select("key, value")
+      .in("key", ["header_overlay_opacity", "login_banner"])
       .then(({ data }) => {
-        if (data && (data as any).value) setOpacity(Number((data as any).value));
+        data?.forEach((row: any) => {
+          if (row.key === "header_overlay_opacity" && row.value) setOpacity(Number(row.value));
+          if (row.key === "login_banner" && row.value) setBannerImage(row.value);
+        });
       });
   }, []);
 
