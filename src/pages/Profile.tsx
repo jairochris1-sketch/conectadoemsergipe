@@ -127,7 +127,7 @@ const Profile = () => {
                         className="w-full border border-border p-1 text-[11px] bg-card"
                       >
                         <option value="">Selecione...</option>
-                        {sergipeCities.map((c) => (
+                        {SERGIPE_CITIES.map((c) => (
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </select>
