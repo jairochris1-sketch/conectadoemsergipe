@@ -285,6 +285,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.banned_until_label": "Baneado hasta",
     "admin.unban": "Remover Ban",
     "admin.panel": "Admin",
+    "public_profile.not_found": "Usuario no encontrado.",
   },
   en: {
     "welcome": "welcome",
