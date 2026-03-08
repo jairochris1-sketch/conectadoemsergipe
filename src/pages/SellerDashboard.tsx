@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Navigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
