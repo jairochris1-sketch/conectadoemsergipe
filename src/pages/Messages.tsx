@@ -40,6 +40,7 @@ const Messages = () => {
 
   const conversationUserIds = useMemo(() => conversations.map(c => c.oderId), [conversations]);
   const badges = useBatchVerificationBadges(conversationUserIds);
+  const onlineUsers = useOnlineStatus(conversationUserIds);
   const activeChatBadge = useVerificationBadge(activeChat || undefined);
 
   const scrollToBottom = () => {
