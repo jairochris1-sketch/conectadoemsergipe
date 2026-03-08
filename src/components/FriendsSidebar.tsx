@@ -65,7 +65,7 @@ const FriendsSidebar = () => {
       <div className="space-y-2">
         {friends.length > 0 ? (
           friends.map((friend) => (
-            <div key={friend.id} className="flex items-center gap-2 text-[11px]">
+            <Link key={friend.id} to={`/user/${friend.id}`} className="flex items-center gap-2 text-[11px] no-underline text-foreground hover:bg-accent p-1 rounded">
               <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                 {friend.photo ? (
                   <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" />
@@ -77,10 +77,10 @@ const FriendsSidebar = () => {
                 )}
               </div>
               <div>
-                <Link to={`/user/${friend.id}`} className="font-bold hover:underline">{friend.name}</Link>
+                <span className="font-bold hover:underline">{friend.name}</span>
                 <VerificationBadge {...(badges.get(friend.id) || {})} />
               </div>
-            </div>
+            </Link>
           ))
         ) : (
           <p className="text-[10px] text-muted-foreground">{t("friends.none")}</p>
