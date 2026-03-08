@@ -294,6 +294,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           {item.whatsapp && (
             <WhatsAppButton whatsapp={item.whatsapp} title={item.title} t={t} />
           )}
+          <ShareButton item={item} t={t} />
           {currentUserId && item.sellerId && item.sellerId !== currentUserId && (
             <button
               onClick={(e) => { e.stopPropagation(); onContact(item.sellerId); }}
