@@ -34,6 +34,7 @@ const translations: Record<Language, Record<string, string>> = {
     "post": "Postar",
     // FriendsSidebar
     "friends": "Amigos",
+    "see_all": "Ver tudo",
     "see_all_friends": "Ver Todos os Amigos",
     "photo": "foto",
     // Profile
