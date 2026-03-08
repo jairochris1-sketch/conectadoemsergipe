@@ -437,9 +437,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     )}
                   </div>
                   <div>
-                    <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
-                      {post.authorName}
-                    </Link>
+                    <div className="flex items-center gap-0">
+                      <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
+                        {post.authorName}
+                      </Link>
+                      <VerificationBadge {...(badges.get(post.authorId) || {})} />
+                    </div>
                     <p className="text-[10px] text-muted-foreground">{formatDate(post.timestamp)}</p>
                   </div>
                 </div>
