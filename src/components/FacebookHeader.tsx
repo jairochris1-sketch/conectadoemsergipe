@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Mail, Menu, X } from "lucide-react";
+import { Search, Mail, Menu, Sun, Moon } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -23,6 +23,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerImage, setBannerImage] = useState("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
@@ -30,6 +31,21 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      setDarkMode(true);
+    }
+  }, []);
 
   useEffect(() => {
     supabase
@@ -136,6 +152,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     {LANG_LABELS[lang]}
                   </button>
                 ))}
+                <button
+                  onClick={toggleDarkMode}
+                  className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-[2px]"
+                  title={darkMode ? "Modo claro" : "Modo noturno"}
+                >
+                  {darkMode ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+                </button>
               </div>
             </div>
           )}
@@ -170,6 +193,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                         {LANG_LABELS[lang]}
                       </button>
                     ))}
+                    <button
+                      onClick={toggleDarkMode}
+                      className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-[2px]"
+                      title={darkMode ? "Modo claro" : "Modo noturno"}
+                    >
+                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
                   </div>
                   <div className="flex flex-col gap-3">
                     {navLinks(() => setMenuOpen(false))}
