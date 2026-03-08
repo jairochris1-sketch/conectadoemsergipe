@@ -156,18 +156,17 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   };
 
   return (
-    <div className="bg-card border border-border p-3 w-full">
-      <div className="border-b border-border pb-2 mb-3">
-        <h3 className="text-lg font-bold text-primary">{t("the_wall")}</h3>
-      </div>
+    <div className="fb-box">
+      <div className="fb-box-header">{t("the_wall")}</div>
+      <div className="fb-box-body">
       {userName && (
-        <div className="mb-4 border border-border p-3 bg-accent">
-          <p className="text-sm font-bold mb-2">{t("write_something")}</p>
+      <div className="mb-3 border border-border p-2.5 bg-accent">
+          <p className="text-[12px] font-bold mb-1.5">{t("write_something")}</p>
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            className="w-full border border-border p-2 text-sm resize-none bg-card rounded-sm"
-            rows={3}
+            className="w-full border border-border p-2 text-[12px] resize-none bg-card"
+            rows={2}
             placeholder={t("whats_on_mind")}
           />
           {postImage && (
@@ -181,19 +180,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </button>
             </div>
           )}
-          <div className="flex gap-2 mt-2 items-center">
-            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 disabled:opacity-50 rounded-sm">
+          <div className="flex gap-1.5 mt-1.5 items-center">
+            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] font-medium cursor-pointer hover:opacity-90 disabled:opacity-50">
               {uploading ? t("post.uploading") : t("post")}
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="bg-muted text-foreground border border-border px-3 py-2 text-sm cursor-pointer hover:opacity-90 inline-flex items-center gap-1.5 rounded-sm"
+              className="bg-muted text-foreground border border-border px-2 py-1 text-[11px] cursor-pointer hover:opacity-90 inline-flex items-center gap-1"
               title={t("post.add_photo")}
             >
-              <ImagePlus className="w-5 h-5" /> {t("post.add_photo")}
+              <ImagePlus className="w-3.5 h-3.5" /> {t("post.add_photo")}
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-            <span className="text-xs text-muted-foreground">{t("post.max_5mb")}</span>
+            <span className="text-[10px] text-muted-foreground">{t("post.max_5mb")}</span>
           </div>
         </div>
       )}
@@ -203,7 +202,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             {index > 0 && index % 3 === 0 && <InlineBannerAd />}
             <div className="border-b border-border pb-3">
             <div className="flex items-start gap-3">
-              <div className="w-[44px] h-[44px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden rounded-sm">
+              <div className="w-[36px] h-[36px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                 {post.authorPhoto ? (
                   <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
                 ) : (
@@ -211,8 +210,8 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm">
-                  <Link to={`/user/${post.authorId}`} className="font-bold text-base">{post.authorName}</Link>
+                <p className="text-[12px]">
+                  <Link to={`/user/${post.authorId}`} className="font-bold text-[13px]">{post.authorName}</Link>
                   <VerificationBadge {...(badges.get(post.authorId) || {})} />
                   {post.authorCity && (
                     <span className="text-muted-foreground text-xs"> · {abbreviateCity(post.authorCity)}</span>
@@ -250,7 +249,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       <img
                         src={post.imageUrl}
                         alt="Post"
-                        className="mt-2 w-full max-w-[600px] object-contain border border-border rounded-md cursor-pointer hover:opacity-90 transition-opacity block"
+                        className="mt-2 w-full max-w-[520px] object-contain border border-border cursor-pointer hover:opacity-90 transition-opacity block"
                         onClick={async () => {
                           setLightboxPost(post.id);
                           if (!comments[post.id]) {
@@ -262,7 +261,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     )}
                   </>
                 )}
-                <p className="text-xs text-muted-foreground mt-1.5">{formatDate(post.timestamp)}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
 
                 {/* Own post actions */}
                 {user && post.authorId === user.id && editingPostId !== post.id && (
@@ -531,6 +530,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           </div>
         );
       })()}
+    </div>
     </div>
   );
 };
