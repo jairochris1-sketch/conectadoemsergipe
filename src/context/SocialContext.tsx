@@ -33,6 +33,8 @@ export interface FriendRequest {
 
 interface SocialContextType {
   posts: Post[];
+  deleteOwnPost: (postId: string) => Promise<void>;
+  updatePost: (postId: string, content: string) => Promise<void>;
   createPost: (content: string) => Promise<void>;
   friendRequests: FriendRequest[];
   sendFriendRequest: (toId: string) => Promise<void>;
