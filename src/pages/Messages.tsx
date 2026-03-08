@@ -31,6 +31,7 @@ interface Message {
 const Messages = () => {
   const { user, logout } = useAuth();
   const { t } = useLanguage();
+  const { isFriend } = useSocial();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChat = searchParams.get("with");
   const [conversations, setConversations] = useState<Conversation[]>([]);
