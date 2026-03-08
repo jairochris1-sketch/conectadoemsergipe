@@ -20,6 +20,7 @@ interface PublicProfile {
   school: string | null;
   city: string | null;
   birthdate: string | null;
+  created_at: string | null;
 }
 
 const PublicProfile = () => {
