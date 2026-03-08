@@ -17,6 +17,7 @@ interface MarketItem {
   category: string;
   city: string;
   imageUrl: string;
+  isSponsored?: boolean;
 }
 
 const CATEGORIES = [
