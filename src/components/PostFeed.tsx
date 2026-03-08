@@ -475,7 +475,11 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                   {(comments[post.id] || []).map((c) => (
                     <div key={c.id} className="flex gap-2">
                       <div className="shrink-0 w-[24px] h-[24px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
-                        <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                        {c.authorPhoto ? (
+                          <img src={c.authorPhoto} alt={c.authorName} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                        )}
                       </div>
                       <div className="bg-accent rounded px-2 py-1 min-w-0">
                         <p className="text-[10px]">
