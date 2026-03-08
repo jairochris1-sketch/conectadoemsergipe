@@ -97,7 +97,7 @@
 }
 
 a {
-  color: hsl(220, 80%, 40%);
+  color: hsl(var(--fb-link));
   text-decoration: none;
 }
 a:hover {
