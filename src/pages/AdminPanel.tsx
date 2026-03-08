@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
+import AdminBadgeManager from "@/components/AdminBadgeManager";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -42,7 +43,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -152,6 +153,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "footer" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🖼️ Banner Login
             </button>
+            <button onClick={() => setTab("badges")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "badges" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🏅 Selos
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -167,8 +172,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "badges" ? (
+            <AdminBadgeManager />
           ) : tab === "footer" ? (
             <div>
               <AdminFooterImage />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import FollowButton from "@/components/FollowButton";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 
 const MOCK_SHOPS = [
   { name: "Harvard Book Store", description: "Textbooks and supplies" },
@@ -21,6 +23,8 @@ const SearchPage = () => {
   const { t } = useLanguage();
   const { sendFriendRequest, isFriend, hasPendingRequest, searchProfiles } = useSocial();
   const [people, setPeople] = useState<{ id: string; name: string; school: string; photo: string }[]>([]);
+  const peopleIds = useMemo(() => people.map(p => p.id), [people]);
+  const badges = useBatchVerificationBadges(peopleIds);
 
   useEffect(() => {
     if (query) {
@@ -57,6 +61,7 @@ const SearchPage = () => {
                       </div>
                       <div>
                         <Link to={`/user/${p.id}`} className="font-bold">{p.name}</Link>
+                        <VerificationBadge {...(badges.get(p.id) || {})} />
                         <p className="text-muted-foreground">{p.school}</p>
                       </div>
                     </div>

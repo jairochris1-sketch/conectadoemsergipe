@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -6,6 +6,8 @@ import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import ReportButton from "@/components/ReportButton";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
 import { toast } from "sonner";
@@ -45,6 +47,14 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
+
+  // Collect all unique user IDs from posts and comments for badge fetching
+  const allUserIds = useMemo(() => {
+    const ids = new Set(posts.map(p => p.authorId));
+    Object.values(comments).forEach(cs => cs.forEach(c => ids.add(c.authorId)));
+    return Array.from(ids);
+  }, [posts, comments]);
+  const badges = useBatchVerificationBadges(allUserIds);
 
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -193,6 +203,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               <div className="flex-1 min-w-0">
                 <p className="text-[11px]">
                   <Link to={`/user/${post.authorId}`} className="font-bold">{post.authorName}</Link>
+                  <VerificationBadge {...(badges.get(post.authorId) || {})} />
                   {post.authorCity && (
                     <span className="text-muted-foreground text-[10px]"> · {abbreviateCity(post.authorCity)}</span>
                   )}
@@ -304,7 +315,9 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 {(comments[post.id] || []).map((c) => (
                   <div key={c.id} className="border-l-2 border-border pl-2 py-1">
                     <p className="text-[10px]">
-                      <span className="font-bold">{c.authorName}</span>{" "}{c.content}
+                      <span className="font-bold">{c.authorName}</span>
+                      <VerificationBadge {...(badges.get(c.authorId) || {})} />
+                      {" "}{c.content}
                     </p>
                     <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
                   </div>
@@ -424,9 +437,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     )}
                   </div>
                   <div>
-                    <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
-                      {post.authorName}
-                    </Link>
+                    <div className="flex items-center gap-0">
+                      <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
+                        {post.authorName}
+                      </Link>
+                      <VerificationBadge {...(badges.get(post.authorId) || {})} />
+                    </div>
                     <p className="text-[10px] text-muted-foreground">{formatDate(post.timestamp)}</p>
                   </div>
                 </div>
@@ -454,7 +470,9 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </div>
                       <div className="bg-accent rounded px-2 py-1 min-w-0">
                         <p className="text-[10px]">
-                          <span className="font-bold">{c.authorName}</span>{" "}{c.content}
+                          <span className="font-bold">{c.authorName}</span>
+                          <VerificationBadge {...(badges.get(c.authorId) || {})} />
+                          {" "}{c.content}
                         </p>
                         <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>

@@ -4,6 +4,8 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FollowButton from "@/components/FollowButton";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
@@ -28,6 +30,7 @@ const PublicProfile = () => {
   const { followerCount, followingCount } = useFollowers(userId);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const badge = useVerificationBadge(userId);
 
   useEffect(() => {
     if (!userId) return;
@@ -79,8 +82,9 @@ const PublicProfile = () => {
           <div className="flex-1 min-w-0">
             <div className="bg-card border border-border p-3">
               <div className="border-b border-border pb-2 mb-3">
-                <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
+                <h2 className="text-[16px] font-bold text-primary flex items-center gap-1" style={{ fontFamily: "Georgia, serif" }}>
                   {t("profile_of")} {profile.name}
+                  <VerificationBadge {...badge} size="md" />
                 </h2>
               </div>
               <div className="flex gap-3">

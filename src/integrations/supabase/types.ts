@@ -307,6 +307,7 @@ export type Database = {
         Row: {
           bio: string | null
           birthdate: string | null
+          business_verified: boolean
           city: string | null
           created_at: string
           email: string
@@ -316,10 +317,12 @@ export type Database = {
           school: string | null
           updated_at: string
           user_id: string
+          verified: boolean
         }
         Insert: {
           bio?: string | null
           birthdate?: string | null
+          business_verified?: boolean
           city?: string | null
           created_at?: string
           email: string
@@ -329,10 +332,12 @@ export type Database = {
           school?: string | null
           updated_at?: string
           user_id: string
+          verified?: boolean
         }
         Update: {
           bio?: string | null
           birthdate?: string | null
+          business_verified?: boolean
           city?: string | null
           created_at?: string
           email?: string
@@ -342,6 +347,7 @@ export type Database = {
           school?: string | null
           updated_at?: string
           user_id?: string
+          verified?: boolean
         }
         Relationships: []
       }

@@ -1,6 +1,9 @@
+import { useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 
 const FriendsSidebar = () => {
   const { t } = useLanguage();
@@ -9,6 +12,11 @@ const FriendsSidebar = () => {
 
   const friends = getFriends();
   const pendingRequests = getPendingRequests();
+  const allIds = useMemo(() => [
+    ...friends.map(f => f.id),
+    ...pendingRequests.map(r => r.fromId),
+  ], [friends, pendingRequests]);
+  const badges = useBatchVerificationBadges(allIds);
 
   return (
     <div className="bg-card border border-border p-2 w-full">
@@ -31,6 +39,7 @@ const FriendsSidebar = () => {
                     )}
                   </div>
                   <span className="font-bold truncate">{req.fromName}</span>
+                  <VerificationBadge {...(badges.get(req.fromId) || {})} />
                 </div>
                 <div className="flex gap-1 mt-1">
                   <button onClick={() => acceptFriendRequest(req.id)} className="bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90">
@@ -62,6 +71,7 @@ const FriendsSidebar = () => {
               </div>
               <div>
                 <a href="#" className="font-bold">{friend.name}</a>
+                <VerificationBadge {...(badges.get(friend.id) || {})} />
               </div>
             </div>
           ))
