@@ -29,7 +29,20 @@ interface MarketItem {
   whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
+  condition?: string;
 }
+
+const CONDITION_LABELS: Record<string, string> = {
+  new: "marketplace.condition_new",
+  used: "marketplace.condition_used",
+  recently_bought: "marketplace.condition_recently_bought",
+};
+
+const formatPriceDisplay = (price: string): string => {
+  const num = parseFloat(price);
+  if (isNaN(num)) return price;
+  return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
 
 interface Props {
   item: MarketItem;
@@ -164,7 +177,10 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           <ImageGallery images={item.images} imageUrl={item.imageUrl} title={item.title} />
         </div>
         <p className="text-[10px] font-bold truncate">{item.title}</p>
-        <p className="text-[10px] font-bold text-primary">{item.price}</p>
+        <p className="text-[10px] font-bold text-primary">{formatPriceDisplay(item.price)}</p>
+        {item.condition && (
+          <p className="text-[8px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</p>
+        )}
         <p className="text-[9px] text-muted-foreground truncate">
           {item.city && <>📍 {item.city} · </>}
           {item.seller}
@@ -242,8 +258,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
       <div className="text-[11px] flex-1">
         <div className="flex justify-between">
           <a href="#" className="font-bold">{item.title}</a>
-          <span className="font-bold text-primary">{item.price}</span>
+          <span className="font-bold text-primary">{formatPriceDisplay(item.price)}</span>
         </div>
+        {item.condition && (
+          <span className="text-[9px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</span>
+        )}
         <p className="text-muted-foreground mt-1">{item.description}</p>
         <p className="mt-1 flex items-center gap-1 flex-wrap">
           {t("marketplace.seller")}: <a href="#">{item.seller}</a>

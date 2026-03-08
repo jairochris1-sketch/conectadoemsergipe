@@ -23,6 +23,7 @@ export interface MarketItem {
   whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
+  condition?: string;
 }
 
 const CATEGORIES = [
@@ -100,6 +101,7 @@ const Marketplace = () => {
       whatsapp: (d as any).whatsapp || "",
       isSponsored: sponsoredSet.has(d.id),
       sold: d.sold || false,
+      condition: (d as any).condition || "used",
     }));
 
     mapped.sort((a, b) => {

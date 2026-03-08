@@ -221,6 +221,7 @@ export type Database = {
         Row: {
           category: string
           city: string | null
+          condition: string
           created_at: string
           description: string | null
           id: string
@@ -236,6 +237,7 @@ export type Database = {
         Insert: {
           category?: string
           city?: string | null
+          condition?: string
           created_at?: string
           description?: string | null
           id?: string
@@ -251,6 +253,7 @@ export type Database = {
         Update: {
           category?: string
           city?: string | null
+          condition?: string
           created_at?: string
           description?: string | null
           id?: string
