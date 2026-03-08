@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface User {
   id: string;
@@ -11,71 +13,101 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  register: (name: string, email: string, password: string, school: string) => boolean;
-  logout: () => void;
-  updateProfile: (data: Partial<User>) => void;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, school: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  updateProfile: (data: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Simple in-memory user store (will be replaced by DB later)
-const users: (User & { password: string })[] = [
-  {
-    id: "1",
-    name: "Mark Zuckerberg",
-    email: "mark@harvard.edu",
-    password: "facebook2004",
-    bio: "I'm CEO, bitch.",
-    photoUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/220px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg",
-    school: "Harvard University",
-  },
-];
+async function fetchProfile(userId: string): Promise<User | null> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  if (!data) return null;
+  return {
+    id: data.user_id,
+    name: data.name,
+    email: data.email,
+    bio: data.bio || "",
+    photoUrl: data.photo_url || "",
+    school: data.school || "",
+  };
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email: string, password: string): boolean => {
-    const found = users.find((u) => u.email === email && u.password === password);
-    if (found) {
-      const { password: _, ...userData } = found;
-      setUser(userData);
-      return true;
-    }
-    return false;
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        if (session?.user) {
+          const profile = await fetchProfile(session.user.id);
+          setUser(profile);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const profile = await fetchProfile(session.user.id);
+        setUser(profile);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string): Promise<boolean> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return !error;
   };
 
-  const register = (name: string, email: string, password: string, school: string): boolean => {
-    if (users.find((u) => u.email === email)) return false;
-    const newUser = {
-      id: String(Date.now()),
-      name,
+  const register = async (name: string, email: string, password: string, school: string): Promise<boolean> => {
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      bio: "",
-      photoUrl: "",
-      school,
-    };
-    users.push(newUser);
-    const { password: _, ...userData } = newUser;
-    setUser(userData);
+      options: { data: { name } },
+    });
+    if (error || !data.user) return false;
+
+    // Update profile with school info
+    await supabase
+      .from("profiles")
+      .update({ school, name })
+      .eq("user_id", data.user.id);
+
     return true;
   };
 
-  const logout = () => setUser(null);
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
 
-  const updateProfile = (data: Partial<User>) => {
+  const updateProfile = async (data: Partial<User>) => {
     if (!user) return;
-    const updated = { ...user, ...data };
-    setUser(updated);
-    const idx = users.findIndex((u) => u.id === user.id);
-    if (idx >= 0) {
-      users[idx] = { ...users[idx], ...data };
-    }
+    const updates: Record<string, string> = {};
+    if (data.bio !== undefined) updates.bio = data.bio;
+    if (data.school !== undefined) updates.school = data.school;
+    if (data.name !== undefined) updates.name = data.name;
+    if (data.photoUrl !== undefined) updates.photo_url = data.photoUrl;
+
+    await supabase.from("profiles").update(updates).eq("user_id", user.id);
+    setUser({ ...user, ...data });
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
