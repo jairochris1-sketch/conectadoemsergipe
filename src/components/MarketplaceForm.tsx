@@ -29,9 +29,30 @@ interface Props {
   onItemPosted: () => Promise<void>;
 }
 
+const formatBRL = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "";
+  const cents = parseInt(digits, 10);
+  const reais = cents / 100;
+  return reais.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
+
+const parseBRLToNumber = (formatted: string): string => {
+  const digits = formatted.replace(/\D/g, "");
+  if (!digits) return "0";
+  return (parseInt(digits, 10) / 100).toFixed(2);
+};
+
+const CONDITIONS = [
+  { value: "new", label: "marketplace.condition_new" },
+  { value: "used", label: "marketplace.condition_used" },
+  { value: "recently_bought", label: "marketplace.condition_recently_bought" },
+];
+
 const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
   const { t } = useLanguage();
-  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "" });
+  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "", condition: "used" });
+  const [priceDisplay, setPriceDisplay] = useState("");
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [posting, setPosting] = useState(false);
