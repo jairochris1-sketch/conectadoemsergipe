@@ -209,18 +209,22 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
           {!isMobile && (
             <div className="flex items-center gap-2">
-              <form onSubmit={handleSearch} className="flex items-center">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t("search")}
-                  className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[120px]"
-                />
-                <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
-                  <Search className="w-3 h-3 text-foreground" />
-                </button>
-              </form>
+              <div className="relative" ref={suggestionsRef}>
+                <form onSubmit={handleSearch} className="flex items-center">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                    placeholder={t("search")}
+                    className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[120px]"
+                  />
+                  <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
+                    <Search className="w-3 h-3 text-foreground" />
+                  </button>
+                </form>
+                <SuggestionsDropdown />
+              </div>
               <div className="flex items-center gap-1">
                 {(["pt", "es", "en"] as Language[]).map((lang) => (
                   <button
