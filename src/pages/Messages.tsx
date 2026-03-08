@@ -37,6 +37,10 @@ const Messages = () => {
   const [chatPartner, setChatPartner] = useState<{ name: string; photo: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const conversationUserIds = useMemo(() => conversations.map(c => c.oderId), [conversations]);
+  const badges = useBatchVerificationBadges(conversationUserIds);
+  const activeChatBadge = useVerificationBadge(activeChat || undefined);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
