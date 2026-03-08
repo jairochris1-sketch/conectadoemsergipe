@@ -36,6 +36,8 @@ const Index = () => {
               bio={user?.bio || t("login_to_see")}
               photoUrl={user?.photoUrl || "/placeholder.svg"}
               school={user?.school}
+              city={user?.city}
+              birthdate={user?.birthdate}
             />
           </div>
           <div className="flex-1 min-w-0">
