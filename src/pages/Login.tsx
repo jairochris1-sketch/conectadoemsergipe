@@ -65,9 +65,9 @@ const Login = () => {
       {/* Blue header bar — TheFacebook 2004 style */}
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-1">
             {/* Left: optional admin image + site name */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-center sm:justify-start">
               {bannerImage && (
                 <img
                   src={bannerImage}
@@ -77,14 +77,14 @@ const Login = () => {
                 />
               )}
               <h1
-                className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
+                className="text-[20px] sm:text-[28px] font-bold text-primary-foreground tracking-[-1px]"
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 [ conectadosemsergipe ]
               </h1>
             </div>
             {/* Right: nav links */}
-            <div className="flex items-center gap-3 text-[11px]">
+            <div className="flex items-center gap-3 text-[11px] flex-wrap justify-center">
               <Link to="/login" className="text-primary-foreground hover:underline">
                 {t("login")}
               </Link>
@@ -114,9 +114,9 @@ const Login = () => {
       </div>
 
       {/* Main content area */}
-      <div className="max-w-[760px] mx-auto px-2 py-3 flex gap-0">
+      <div className="max-w-[760px] mx-auto px-2 py-3 flex flex-col sm:flex-row gap-0">
         {/* Left sidebar - login form */}
-        <div className="w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
+        <div className="w-full sm:w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
           {!forgotMode ? (
             <form onSubmit={handleSubmit} className="space-y-1">
               <div>
@@ -210,7 +210,7 @@ const Login = () => {
         </div>
 
         {/* Right content - Welcome */}
-        <div className="flex-1 border border-border border-l-0 bg-card p-4">
+        <div className="flex-1 border border-border sm:border-l-0 bg-card p-4">
           <div className="border-b border-border pb-1 mb-3">
             <p className="text-[11px] text-primary font-bold">
               {t("login.welcome_bar")}
