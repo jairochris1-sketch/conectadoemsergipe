@@ -4,6 +4,7 @@ import { Search, Mail } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+import { useAdminReports } from "@/hooks/useAdminReports";
 
 interface FacebookHeaderProps {
   isLoggedIn: boolean;
