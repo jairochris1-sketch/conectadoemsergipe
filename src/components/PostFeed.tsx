@@ -29,6 +29,7 @@ const abbreviateCity = (city: string) => {
 
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [newPost, setNewPost] = useState("");
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [postImage, setPostImage] = useState<{ blob: Blob; preview: string } | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -225,7 +226,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </p>
                     )}
                     {post.imageUrl && (
-                      <img src={post.imageUrl} alt="Post" className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded" />
+                      <img
+                        src={post.imageUrl}
+                        alt="Post"
+                        className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setLightboxUrl(post.imageUrl!)}
+                      />
                     )}
                   </>
                 )}
@@ -370,6 +376,27 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Lightbox */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <button
+            onClick={() => setLightboxUrl(null)}
+            className="absolute top-3 right-3 text-white text-2xl bg-transparent border-none cursor-pointer hover:opacity-80 z-10"
+          >
+            ✕
+          </button>
+          <img
+            src={lightboxUrl}
+            alt="Ampliada"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>
