@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
 
 interface PostFeedProps {
   userName?: string;
