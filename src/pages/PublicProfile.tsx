@@ -20,6 +20,7 @@ interface PublicProfile {
   school: string | null;
   city: string | null;
   birthdate: string | null;
+  created_at: string | null;
 }
 
 const PublicProfile = () => {
@@ -36,7 +37,7 @@ const PublicProfile = () => {
     if (!userId) return;
     supabase
       .from("profiles")
-      .select("user_id, name, bio, photo_url, school, city, birthdate")
+      .select("user_id, name, bio, photo_url, school, city, birthdate, created_at")
       .eq("user_id", userId)
       .single()
       .then(({ data }) => {
@@ -101,6 +102,9 @@ const PublicProfile = () => {
                   <p><b>{t("city")}:</b> {profile.city || "-"}</p>
                   <p><b>{t("birthdate")}:</b> {profile.birthdate ? new Date(profile.birthdate).toLocaleDateString() : "-"}</p>
                   <p><b>{t("bio")}:</b> {profile.bio || t("no_bio")}</p>
+                  {profile.created_at && (
+                    <p><b>📅 Membro desde:</b> {new Date(profile.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
+                  )}
                   <p><b>{t("admin.followers")}:</b> {followerCount}</p>
 
                   {/* Actions */}

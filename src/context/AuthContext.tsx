@@ -10,6 +10,7 @@ interface User {
   school: string;
   birthdate: string;
   city: string;
+  createdAt: string;
 }
 
 interface AuthContextType {
@@ -43,6 +44,7 @@ async function fetchProfile(userId: string): Promise<User | null> {
     school: data.school || "",
     birthdate: data.birthdate || "",
     city: data.city || "",
+    createdAt: data.created_at || "",
   };
 }
 
