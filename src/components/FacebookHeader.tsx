@@ -16,6 +16,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { isAdmin } = useAdmin();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
