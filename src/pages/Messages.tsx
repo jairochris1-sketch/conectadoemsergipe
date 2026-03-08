@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Navigate, useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import VerificationBadge from "@/components/VerificationBadge";
+import { useBatchVerificationBadges, useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +36,10 @@ const Messages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [chatPartner, setChatPartner] = useState<{ name: string; photo: string } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const conversationUserIds = useMemo(() => conversations.map(c => c.oderId), [conversations]);
+  const badges = useBatchVerificationBadges(conversationUserIds);
+  const activeChatBadge = useVerificationBadge(activeChat || undefined);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -217,7 +223,10 @@ const Messages = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold truncate">{conv.otherName}</p>
+                      <p className="text-[11px] font-bold truncate flex items-center gap-0">
+                        {conv.otherName}
+                        <VerificationBadge {...(badges.get(conv.oderId) || {})} />
+                      </p>
                       <p className="text-[9px] text-muted-foreground truncate">{conv.lastMessage}</p>
                     </div>
                     {conv.unreadCount > 0 && (
@@ -248,9 +257,12 @@ const Messages = () => {
                           <span className="text-[8px]">👤</span>
                         )}
                       </div>
-                      <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
-                        {chatPartner.name}
-                      </Link>
+                      <div className="flex items-center gap-0">
+                        <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
+                          {chatPartner.name}
+                        </Link>
+                        <VerificationBadge {...activeChatBadge} />
+                      </div>
                     </div>
                   )}
 
