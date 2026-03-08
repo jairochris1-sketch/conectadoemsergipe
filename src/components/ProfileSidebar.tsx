@@ -39,7 +39,9 @@ const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate, createdA
       </div>
       <div className="mt-3 border-t border-border pt-2 text-[11px]">
         <p className="font-bold text-primary mb-1">{t("sidebar.info")}</p>
-        <p>{t("sidebar.member_since")}</p>
+        {createdAt && (
+          <p>📅 {t("sidebar.member_since_label") || "Membro desde"}: {new Date(createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
+        )}
         <p>{t("sidebar.status")}</p>
         <p>{t("sidebar.looking_for")}</p>
       </div>
