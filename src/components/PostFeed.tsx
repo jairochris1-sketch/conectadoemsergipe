@@ -385,26 +385,110 @@ const PostFeed = ({ userName }: PostFeedProps) => {
         </div>
       )}
 
-      {/* Lightbox */}
-      {lightboxUrl && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
-          onClick={() => setLightboxUrl(null)}
-        >
-          <button
-            onClick={() => setLightboxUrl(null)}
-            className="absolute top-3 right-3 text-white text-2xl bg-transparent border-none cursor-pointer hover:opacity-80 z-10"
+      {/* Lightbox with comments */}
+      {lightboxPost && (() => {
+        const post = posts.find(p => p.id === lightboxPost);
+        if (!post || !post.imageUrl) return null;
+        return (
+          <div
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+            onClick={() => setLightboxPost(null)}
           >
-            ✕
-          </button>
-          <img
-            src={lightboxUrl}
-            alt="Ampliada"
-            className="max-w-[90vw] max-h-[90vh] object-contain rounded"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
-      )}
+            <button
+              onClick={() => setLightboxPost(null)}
+              className="absolute top-3 right-3 text-white/80 hover:text-white text-2xl bg-transparent border-none cursor-pointer z-10"
+            >
+              ✕
+            </button>
+            <div
+              className="flex w-[95vw] max-w-[1100px] h-[90vh] max-h-[700px] bg-card rounded overflow-hidden shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Left: Image */}
+              <div className="flex-1 bg-black flex items-center justify-center min-w-0">
+                <img
+                  src={post.imageUrl}
+                  alt="Ampliada"
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+              {/* Right: Post info + Comments */}
+              <div className="w-[320px] shrink-0 flex flex-col border-l border-border bg-card">
+                {/* Author header */}
+                <div className="flex items-center gap-2 p-3 border-b border-border">
+                  <div className="w-[32px] h-[32px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
+                    {post.authorPhoto ? (
+                      <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-[8px] text-muted-foreground flex items-center justify-center h-full">{t("photo")}</span>
+                    )}
+                  </div>
+                  <div>
+                    <Link to={`/user/${post.authorId}`} className="text-[12px] font-bold hover:underline" onClick={() => setLightboxPost(null)}>
+                      {post.authorName}
+                    </Link>
+                    <p className="text-[10px] text-muted-foreground">{formatDate(post.timestamp)}</p>
+                  </div>
+                </div>
+                {/* Post content */}
+                {post.content && (
+                  <div className="px-3 py-2 border-b border-border">
+                    <p className="text-[11px]">
+                      {post.content.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+                        /^https?:\/\//.test(part) ? (
+                          <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all hover:opacity-80">{part}</a>
+                        ) : part
+                      )}
+                    </p>
+                  </div>
+                )}
+                {/* Comments list */}
+                <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+                  {(comments[post.id] || []).length === 0 && (
+                    <p className="text-[10px] text-muted-foreground">{t("comments.show")}</p>
+                  )}
+                  {(comments[post.id] || []).map((c) => (
+                    <div key={c.id} className="flex gap-2">
+                      <div className="shrink-0 w-[24px] h-[24px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
+                        <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                      </div>
+                      <div className="bg-accent rounded px-2 py-1 min-w-0">
+                        <p className="text-[10px]">
+                          <span className="font-bold">{c.authorName}</span>{" "}{c.content}
+                        </p>
+                        <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Add comment */}
+                {user && (
+                  <div className="flex gap-1 p-2 border-t border-border">
+                    <input
+                      type="text"
+                      value={commentTexts[post.id] || ""}
+                      onChange={(e) => setCommentTexts((prev) => ({ ...prev, [post.id]: e.target.value }))}
+                      className="flex-1 border border-border p-1 text-[10px] bg-card rounded"
+                      placeholder={t("comments.placeholder")}
+                      onKeyDown={async (e) => {
+                        if (e.key === "Enter") {
+                          await handleAddComment(post.id);
+                        }
+                      }}
+                    />
+                    <button
+                      onClick={() => handleAddComment(post.id)}
+                      className="bg-primary text-primary-foreground border-none px-2 py-1 text-[10px] cursor-pointer hover:opacity-90 rounded"
+                    >
+                      {t("comments.send")}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
