@@ -25,12 +25,12 @@ const VerificationBadge = ({ verified, businessVerified, isAdmin, isModerator, s
       )}
       {businessVerified && (
         <span title="Empresa Verificada" className="inline-flex items-center ml-[2px]">
-          <BadgeCheck className={`${iconSize}`} style={{ color: "#d4a017" }} fill="currentColor" stroke="white" />
+          <BadgeCheck className={`${iconSize}`} style={{ color: "#d4a017", stroke: "#fff" }} fill="#d4a017" />
         </span>
       )}
       {verified && !businessVerified && (
         <span title="Verificado" className="inline-flex items-center ml-[2px]">
-          <BadgeCheck className={`${iconSize} text-primary`} fill="currentColor" stroke="white" />
+          <BadgeCheck className={`${iconSize}`} style={{ color: "#1a56db", stroke: "#fff" }} fill="#1a56db" />
         </span>
       )}
     </>
