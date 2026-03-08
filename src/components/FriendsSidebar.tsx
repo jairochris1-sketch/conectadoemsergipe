@@ -4,6 +4,7 @@ import { useSocial } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import VerificationBadge from "@/components/VerificationBadge";
 import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
+import { useOnlineStatus } from "@/hooks/usePresence";
 
 const FriendsSidebar = () => {
   const { t } = useLanguage();
