@@ -223,7 +223,10 @@ const Messages = () => {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold truncate">{conv.otherName}</p>
+                      <p className="text-[11px] font-bold truncate flex items-center gap-0">
+                        {conv.otherName}
+                        <VerificationBadge {...(badges.get(conv.oderId) || {})} />
+                      </p>
                       <p className="text-[9px] text-muted-foreground truncate">{conv.lastMessage}</p>
                     </div>
                     {conv.unreadCount > 0 && (
