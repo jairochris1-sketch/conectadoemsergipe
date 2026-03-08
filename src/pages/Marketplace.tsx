@@ -59,7 +59,7 @@ const Marketplace = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { recommendations, trackView } = useMarketplaceRecommendations();
+  const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
   const loadItems = useCallback(async () => {
     // Load active sponsored campaign item IDs
