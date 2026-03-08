@@ -62,19 +62,17 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-card">
-      {/* Banner image from admin */}
-      {bannerImage && (
-        <div className="max-w-[760px] mx-auto bg-primary overflow-hidden" style={{ height: '140px' }}>
-          <img
-            src={bannerImage}
-            alt="Banner"
-            className="w-full h-full object-cover block"
-          />
-        </div>
-      )}
-
-      {/* Blue header bar */}
+      {/* Blue header bar with optional banner */}
       <div className="bg-primary">
+        {bannerImage && (
+          <div className="max-w-[760px] mx-auto overflow-hidden" style={{ height: '140px' }}>
+            <img
+              src={bannerImage}
+              alt="Banner"
+              className="w-full h-full object-cover block"
+            />
+          </div>
+        )}
         <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
           <h1
             className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
