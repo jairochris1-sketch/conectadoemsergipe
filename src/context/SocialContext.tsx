@@ -29,6 +29,8 @@ export interface FriendRequest {
   fromName: string;
   fromPhoto: string;
   toId: string;
+  toName: string;
+  toPhoto: string;
   status: "pending" | "accepted" | "rejected";
 }
 
