@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Mail } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 interface FacebookHeaderProps {
   isLoggedIn: boolean;
