@@ -87,6 +87,22 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                   <a href="#" className="font-bold">{post.authorName}</a>{" "}{post.content}
                 </p>
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
+                {isAdmin && post.authorId !== user?.id && (
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      onClick={async () => { await deletePost(post.id); await refreshPosts(); }}
+                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline"
+                    >
+                      {t("admin.delete_post")}
+                    </button>
+                    <button
+                      onClick={() => setBanModal({ userId: post.authorId, userName: post.authorName })}
+                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline"
+                    >
+                      {t("admin.ban_user")}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
