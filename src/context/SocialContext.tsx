@@ -138,9 +138,11 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     refreshFriendships();
   }, [refreshFriendships]);
 
-  const createPost = async (content: string) => {
+  const createPost = async (content: string, imageUrl?: string) => {
     if (!user) return;
-    await supabase.from("posts").insert({ user_id: user.id, content });
+    const insertData: any = { user_id: user.id, content };
+    if (imageUrl) insertData.image_url = imageUrl;
+    await supabase.from("posts").insert(insertData);
     await refreshPosts();
   };
 
