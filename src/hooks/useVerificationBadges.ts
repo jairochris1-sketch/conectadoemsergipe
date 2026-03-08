@@ -5,13 +5,14 @@ interface BadgeInfo {
   verified: boolean;
   businessVerified: boolean;
   isAdmin: boolean;
+  isModerator: boolean;
 }
 
 // Cache for badge info to avoid repeated queries
 const badgeCache = new Map<string, BadgeInfo>();
 
 export const useVerificationBadge = (userId: string | undefined) => {
-  const [badge, setBadge] = useState<BadgeInfo>({ verified: false, businessVerified: false, isAdmin: false });
+  const [badge, setBadge] = useState<BadgeInfo>({ verified: false, businessVerified: false, isAdmin: false, isModerator: false });
 
   useEffect(() => {
     if (!userId) return;
@@ -21,15 +22,17 @@ export const useVerificationBadge = (userId: string | undefined) => {
     }
 
     const fetch = async () => {
-      const [profileRes, roleRes] = await Promise.all([
+      const [profileRes, adminRes, modRes] = await Promise.all([
         supabase.from("profiles").select("verified, business_verified").eq("user_id", userId).single() as any,
         (supabase.rpc as any)("has_role", { _user_id: userId, _role: "admin" }),
+        (supabase.rpc as any)("has_role", { _user_id: userId, _role: "moderator" }),
       ]);
 
       const info: BadgeInfo = {
         verified: profileRes.data?.verified ?? false,
         businessVerified: profileRes.data?.business_verified ?? false,
-        isAdmin: !!roleRes.data,
+        isAdmin: !!adminRes.data,
+        isModerator: !!modRes.data,
       };
       badgeCache.set(userId, info);
       setBadge(info);
@@ -61,26 +64,27 @@ export const useBatchVerificationBadges = (userIds: string[]) => {
     const fetch = async () => {
       const [profileRes, rolesRes] = await Promise.all([
         supabase.from("profiles").select("user_id, verified, business_verified").in("user_id", uncachedIds) as any,
-        supabase.from("user_roles").select("user_id, role").in("user_id", uncachedIds).eq("role", "admin") as any,
+        supabase.from("user_roles").select("user_id, role").in("user_id", uncachedIds) as any,
       ]);
 
-      const adminSet = new Set((rolesRes.data || []).map(r => r.user_id));
+      const adminSet = new Set((rolesRes.data || []).filter((r: any) => r.role === "admin").map((r: any) => r.user_id));
+      const modSet = new Set((rolesRes.data || []).filter((r: any) => r.role === "moderator").map((r: any) => r.user_id));
       const result = new Map(cached);
 
-      (profileRes.data || []).forEach(p => {
+      (profileRes.data || []).forEach((p: any) => {
         const info: BadgeInfo = {
           verified: p.verified ?? false,
           businessVerified: p.business_verified ?? false,
           isAdmin: adminSet.has(p.user_id),
+          isModerator: modSet.has(p.user_id),
         };
         badgeCache.set(p.user_id, info);
         result.set(p.user_id, info);
       });
 
-      // Handle IDs not in profiles result
       uncachedIds.forEach(id => {
         if (!result.has(id)) {
-          const info: BadgeInfo = { verified: false, businessVerified: false, isAdmin: adminSet.has(id) };
+          const info: BadgeInfo = { verified: false, businessVerified: false, isAdmin: adminSet.has(id), isModerator: modSet.has(id) };
           badgeCache.set(id, info);
           result.set(id, info);
         }

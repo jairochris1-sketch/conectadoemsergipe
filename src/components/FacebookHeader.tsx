@@ -4,6 +4,7 @@ import { Search, Mail, Menu, X } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useModerator } from "@/hooks/useModerator";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { useAdminReports } from "@/hooks/useAdminReports";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,6 +26,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
+  const { isModerator } = useModerator();
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
@@ -74,6 +76,11 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   {pendingReports}
                 </span>
               )}
+            </Link>
+          )}
+          {isModerator && !isAdmin && (
+            <Link to="/moderator" className="text-primary-foreground font-bold text-[11px] hover:underline" onClick={onNav}>
+              ⭐ Colaborador
             </Link>
           )}
           <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline text-left">

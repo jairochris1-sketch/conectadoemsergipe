@@ -6,6 +6,7 @@ import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
 import AdminBadgeManager from "@/components/AdminBadgeManager";
+import AdminModeratorManager from "@/components/AdminModeratorManager";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -43,7 +44,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -157,6 +158,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "badges" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🏅 Selos
             </button>
+            <button onClick={() => setTab("moderators")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "moderators" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🤝 Colaboradores
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -172,8 +177,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "moderators" ? (
+            <AdminModeratorManager />
           ) : tab === "badges" ? (
             <AdminBadgeManager />
           ) : tab === "footer" ? (
