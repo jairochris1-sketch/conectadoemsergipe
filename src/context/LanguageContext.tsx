@@ -293,6 +293,13 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.unban": "Remover Ban",
     "admin.panel": "Admin",
     "public_profile.not_found": "Usuario no encontrado.",
+    "messages": "Mensajes",
+    "messages.title": "Mensajes",
+    "messages.no_conversations": "Sin conversaciones aún.",
+    "messages.select_conversation": "Seleccione una conversación para comenzar.",
+    "messages.placeholder": "Escribe tu mensaje...",
+    "messages.send": "Enviar",
+    "messages.send_message": "Enviar mensaje",
   },
   en: {
     "welcome": "welcome",
