@@ -28,7 +28,7 @@ const translations: Record<Language, Record<string, string>> = {
     "guest_user": "Visitante",
     "login_to_see": "Entre para ver seu perfil",
     // PostFeed
-    "the_wall": "O Mural",
+    "the_wall": "Destaques",
     "write_something": "Escreva algo:",
     "whats_on_mind": "O que está na sua mente?",
     "post": "Postar",
