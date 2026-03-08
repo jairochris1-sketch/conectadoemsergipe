@@ -34,15 +34,14 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     }
   };
 
-  const navLinks = (
+  const navLinks = (onNav?: () => void) => (
     <>
       {isLoggedIn ? (
         <>
-          <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>
-          <Link to="/" className="text-primary-foreground text-[11px]" onClick={() => setMenuOpen(false)}>{t("home")}</Link>
-          <Link to="/profile" className="text-primary-foreground text-[11px]" onClick={() => setMenuOpen(false)}>{t("profile")}</Link>
-          <Link to="/marketplace" className="text-primary-foreground text-[11px]" onClick={() => setMenuOpen(false)}>{t("marketplace")}</Link>
-          <Link to="/messages" className="text-primary-foreground relative inline-flex items-center gap-[2px] text-[11px]" onClick={() => setMenuOpen(false)}>
+          <Link to="/" className="text-primary-foreground text-[11px] hover:underline" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="text-primary-foreground text-[11px] hover:underline" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="text-primary-foreground text-[11px] hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/messages" className="text-primary-foreground relative inline-flex items-center gap-[2px] text-[11px] hover:underline" onClick={onNav}>
             <Mail className="w-3 h-3" />
             {t("messages")}
             {unreadCount > 0 && (
@@ -52,7 +51,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
             )}
           </Link>
           {isAdmin && (
-            <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-[2px] text-[11px]" onClick={() => setMenuOpen(false)}>
+            <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-[2px] text-[11px] hover:underline" onClick={onNav}>
               {t("admin.panel")}
               {pendingReports > 0 && (
                 <span className="bg-destructive text-destructive-foreground text-[8px] font-bold px-[4px] py-[1px] rounded-full leading-none">
@@ -61,14 +60,14 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               )}
             </Link>
           )}
-          <button onClick={() => { onLogout?.(); setMenuOpen(false); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline text-left">
+          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline text-left">
             {t("logout")}
           </button>
         </>
       ) : (
         <>
-          <Link to="/login" className="text-primary-foreground text-[11px]" onClick={() => setMenuOpen(false)}>{t("login")}</Link>
-          <Link to="/register" className="text-primary-foreground text-[11px]" onClick={() => setMenuOpen(false)}>{t("register")}</Link>
+          <Link to="/login" className="text-primary-foreground text-[11px] hover:underline" onClick={onNav}>{t("login")}</Link>
+          <Link to="/register" className="text-primary-foreground text-[11px] hover:underline" onClick={onNav}>{t("register")}</Link>
         </>
       )}
     </>
@@ -111,7 +110,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   </button>
                 ))}
               </div>
-              {navLinks}
+              {isLoggedIn && <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>}
+              {navLinks()}
             </div>
           </>
         )}
@@ -165,7 +165,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
                 {/* Nav links stacked */}
                 <div className="flex flex-col gap-3">
-                  {navLinks}
+                  {navLinks(() => setMenuOpen(false))}
                 </div>
               </SheetContent>
             </Sheet>
