@@ -11,6 +11,7 @@ import InlineBannerAd from "@/components/InlineBannerAd";
 import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
+import { useForbiddenWords } from "@/hooks/useForbiddenWords";
 import { toast } from "sonner";
 
 interface PostFeedProps {
@@ -48,6 +49,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
+  const { containsForbiddenWord } = useForbiddenWords();
 
   // Collect all unique user IDs from posts and comments for badge fetching
   const allUserIds = useMemo(() => {
@@ -75,6 +77,10 @@ const PostFeed = ({ userName }: PostFeedProps) => {
 
   const handlePost = async () => {
     if ((!newPost.trim() && !postImage) || !user) return;
+    if (newPost.trim() && containsForbiddenWord(newPost)) {
+      toast.error("Palavras ou mensagem proibida segundo as regras do conectadoemsergipe.");
+      return;
+    }
     setUploading(true);
     let imageUrl: string | undefined;
 
@@ -111,6 +117,10 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const handleAddComment = async (postId: string) => {
     const text = commentTexts[postId]?.trim();
     if (!text || !user) return;
+    if (containsForbiddenWord(text)) {
+      toast.error("Palavras ou mensagem proibida segundo as regras do conectadoemsergipe.");
+      return;
+    }
     await addComment(postId, text);
     setCommentTexts((prev) => ({ ...prev, [postId]: "" }));
     const data = await getComments(postId);

@@ -190,6 +190,27 @@ export type Database = {
         }
         Relationships: []
       }
+      forbidden_words: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          word: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          word: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          word?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
