@@ -29,8 +29,8 @@ const Index = () => {
           </div>
         )}
 
-        <div className="flex gap-3">
-          <div className="w-[180px] shrink-0">
+        <div className="flex flex-col md:flex-row gap-3">
+          <div className="w-full md:w-[180px] md:shrink-0">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -43,7 +43,7 @@ const Index = () => {
           <div className="flex-1 min-w-0">
             <PostFeed userName={user?.name} />
           </div>
-          <div className="w-[180px] shrink-0">
+          <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />
           </div>
         </div>
