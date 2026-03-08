@@ -29,7 +29,20 @@ interface MarketItem {
   whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
+  condition?: string;
 }
+
+const CONDITION_LABELS: Record<string, string> = {
+  new: "marketplace.condition_new",
+  used: "marketplace.condition_used",
+  recently_bought: "marketplace.condition_recently_bought",
+};
+
+const formatPriceDisplay = (price: string): string => {
+  const num = parseFloat(price);
+  if (isNaN(num)) return price;
+  return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
 
 interface Props {
   item: MarketItem;
