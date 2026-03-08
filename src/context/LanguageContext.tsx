@@ -406,6 +406,8 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.whatsapp_required": "Ingrese el número de WhatsApp de contacto",
     "marketplace.whatsapp_message": "¡Hola! Estoy interesado en el producto:",
     "marketplace.max_images_reached": "Límite de 5 fotos alcanzado",
+    "marketplace.share": "Compartir",
+    "marketplace.link_copied": "¡Enlace copiado!",
     "marketplace.condition": "Condición",
     "marketplace.condition_new": "Nuevo",
     "marketplace.condition_used": "Usado",
