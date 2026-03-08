@@ -177,11 +177,13 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          images: Json | null
           price: string
           sold: boolean
           title: string
           user_id: string
           view_count: number
+          whatsapp: string
         }
         Insert: {
           category?: string
@@ -190,11 +192,13 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          images?: Json | null
           price: string
           sold?: boolean
           title: string
           user_id: string
           view_count?: number
+          whatsapp?: string
         }
         Update: {
           category?: string
@@ -203,11 +207,13 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          images?: Json | null
           price?: string
           sold?: boolean
           title?: string
           user_id?: string
           view_count?: number
+          whatsapp?: string
         }
         Relationships: []
       }
