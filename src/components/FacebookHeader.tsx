@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Mail, Menu, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
