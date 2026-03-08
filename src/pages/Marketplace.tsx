@@ -238,8 +238,9 @@ const Marketplace = () => {
               <p className="text-sm text-muted-foreground">{t("marketplace.no_items")}</p>
             )}
           </div>
+            </div>
+          </div>
         </div>
-      </div>
       <FacebookFooter />
     </div>
   );
