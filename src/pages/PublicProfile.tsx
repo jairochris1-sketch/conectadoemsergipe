@@ -155,6 +155,8 @@ const PublicProfile = () => {
                 </div>
               </div>
             </div>
+
+            <ProfileMarketplaceStrip />
           </div>
           <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />

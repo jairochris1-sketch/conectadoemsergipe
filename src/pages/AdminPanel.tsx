@@ -199,6 +199,8 @@ const AdminPanel = () => {
 
           {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "featured" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "featured" ? (
+            <AdminFeaturedMarketplace />
           ) : tab === "forbidden" ? (
             <AdminForbiddenWords />
           ) : tab === "banners" ? (
