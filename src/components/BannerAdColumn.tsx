@@ -17,18 +17,23 @@ const BannerAdColumn = ({ position }: BannerAdColumnProps) => {
   const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
+    const now = new Date().toISOString();
     supabase
       .from("banner_ads")
       .select("id, title, image_url, link_url")
       .eq("is_active", true)
       .or(`position.eq.${position},position.eq.both`)
+      .lte("starts_at", now)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
-        if (data && data.length > 0) setBanners(data);
+        // Client-side filter for ends_at (nullable = no expiry)
+        const active = (data || []).filter(
+          (b: any) => !b.ends_at || new Date(b.ends_at) > new Date()
+        );
+        if (active.length > 0) setBanners(active);
       });
   }, [position]);
 
-  // Track impressions for all visible banners
   useEffect(() => {
     banners.forEach((b) => {
       if (!trackedImpressions.current.has(b.id)) {

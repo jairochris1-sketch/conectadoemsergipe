@@ -43,6 +43,7 @@ export type Database = {
           click_count: number
           created_at: string
           created_by: string | null
+          ends_at: string | null
           id: string
           image_url: string
           impression_count: number
@@ -50,12 +51,14 @@ export type Database = {
           link_url: string
           position: string
           sort_order: number
+          starts_at: string
           title: string
         }
         Insert: {
           click_count?: number
           created_at?: string
           created_by?: string | null
+          ends_at?: string | null
           id?: string
           image_url: string
           impression_count?: number
@@ -63,12 +66,14 @@ export type Database = {
           link_url?: string
           position?: string
           sort_order?: number
+          starts_at?: string
           title?: string
         }
         Update: {
           click_count?: number
           created_at?: string
           created_by?: string | null
+          ends_at?: string | null
           id?: string
           image_url?: string
           impression_count?: number
@@ -76,6 +81,7 @@ export type Database = {
           link_url?: string
           position?: string
           sort_order?: number
+          starts_at?: string
           title?: string
         }
         Relationships: []
