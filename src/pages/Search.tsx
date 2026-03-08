@@ -23,6 +23,8 @@ const SearchPage = () => {
   const { t } = useLanguage();
   const { sendFriendRequest, isFriend, hasPendingRequest, searchProfiles } = useSocial();
   const [people, setPeople] = useState<{ id: string; name: string; school: string; photo: string }[]>([]);
+  const peopleIds = useMemo(() => people.map(p => p.id), [people]);
+  const badges = useBatchVerificationBadges(peopleIds);
 
   useEffect(() => {
     if (query) {
