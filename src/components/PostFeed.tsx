@@ -29,6 +29,9 @@ const abbreviateCity = (city: string) => {
 
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [newPost, setNewPost] = useState("");
+  const [postImage, setPostImage] = useState<{ blob: Blob; preview: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [openComments, setOpenComments] = useState<Record<string, boolean>>({});
@@ -42,10 +45,41 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
 
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const result = await validateAndCompressImage(file);
+      setPostImage(result);
+    } catch (err: any) {
+      if (err.message === "FILE_TOO_LARGE") {
+        toast.error(t("post.image_too_large"));
+      } else {
+        toast.error(t("post.image_error"));
+      }
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handlePost = async () => {
-    if (!newPost.trim() || !user) return;
-    await createPost(newPost.trim());
+    if ((!newPost.trim() && !postImage) || !user) return;
+    setUploading(true);
+    let imageUrl: string | undefined;
+
+    if (postImage) {
+      const ext = "jpg";
+      const path = `posts/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("avatars").upload(path, postImage.blob, { upsert: true, contentType: "image/jpeg" });
+      if (!error) {
+        const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+        imageUrl = data.publicUrl;
+      }
+    }
+
+    await createPost(newPost.trim(), imageUrl);
     setNewPost("");
+    setPostImage(null);
+    setUploading(false);
   };
 
   const toggleComments = async (postId: string) => {
