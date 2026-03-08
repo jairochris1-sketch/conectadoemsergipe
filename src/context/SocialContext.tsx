@@ -11,6 +11,16 @@ export interface Post {
   timestamp: Date;
 }
 
+export interface Comment {
+  id: string;
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorPhoto: string;
+  content: string;
+  timestamp: Date;
+}
+
 export interface FriendRequest {
   id: string;
   fromId: string;
