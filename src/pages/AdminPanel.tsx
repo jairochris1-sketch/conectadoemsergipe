@@ -163,6 +163,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "moderators" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🤝 Colaboradores
             </button>
+            <button onClick={() => setTab("logs")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "logs" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              📋 Logs
+            </button>
           </div>
 
           {tab === "reports" && (
