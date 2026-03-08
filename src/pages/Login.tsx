@@ -92,7 +92,7 @@ const Login = () => {
               <Link to="/register" className="text-primary-foreground hover:underline">
                 {t("register")}
               </Link>
-              <Link to="/page/about" className="text-primary-foreground hover:underline">
+              <Link to="/sobre" className="text-primary-foreground hover:underline">
                 {t("login.about")}
               </Link>
               <span className="text-primary-foreground/50">|</span>
@@ -262,7 +262,7 @@ const Login = () => {
       {/* Footer - matching TheFacebook 2004 style */}
       <div className="text-center text-[10px] text-muted-foreground py-4 border-t border-border mt-4 max-w-[760px] mx-auto">
         <div className="flex justify-center gap-2 flex-wrap">
-          <Link to="/page/about" className="hover:underline text-muted-foreground">
+          <Link to="/sobre" className="hover:underline text-muted-foreground">
             {t("footer.about")}
           </Link>
           <span>·</span>
