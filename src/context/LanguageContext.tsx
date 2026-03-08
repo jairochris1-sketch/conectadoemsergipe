@@ -405,6 +405,17 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.follow": "Follow",
     "admin.unfollow": "Unfollow",
     "admin.followers": "Followers",
+    "admin.panel_title": "Admin Panel",
+    "admin.active_bans": "Active Bans",
+    "admin.expired_bans": "Expired Bans",
+    "admin.loading": "Loading...",
+    "admin.no_bans": "No bans found.",
+    "admin.banned_user": "Banned user",
+    "admin.banned_by_label": "Banned by",
+    "admin.banned_at": "Ban date",
+    "admin.banned_until_label": "Banned until",
+    "admin.unban": "Remove Ban",
+    "admin.panel": "Admin",
   },
 };
 
