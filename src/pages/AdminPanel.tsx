@@ -6,6 +6,7 @@ import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
 import AdminBadgeManager from "@/components/AdminBadgeManager";
+import AdminModeratorManager from "@/components/AdminModeratorManager";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
