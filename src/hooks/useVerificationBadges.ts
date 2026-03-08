@@ -22,7 +22,7 @@ export const useVerificationBadge = (userId: string | undefined) => {
 
     const fetch = async () => {
       const [profileRes, roleRes] = await Promise.all([
-        supabase.from("profiles").select("verified, business_verified").eq("user_id", userId).single(),
+        supabase.from("profiles").select("verified, business_verified").eq("user_id", userId).single() as any,
         (supabase.rpc as any)("has_role", { _user_id: userId, _role: "admin" }),
       ]);
 
