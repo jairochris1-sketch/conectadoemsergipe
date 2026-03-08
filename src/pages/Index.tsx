@@ -72,6 +72,8 @@ const Index = () => {
             <MarketplaceHighlights />
           </div>
 
+          <HomepageMarketplace />
+
           <PostFeed userName={user?.name} />
 
           {/* Mobile-only: Friends below feed */}
