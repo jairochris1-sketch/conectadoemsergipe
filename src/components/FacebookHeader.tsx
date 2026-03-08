@@ -81,7 +81,16 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   </span>
                 )}
               </Link>
-              {isAdmin && <Link to="/admin" className="text-primary-foreground font-bold">{t("admin.panel")}</Link>}
+              {isAdmin && (
+                <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-[2px]">
+                  {t("admin.panel")}
+                  {pendingReports > 0 && (
+                    <span className="bg-destructive text-destructive-foreground text-[8px] font-bold px-[4px] py-[1px] rounded-full leading-none">
+                      {pendingReports}
+                    </span>
+                  )}
+                </Link>
+              )}
               <button onClick={onLogout} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline">
                 {t("logout")}
               </button>
