@@ -10,41 +10,21 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [school, setSchool] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
   const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await register(name, email, password, school);
+    const result = await register(name, email, password, school, phone || undefined);
     if (result) {
-      setSuccess(true);
+      navigate("/");
     } else {
       setError(t("register.email_exists"));
     }
   };
-
-  if (success) {
-    return (
-      <div className="min-h-screen bg-background">
-        <FacebookHeader isLoggedIn={false} />
-        <div className="max-w-[400px] mx-auto mt-8 px-2">
-          <div className="bg-card border border-border p-4 text-center">
-            <h2 className="text-[16px] font-bold text-primary mb-3" style={{ fontFamily: 'Georgia, serif' }}>
-              ✓ {t("register.submit")}
-            </h2>
-            <p className="text-[11px] text-foreground mb-3">
-              Verifique seu email para confirmar o cadastro. Depois, faça login.
-            </p>
-            <Link to="/login" className="text-[11px] text-primary font-bold">{t("login")}</Link>
-          </div>
-        </div>
-        <FacebookFooter />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -64,6 +44,10 @@ const Register = () => {
             <div>
               <label className="block font-bold mb-1">{t("register.email")}</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required />
+            </div>
+            <div>
+              <label className="block font-bold mb-1">{t("register.phone")}</label>
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" placeholder={t("register.phone_placeholder")} />
             </div>
             <div>
               <label className="block font-bold mb-1">{t("register.password")}</label>

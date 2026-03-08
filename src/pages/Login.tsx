@@ -7,7 +7,7 @@ import { useLanguage, Language } from "@/context/LanguageContext";
 const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login } = useAuth();
@@ -16,7 +16,7 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(email, password);
+    const success = await login(identifier, password);
     if (success) {
       navigate("/");
     } else {
@@ -46,11 +46,18 @@ const Login = () => {
       </div>
 
       <div className="max-w-[760px] mx-auto px-2 py-3 flex gap-0">
-        <div className="w-[140px] shrink-0 border border-border bg-accent p-2 text-[11px]">
+        <div className="w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
           <form onSubmit={handleSubmit} className="space-y-1">
             <div>
               <label className="block font-bold">{t("login.email")}</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-border p-[2px] text-[11px] bg-card" required />
+              <input
+                type="text"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                className="w-full border border-border p-[2px] text-[11px] bg-card"
+                placeholder={t("login.email_placeholder")}
+                required
+              />
             </div>
             <div>
               <label className="block font-bold">{t("login.password")}</label>
@@ -88,7 +95,7 @@ const Login = () => {
               <Link to="/register">
                 <button className="bg-muted border border-border px-4 py-1 text-[11px] cursor-pointer font-bold">{t("register")}</button>
               </Link>
-              <button onClick={() => document.querySelector<HTMLInputElement>('input[type="email"]')?.focus()} className="bg-muted border border-border px-4 py-1 text-[11px] cursor-pointer font-bold">
+              <button onClick={() => document.querySelector<HTMLInputElement>('input[type="text"]')?.focus()} className="bg-muted border border-border px-4 py-1 text-[11px] cursor-pointer font-bold">
                 {t("login")}
               </button>
             </div>
