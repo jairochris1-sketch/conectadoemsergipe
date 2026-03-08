@@ -237,12 +237,6 @@ const Messages = () => {
             {/* Chat header */}
             {chatPartner && (
               <div className="border-b border-border p-2 flex items-center gap-2 bg-card shrink-0">
-                <button
-                  onClick={() => setSearchParams({})}
-                  className="text-[11px] text-primary font-bold bg-transparent border-none cursor-pointer mr-1"
-                >
-                  ← Voltar
-                </button>
                 <div className="relative w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                   {chatPartner.photo ? (
                     <img src={chatPartner.photo} alt={chatPartner.name} className="w-full h-full object-cover" />
