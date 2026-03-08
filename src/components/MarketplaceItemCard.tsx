@@ -111,6 +111,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
             </AlertDialog>
           </div>
         )}
+        {currentUserId && !isOwner && (
+          <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+            <ReportButton contentType="marketplace_item" contentId={item.id} reportedUserId={item.sellerId} className="text-[8px]" />
+          </div>
+        )}
       </div>
     );
   }
