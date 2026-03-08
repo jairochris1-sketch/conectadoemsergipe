@@ -500,7 +500,7 @@ const translations: Record<Language, Record<string, string>> = {
     "index.login": "Login",
     "guest_user": "Guest User",
     "login_to_see": "Login to see your profile",
-    "the_wall": "The Wall",
+    "the_wall": "Highlights",
     "write_something": "Write something:",
     "whats_on_mind": "What's on your mind?",
     "post": "Post",
