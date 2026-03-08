@@ -295,7 +295,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.electronics": "Electronics",
     "marketplace.clothing": "Clothing",
     "marketplace.other": "Other",
-    "footer.production": "a Mark Zuckerberg production",
+    "footer.production": "a Jairo dos Santos production",
     "footer.about": "about",
     "footer.contact": "contact",
     "footer.privacy": "privacy",
