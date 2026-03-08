@@ -91,7 +91,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       <div className="max-w-[760px] mx-auto px-2 py-1">
         {/* Top row: logo + search */}
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0 flex items-center gap-2">
+            {bannerImage && (
+              <img
+                src={bannerImage}
+                alt=""
+                className="h-[28px] w-auto opacity-80"
+                style={{ filter: "grayscale(100%) hue-rotate(180deg)" }}
+              />
+            )}
             <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
               [ conectadosemsergipe ]
             </h1>
