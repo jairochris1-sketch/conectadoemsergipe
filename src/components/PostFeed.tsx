@@ -378,6 +378,27 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           </div>
         </div>
       )}
+
+      {/* Lightbox */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 cursor-pointer"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <button
+            onClick={() => setLightboxUrl(null)}
+            className="absolute top-3 right-3 text-white text-2xl bg-transparent border-none cursor-pointer hover:opacity-80 z-10"
+          >
+            ✕
+          </button>
+          <img
+            src={lightboxUrl}
+            alt="Ampliada"
+            className="max-w-[90vw] max-h-[90vh] object-contain rounded"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 };
