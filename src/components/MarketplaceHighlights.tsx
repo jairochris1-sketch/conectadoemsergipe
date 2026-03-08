@@ -87,6 +87,17 @@ const MarketplaceHighlights = () => {
           })}
         </div>
       )}
+
+      {items.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-border text-center">
+          <Link
+            to="/marketplace"
+            className="inline-block w-full bg-primary text-primary-foreground text-[11px] font-bold py-1.5 px-3 hover:opacity-90 transition-opacity no-underline"
+          >
+            🛒 Ver todos os produtos
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
