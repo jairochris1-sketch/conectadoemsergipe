@@ -185,8 +185,10 @@ const Messages = () => {
     };
   }, [user, activeChat, loadConversations]);
 
+  const canMessage = activeChat ? isFriend(activeChat) : false;
+
   const sendMessage = async () => {
-    if (!user || !activeChat || !newMessage.trim()) return;
+    if (!user || !activeChat || !newMessage.trim() || !canMessage) return;
     await supabase.from("messages").insert({
       sender_id: user.id,
       receiver_id: activeChat,
