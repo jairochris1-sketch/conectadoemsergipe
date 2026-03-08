@@ -182,6 +182,7 @@ const translations: Record<Language, Record<string, string>> = {
     // ProfileSidebar
     "sidebar.info": "Info",
     "sidebar.member_since": "Membro desde: Fevereiro 2004",
+    "sidebar.member_since_label": "Membro desde",
     "sidebar.status": "Status: Estudante",
     "sidebar.looking_for": "Buscando: Amizade",
     // Friends
