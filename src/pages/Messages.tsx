@@ -401,8 +401,17 @@ const Messages = () => {
                     {messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`flex ${msg.sender_id === user.id ? "justify-end" : "justify-start"}`}
+                        className={`flex items-end gap-1 ${msg.sender_id === user.id ? "justify-end" : "justify-start"}`}
                       >
+                        {msg.sender_id !== user.id && (
+                          <div className="w-[20px] h-[20px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-full">
+                            {chatPartner?.photo ? (
+                              <img src={chatPartner.photo} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[8px]">👤</span>
+                            )}
+                          </div>
+                        )}
                         <div
                           className={`max-w-[70%] px-2 py-1 text-[11px] ${
                             msg.sender_id === user.id
