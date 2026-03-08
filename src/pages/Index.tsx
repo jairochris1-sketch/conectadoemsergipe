@@ -6,6 +6,7 @@ import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
 import BannerAdColumn from "@/components/BannerAdColumn";
 import MarketplaceHighlights from "@/components/MarketplaceHighlights";
+import HomepageMarketplace from "@/components/HomepageMarketplace";
 import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
