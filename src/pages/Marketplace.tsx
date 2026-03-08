@@ -62,6 +62,14 @@ const Marketplace = () => {
   const { recommendations, trackView } = useMarketplaceRecommendations();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
   const loadItems = useCallback(async () => {
+    // Load active sponsored campaign item IDs
+    const { data: campaigns } = await supabase
+      .from("sponsored_campaigns")
+      .select("item_id")
+      .eq("status", "active");
+    const sponsoredSet = new Set((campaigns || []).map((c: any) => c.item_id));
+    setSponsoredIds(sponsoredSet);
+
     const { data } = await supabase
       .from("marketplace_items")
       .select("*")
@@ -78,19 +86,27 @@ const Marketplace = () => {
 
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
 
-    setItems(
-      data.map((d: any) => ({
-        id: d.id,
-        title: d.title,
-        price: d.price,
-        description: d.description || "",
-        seller: profileMap.get(d.user_id) || "Usuário",
-        sellerId: d.user_id,
-        category: d.category,
-        city: d.city || "",
-        imageUrl: d.image_url || "",
-      }))
-    );
+    const mapped = data.map((d: any) => ({
+      id: d.id,
+      title: d.title,
+      price: d.price,
+      description: d.description || "",
+      seller: profileMap.get(d.user_id) || "Usuário",
+      sellerId: d.user_id,
+      category: d.category,
+      city: d.city || "",
+      imageUrl: d.image_url || "",
+      isSponsored: sponsoredSet.has(d.id),
+    }));
+
+    // Sort: sponsored first, then by date
+    mapped.sort((a, b) => {
+      if (a.isSponsored && !b.isSponsored) return -1;
+      if (!a.isSponsored && b.isSponsored) return 1;
+      return 0;
+    });
+
+    setItems(mapped);
   }, []);
 
   useEffect(() => { loadItems(); }, [loadItems]);
