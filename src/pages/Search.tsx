@@ -60,7 +60,8 @@ const SearchPage = () => {
                       </div>
                     </div>
                     {user && user.id !== p.id && (
-                      <div>
+                      <div className="flex items-center gap-2">
+                        <FollowButton profileId={p.id} />
                         {isFriend(p.id) ? (
                           <span className="text-[10px] text-muted-foreground">✓ {t("friends.already")}</span>
                         ) : hasPendingRequest(p.id) ? (
