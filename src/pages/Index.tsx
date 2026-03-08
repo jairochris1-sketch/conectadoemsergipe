@@ -82,7 +82,7 @@ const Index = () => {
 
         {/* Right column: Friends + Ads */}
         <div className="hidden md:block w-[220px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
+          <div className="sticky top-[92px] flex flex-col gap-3 max-h-[calc(100vh-92px)] overflow-y-auto">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
             <BannerAdColumn position="right" />
