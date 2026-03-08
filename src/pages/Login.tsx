@@ -276,15 +276,6 @@ const Login = () => {
         </div>
         <p className="mt-1">{t("footer.production")}</p>
         <p>conectadosemsergipe © 2026</p>
-        {footerImage && (
-          <div className="mt-3 flex justify-center">
-            <img
-              src={footerImage}
-              alt="Footer"
-              className="max-w-[300px] max-h-[200px] object-contain"
-            />
-          </div>
-        )}
       </div>
     </div>
   );
