@@ -4,6 +4,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
+import ReportButton from "@/components/ReportButton";
 
 interface PostFeedProps {
   userName?: string;
