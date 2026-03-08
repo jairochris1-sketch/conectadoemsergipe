@@ -23,6 +23,7 @@ const Profile = () => {
 
   const friends = getFriends();
   const { followerCount, followingCount } = useFollowers(user?.id);
+  const badge = useVerificationBadge(user?.id);
 
   const handleSave = async () => {
     await updateProfile({ bio });
