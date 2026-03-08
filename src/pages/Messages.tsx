@@ -228,6 +228,7 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen sm:min-h-screen bg-background flex flex-col">
+      <SEOHead title="Mensagens" description="Converse com seus amigos no Conectados em Sergipe." path="/messages" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       
       {/* On mobile with active chat, make full screen chat */}

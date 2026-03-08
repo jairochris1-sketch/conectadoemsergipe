@@ -73,6 +73,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Meu Perfil" description="Gerencie seu perfil no Conectados em Sergipe." path="/profile" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="flex flex-col md:flex-row gap-3">

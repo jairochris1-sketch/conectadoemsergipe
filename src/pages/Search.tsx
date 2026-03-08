@@ -41,6 +41,7 @@ const SearchPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Buscar" description="Busque pessoas e lojas no Conectados em Sergipe." path="/search" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="bg-card border border-border p-3">

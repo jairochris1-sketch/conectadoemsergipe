@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FollowButton from "@/components/FollowButton";
 import VerificationBadge from "@/components/VerificationBadge";
