@@ -258,8 +258,11 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
       <div className="text-[11px] flex-1">
         <div className="flex justify-between">
           <a href="#" className="font-bold">{item.title}</a>
-          <span className="font-bold text-primary">{item.price}</span>
+          <span className="font-bold text-primary">{formatPriceDisplay(item.price)}</span>
         </div>
+        {item.condition && (
+          <span className="text-[9px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</span>
+        )}
         <p className="text-muted-foreground mt-1">{item.description}</p>
         <p className="mt-1 flex items-center gap-1 flex-wrap">
           {t("marketplace.seller")}: <a href="#">{item.seller}</a>
