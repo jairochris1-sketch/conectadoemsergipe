@@ -10,6 +10,7 @@ interface User {
   school: string;
   birthdate: string;
   city: string;
+  createdAt: string;
 }
 
 interface AuthContextType {
