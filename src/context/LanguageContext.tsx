@@ -346,6 +346,10 @@ const translations: Record<Language, Record<string, string>> = {
     "friends.already": "Friends",
     "friends.pending": "Pending",
     "friends.none": "No friends yet.",
+    "comments.show": "Comments",
+    "comments.hide": "Hide comments",
+    "comments.placeholder": "Write a comment...",
+    "comments.send": "Send",
   },
 };
 
