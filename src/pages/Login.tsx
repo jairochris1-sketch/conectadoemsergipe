@@ -14,7 +14,7 @@ const Login = () => {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
   const [forgotError, setForgotError] = useState("");
-  const [footerImage, setFooterImage] = useState("");
+  const [bannerImage, setBannerImage] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
