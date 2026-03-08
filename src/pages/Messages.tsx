@@ -219,8 +219,8 @@ const Messages = () => {
           </div>
 
           <div className="flex" style={{ minHeight: "400px" }}>
-            {/* Conversations sidebar */}
-            <div className="w-[200px] border-r border-border overflow-y-auto" style={{ maxHeight: "500px" }}>
+            {/* Conversations sidebar - hidden on mobile when chat is active */}
+            <div className={`w-full sm:w-[200px] border-r border-border overflow-y-auto ${activeChat ? "hidden sm:block" : "block"}`} style={{ maxHeight: "500px" }}>
               {conversations.length === 0 ? (
                 <p className="text-[11px] text-muted-foreground p-2">{t("messages.no_conversations")}</p>
               ) : (
@@ -259,8 +259,8 @@ const Messages = () => {
               )}
             </div>
 
-            {/* Chat area */}
-            <div className="flex-1 flex flex-col">
+            {/* Chat area - hidden on mobile when no chat is active */}
+            <div className={`flex-1 flex flex-col ${!activeChat ? "hidden sm:flex" : "flex"}`}>
               {!activeChat ? (
                 <div className="flex-1 flex items-center justify-center">
                   <p className="text-[11px] text-muted-foreground">{t("messages.select_conversation")}</p>
@@ -270,6 +270,12 @@ const Messages = () => {
                   {/* Chat header */}
                   {chatPartner && (
                     <div className="border-b border-border p-2 flex items-center gap-2">
+                      <button
+                        onClick={() => setSearchParams({})}
+                        className="sm:hidden text-[11px] text-primary font-bold bg-transparent border-none cursor-pointer mr-1"
+                      >
+                        ← Voltar
+                      </button>
                       <div className="relative w-[24px] h-[24px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
                         {chatPartner.photo ? (
                           <img src={chatPartner.photo} alt={chatPartner.name} className="w-full h-full object-cover" />
@@ -306,7 +312,7 @@ const Messages = () => {
                               : "bg-accent text-foreground border border-border"
                           }`}
                         >
-                          <p>{msg.content}</p>
+                          <p className="break-words">{msg.content}</p>
                           <p className={`text-[8px] mt-1 ${msg.sender_id === user.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                             {formatTime(msg.created_at)}
                             {msg.sender_id === user.id && (
