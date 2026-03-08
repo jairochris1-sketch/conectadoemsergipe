@@ -14,6 +14,7 @@ import SearchPage from "./pages/Search";
 import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
+import PublicProfile from "./pages/PublicProfile";
 
 const queryClient = new QueryClient();
 
