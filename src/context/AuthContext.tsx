@@ -37,6 +37,8 @@ async function fetchProfile(userId: string): Promise<User | null> {
     bio: data.bio || "",
     photoUrl: data.photo_url || "",
     school: data.school || "",
+    birthdate: data.birthdate || "",
+    city: data.city || "",
   };
 }
 
