@@ -142,7 +142,7 @@ const Messages = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Realtime subscription
+  // Realtime subscription for new messages
   useEffect(() => {
     if (!user) return;
 
@@ -156,13 +156,24 @@ const Messages = () => {
           if (msg.sender_id === user.id || msg.receiver_id === user.id) {
             if (activeChat && (msg.sender_id === activeChat || msg.receiver_id === activeChat)) {
               setMessages((prev) => [...prev, msg]);
-              // Mark as read if we're the receiver
               if (msg.receiver_id === user.id) {
                 supabase.from("messages").update({ read: true }).eq("id", msg.id);
               }
             }
             loadConversations();
           }
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "messages" },
+        (payload) => {
+          const updated = payload.new as Message;
+          // Update read receipts in real time
+          setMessages((prev) =>
+            prev.map((m) => (m.id === updated.id ? { ...m, read: updated.read } : m))
+          );
+          loadConversations();
         }
       )
       .subscribe();
