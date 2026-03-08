@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import ReportButton from "@/components/ReportButton";
 import { CATEGORY_KEYS } from "@/pages/Marketplace";
 import {
   AlertDialog,
