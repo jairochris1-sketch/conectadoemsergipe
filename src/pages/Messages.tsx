@@ -257,9 +257,12 @@ const Messages = () => {
                           <span className="text-[8px]">👤</span>
                         )}
                       </div>
-                      <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
-                        {chatPartner.name}
-                      </Link>
+                      <div className="flex items-center gap-0">
+                        <Link to={`/user/${activeChat}`} className="text-[12px] font-bold text-primary hover:underline">
+                          {chatPartner.name}
+                        </Link>
+                        <VerificationBadge {...activeChatBadge} />
+                      </div>
                     </div>
                   )}
 
