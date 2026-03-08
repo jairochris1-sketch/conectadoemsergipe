@@ -154,28 +154,30 @@ const Marketplace = () => {
       />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-3 py-4">
-        <div className="bg-card border border-border p-4">
-          <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
-            <h2 className="text-xl font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
+        <div className="fb-box">
+          <div className="fb-box-header flex items-center justify-between">
+            <span style={{ fontFamily: 'Georgia, serif', fontSize: '13px', fontWeight: 'bold' }}>
               {t("marketplace.title")}
-            </h2>
+            </span>
             {user && (
               <div className="flex gap-2">
                 <button
                   onClick={() => navigate("/seller-dashboard")}
-                  className="bg-muted text-foreground border border-border px-4 py-2 text-sm cursor-pointer hover:bg-accent rounded-sm"
+                  className="bg-[#f2f2f2] border border-[#ccc] px-2 py-[2px] text-[11px] font-bold text-black cursor-pointer hover:bg-[#e6e6e6]"
                 >
                   📢 {t("ads.my_ads")}
                 </button>
                 <button
                   onClick={() => setShowForm(!showForm)}
-                  className="bg-primary text-primary-foreground border-none px-4 py-2 text-sm font-medium cursor-pointer hover:opacity-90 rounded-sm"
+                  className="bg-[#3b5998] text-white border border-[#29447e] px-2 py-[2px] text-[11px] font-bold cursor-pointer hover:bg-[#2d4373]"
                 >
-                  {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
+                  {showForm ? t("marketplace.cancel") : "+ " + t("marketplace.sell")}
                 </button>
               </div>
             )}
           </div>
+
+          <div className="p-2">
 
           {showForm && user && (
             <MarketplaceForm
