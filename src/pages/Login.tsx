@@ -63,19 +63,15 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-card">
       {/* Blue header bar — TheFacebook 2004 style */}
-      <div className="bg-primary">
+      <div
+        className="bg-primary bg-cover bg-center bg-no-repeat"
+        style={bannerImage ? {
+          backgroundImage: `linear-gradient(rgba(59,89,152,0.85), rgba(59,89,152,0.85)), url(${bannerImage})`,
+        } : undefined}
+      >
         <div className="max-w-[760px] mx-auto px-2 py-2">
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-1">
-            {/* Left: optional admin image + site name */}
             <div className="flex items-center gap-2 justify-center sm:justify-start">
-              {bannerImage && (
-                <img
-                  src={bannerImage}
-                  alt=""
-                  className="h-[60px] w-auto opacity-80"
-                  style={{ filter: "grayscale(100%) hue-rotate(180deg)" }}
-                />
-              )}
               <h1
                 className="text-[20px] sm:text-[28px] font-bold text-primary-foreground tracking-[-1px]"
                 style={{ fontFamily: "Georgia, serif" }}
