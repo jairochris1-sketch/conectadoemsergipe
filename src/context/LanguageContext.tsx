@@ -470,6 +470,9 @@ const translations: Record<Language, Record<string, string>> = {
     "messages.placeholder": "Escribe tu mensaje...",
     "messages.send": "Enviar",
     "messages.send_message": "Enviar mensaje",
+    "post.edit": "Editar",
+    "post.delete": "Eliminar",
+    "post.delete_confirm": "¿Estás seguro de que deseas eliminar esta publicación?",
   },
   en: {
     "welcome": "welcome",
