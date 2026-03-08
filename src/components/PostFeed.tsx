@@ -14,8 +14,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [openComments, setOpenComments] = useState<Record<string, boolean>>({});
   const { t } = useLanguage();
-  const { posts, createPost, getComments, addComment } = useSocial();
+  const { posts, createPost, getComments, addComment, refreshPosts } = useSocial();
   const { user } = useAuth();
+  const { isAdmin, deletePost } = useAdmin();
+  const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
+  const [banDays, setBanDays] = useState("1");
+  const [banReason, setBanReason] = useState("");
 
   const handlePost = async () => {
     if (!newPost.trim() || !user) return;
