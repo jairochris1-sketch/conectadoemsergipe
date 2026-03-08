@@ -1,5 +1,6 @@
 import FacebookHeader from "@/components/FacebookHeader";
 import ProfileSidebar from "@/components/ProfileSidebar";
+import ProfileSidebarNav from "@/components/ProfileSidebarNav";
 import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FriendSuggestions from "@/components/FriendSuggestions";
@@ -20,10 +21,11 @@ const Index = () => {
       <SEOHead title="Conectados em Sergipe" description="Rede social que conecta pessoas em Sergipe. Faça amigos, compartilhe momentos e descubra o marketplace local." path="/" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
-      <div className="w-full flex justify-center gap-3 px-2 py-3">
-        {/* Left column: Profile + Ads */}
-        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
+      <div className="max-w-[980px] mx-auto flex gap-[10px] px-2 py-[10px]">
+        {/* Left column */}
+        <div className="hidden md:flex flex-col gap-[10px] w-[180px] shrink-0">
+          <div className="sticky top-[52px] flex flex-col gap-[10px]">
+            <ProfileSidebarNav />
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -34,28 +36,34 @@ const Index = () => {
               createdAt={user?.createdAt}
             />
             <BannerAdColumn position="left" />
-            <MarketplaceHighlights />
           </div>
         </div>
 
         {/* Center: Feed */}
-        <div className="flex-1 min-w-0 max-w-[600px]">
+        <div className="flex-1 min-w-0">
           {!user && (
-            <div className="bg-accent border border-border p-4 mb-3 text-center">
-              <h2 className="text-xl font-bold text-primary mb-2" style={{ fontFamily: 'Georgia, serif' }}>
-                Conectadoemsergipe
-              </h2>
-              <p className="text-sm text-foreground mb-2">
-                {t("index.description")}
-              </p>
-              <p className="text-sm">
-                <a href="/register">{t("index.register")}</a> {t("index.or")} <a href="/login">{t("index.login")}</a> {t("index.cta")}
-              </p>
+            <div className="fb-box">
+              <div className="fb-box-header text-center">
+                <span className="text-[16px]" style={{ fontFamily: "'klavika', 'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Conectadoemsergipe
+                </span>
+              </div>
+              <div className="fb-box-body text-center">
+                <p className="text-[12px] text-foreground mb-2">
+                  {t("index.description")}
+                </p>
+                <p className="text-[12px]">
+                  <a href="/register">{t("index.register")}</a> {t("index.or")} <a href="/login">{t("index.login")}</a> {t("index.cta")}
+                </p>
+              </div>
             </div>
           )}
 
-          {/* Mobile-only: Profile first */}
-          <div className="md:hidden mb-3">
+          {/* Mobile-only sections */}
+          <div className="md:hidden mb-[10px]">
+            <ProfileSidebarNav />
+          </div>
+          <div className="md:hidden mb-[10px]">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -66,26 +74,24 @@ const Index = () => {
               createdAt={user?.createdAt}
             />
           </div>
-
-          {/* Mobile-only: Marketplace highlights */}
-          <div className="md:hidden mb-3">
+          <div className="md:hidden mb-[10px]">
             <MarketplaceHighlights />
           </div>
 
           <HomepageMarketplace />
-
           <PostFeed userName={user?.name} />
 
           {/* Mobile-only: Friends below feed */}
-          <div className="md:hidden mt-3 space-y-3">
+          <div className="md:hidden mt-[10px] space-y-[10px]">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
         </div>
 
-        {/* Right column: Friends + Ads */}
-        <div className="hidden md:block w-[220px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
+        {/* Right column */}
+        <div className="hidden md:block w-[230px] shrink-0">
+          <div className="sticky top-[52px] flex flex-col gap-[10px]">
+            <MarketplaceHighlights />
             <FriendsSidebar />
             {user && <FriendSuggestions />}
             <BannerAdColumn position="right" />
