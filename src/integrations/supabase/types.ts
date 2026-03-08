@@ -65,6 +65,30 @@ export type Database = {
         }
         Relationships: []
       }
+      category_access: {
+        Row: {
+          access_count: number
+          category: string
+          id: string
+          last_accessed_at: string
+          user_id: string
+        }
+        Insert: {
+          access_count?: number
+          category: string
+          id?: string
+          last_accessed_at?: string
+          user_id: string
+        }
+        Update: {
+          access_count?: number
+          category?: string
+          id?: string
+          last_accessed_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           content: string
@@ -189,6 +213,7 @@ export type Database = {
           category: string
           created_at: string
           id: string
+          interaction_type: string
           item_id: string
           user_id: string
         }
@@ -196,6 +221,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          interaction_type?: string
           item_id: string
           user_id: string
         }
@@ -203,6 +229,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          interaction_type?: string
           item_id?: string
           user_id?: string
         }
