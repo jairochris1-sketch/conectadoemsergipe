@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
@@ -11,34 +11,71 @@ interface MarketItem {
   description: string;
   seller: string;
   category: string;
+  city: string;
+  imageUrl: string;
 }
 
-const INITIAL_ITEMS: MarketItem[] = [
-  { id: 1, title: "Intro to Computer Science Textbook", price: "$45", description: "CS50 textbook, good condition. Some highlighting.", seller: "Mark Zuckerberg", category: "Books" },
-  { id: 2, title: "Dorm Room Mini Fridge", price: "$80", description: "Works perfectly, graduating and need to sell.", seller: "Eduardo Saverin", category: "Electronics" },
-  { id: 3, title: "Economics 101 Notes", price: "$10", description: "Full semester notes, got an A in the class.", seller: "Chris Hughes", category: "Books" },
-  { id: 4, title: "Bicycle - 21 speed", price: "$120", description: "Great for getting around campus.", seller: "Dustin Moskovitz", category: "Other" },
-  { id: 5, title: "HP Laptop", price: "$350", description: "2 years old, runs great. Comes with charger.", seller: "Andrew McCollum", category: "Electronics" },
-  { id: 6, title: "Harvard Hoodie XL", price: "$25", description: "Worn twice, too big for me.", seller: "Arie Hasit", category: "Clothing" },
+const CATEGORIES = [
+  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
+  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
+  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
 ];
 
-const CATEGORY_KEYS = ["marketplace.all", "marketplace.books", "marketplace.electronics", "marketplace.clothing", "marketplace.other"];
-const CATEGORY_VALUES = ["All", "Books", "Electronics", "Clothing", "Other"];
+const CATEGORY_KEYS: Record<string, string> = {
+  "All": "marketplace.all",
+  "Móveis": "marketplace.moveis",
+  "Imóveis": "marketplace.imoveis",
+  "Celulares": "marketplace.celulares",
+  "Carros": "marketplace.carros",
+  "Motos": "marketplace.motos",
+  "Bicicletas": "marketplace.bicicletas",
+  "Som": "marketplace.som",
+  "Roupas": "marketplace.clothing",
+  "Bolos/Doces": "marketplace.bolos_doces",
+  "Mudas Frutíferas": "marketplace.mudas",
+  "Sofá/Mesa/Cadeiras": "marketplace.sofa_mesa",
+  "Fogão": "marketplace.fogao",
+  "Geladeira": "marketplace.geladeira",
+  "Guarda-Roupa": "marketplace.guarda_roupa",
+  "Eletrônicos": "marketplace.electronics",
+  "Livros": "marketplace.books",
+  "Outros": "marketplace.other",
+};
+
+const INITIAL_ITEMS: MarketItem[] = [
+  { id: 1, title: "Geladeira Consul 340L", price: "R$ 800", description: "Funcionando perfeitamente, pouco uso.", seller: "Maria Silva", category: "Geladeira", city: "Aracaju", imageUrl: "" },
+  { id: 2, title: "Moto Honda CG 160", price: "R$ 12.000", description: "2022, única dona, revisada.", seller: "João Santos", category: "Motos", city: "Itabaiana", imageUrl: "" },
+  { id: 3, title: "Samsung Galaxy A54", price: "R$ 1.200", description: "6 meses de uso, com nota fiscal.", seller: "Pedro Lima", category: "Celulares", city: "Lagarto", imageUrl: "" },
+  { id: 4, title: "Sofá 3 lugares", price: "R$ 450", description: "Bom estado, cor cinza.", seller: "Ana Costa", category: "Sofá/Mesa/Cadeiras", city: "Estância", imageUrl: "" },
+  { id: 5, title: "Bolo de chocolate decorado", price: "R$ 80", description: "Encomendas com 2 dias de antecedência.", seller: "Carla Oliveira", category: "Bolos/Doces", city: "Aracaju", imageUrl: "" },
+  { id: 6, title: "Mudas de manga e acerola", price: "R$ 15", description: "Mudas saudáveis, prontas para plantar.", seller: "José Ferreira", category: "Mudas Frutíferas", city: "Tobias Barreto", imageUrl: "" },
+];
 
 const Marketplace = () => {
   const { user, logout } = useAuth();
   const [items, setItems] = useState<MarketItem[]>(INITIAL_ITEMS);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
-  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Other" });
+  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "" });
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   const handlePost = () => {
     if (!newItem.title || !newItem.price || !user) return;
-    setItems([{ id: Date.now(), ...newItem, seller: user.name }, ...items]);
-    setNewItem({ title: "", price: "", description: "", category: "Other" });
+    setItems([{ id: Date.now(), ...newItem, seller: user.name, imageUrl: imagePreview }, ...items]);
+    setNewItem({ title: "", price: "", description: "", category: "Outros", city: "" });
+    setImagePreview("");
     setShowForm(false);
   };
 
@@ -70,16 +107,29 @@ const Marketplace = () => {
               <div className="flex gap-2">
                 <div className="flex-1">
                   <label className="block font-bold mb-1">{t("marketplace.price")}</label>
-                  <input type="text" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="$25" />
+                  <input type="text" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="R$ 25" />
                 </div>
                 <div className="flex-1">
                   <label className="block font-bold mb-1">{t("marketplace.category")}</label>
                   <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
-                    {CATEGORY_VALUES.filter((c) => c !== "All").map((c, i) => (
-                      <option key={c} value={c}>{t(CATEGORY_KEYS[i + 1])}</option>
+                    {CATEGORIES.filter((c) => c !== "All").map((c) => (
+                      <option key={c} value={c}>{t(CATEGORY_KEYS[c])}</option>
                     ))}
                   </select>
                 </div>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">{t("marketplace.city")}</label>
+                <input type="text" value={newItem.city} onChange={(e) => setNewItem({ ...newItem, city: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="Aracaju" />
+              </div>
+              <div>
+                <label className="block font-bold mb-1">{t("marketplace.image")}</label>
+                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageChange} className="text-[11px]" />
+                {imagePreview && (
+                  <div className="mt-1">
+                    <img src={imagePreview} alt="Preview" className="w-[80px] h-[80px] object-cover border border-border" />
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block font-bold mb-1">{t("marketplace.description")}</label>
@@ -91,14 +141,14 @@ const Marketplace = () => {
             </div>
           )}
 
-          <div className="flex gap-2 mb-3 text-[11px]">
-            {CATEGORY_VALUES.map((c, i) => (
+          <div className="flex flex-wrap gap-1 mb-3 text-[11px]">
+            {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => setCategory(c)}
-                className={`px-2 py-[2px] border border-border cursor-pointer text-[11px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
+                className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
-                {t(CATEGORY_KEYS[i])}
+                {t(CATEGORY_KEYS[c])}
               </button>
             ))}
           </div>
@@ -106,8 +156,12 @@ const Marketplace = () => {
           <div className="space-y-2">
             {filtered.map((item) => (
               <div key={item.id} className="border border-border p-2 flex gap-3">
-                <div className="w-[60px] h-[60px] bg-muted border border-border flex items-center justify-center text-[8px] text-muted-foreground shrink-0">
-                  📦
+                <div className="w-[70px] h-[70px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-[20px]">📦</span>
+                  )}
                 </div>
                 <div className="text-[11px] flex-1">
                   <div className="flex justify-between">
@@ -115,7 +169,11 @@ const Marketplace = () => {
                     <span className="font-bold text-primary">{item.price}</span>
                   </div>
                   <p className="text-muted-foreground mt-1">{item.description}</p>
-                  <p className="mt-1">{t("marketplace.seller")}: <a href="#">{item.seller}</a> · <span className="text-muted-foreground">{t(`marketplace.${item.category.toLowerCase()}`)}</span></p>
+                  <p className="mt-1">
+                    {t("marketplace.seller")}: <a href="#">{item.seller}</a>
+                    {item.city && <> · 📍 {item.city}</>}
+                    {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
+                  </p>
                 </div>
               </div>
             ))}
