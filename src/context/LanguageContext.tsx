@@ -135,6 +135,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.city": "Cidade:",
     "marketplace.image": "Foto do produto:",
     "marketplace.contact": "Contatar vendedor",
+    "marketplace.recommended": "Recomendado para você",
     // Footer
     "footer.production": "uma produção Jairo dos Santos",
     "footer.about": "sobre",
@@ -306,6 +307,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.city": "Ciudad:",
     "marketplace.image": "Foto del producto:",
     "marketplace.contact": "Contactar vendedor",
+    "marketplace.recommended": "Recomendado para ti",
     "footer.production": "una producción de Jairo dos Santos",
     "footer.about": "acerca de",
     "footer.contact": "contacto",
@@ -474,6 +476,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.city": "City:",
     "marketplace.image": "Product photo:",
     "marketplace.contact": "Contact seller",
+    "marketplace.recommended": "Recommended for you",
     "footer.production": "a Jairo dos Santos production",
     "footer.about": "about",
     "footer.contact": "contact",
