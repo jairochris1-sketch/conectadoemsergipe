@@ -422,6 +422,7 @@ const translations: Record<Language, Record<string, string>> = {
     "footer.terms": "términos",
     "sidebar.info": "Info",
     "sidebar.member_since": "Miembro desde: Febrero 2004",
+    "sidebar.member_since_label": "Miembro desde",
     "sidebar.status": "Estado: Estudiante",
     "sidebar.looking_for": "Buscando: Amistad",
     "friends.requests": "Solicitudes de Amistad",
