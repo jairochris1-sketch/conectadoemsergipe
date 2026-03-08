@@ -177,7 +177,10 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           <ImageGallery images={item.images} imageUrl={item.imageUrl} title={item.title} />
         </div>
         <p className="text-[10px] font-bold truncate">{item.title}</p>
-        <p className="text-[10px] font-bold text-primary">{item.price}</p>
+        <p className="text-[10px] font-bold text-primary">{formatPriceDisplay(item.price)}</p>
+        {item.condition && (
+          <p className="text-[8px] text-muted-foreground">{t(CONDITION_LABELS[item.condition] || "marketplace.condition_used")}</p>
+        )}
         <p className="text-[9px] text-muted-foreground truncate">
           {item.city && <>📍 {item.city} · </>}
           {item.seller}
