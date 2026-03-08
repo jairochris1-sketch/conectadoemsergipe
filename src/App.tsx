@@ -17,6 +17,7 @@ import AdminPanel from "./pages/AdminPanel";
 import PublicProfile from "./pages/PublicProfile";
 import MessagesPage from "./pages/Messages";
 import ResetPassword from "./pages/ResetPassword";
+import SellerDashboard from "./pages/SellerDashboard";
 
 const queryClient = new QueryClient();
 
