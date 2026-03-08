@@ -121,6 +121,42 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_items: {
+        Row: {
+          category: string
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          price: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          price: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          price?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
