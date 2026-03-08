@@ -202,7 +202,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             {index > 0 && index % 3 === 0 && <InlineBannerAd />}
             <div className="border-b border-border pb-3">
             <div className="flex items-start gap-3">
-              <div className="w-[44px] h-[44px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden rounded-sm">
+              <div className="w-[36px] h-[36px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                 {post.authorPhoto ? (
                   <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
                 ) : (
