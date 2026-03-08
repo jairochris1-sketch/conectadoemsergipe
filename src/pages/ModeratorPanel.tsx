@@ -132,24 +132,42 @@ const ModeratorPanel = () => {
     setDataLoading(false);
   };
 
+  const logAction = async (actionType: string, targetType: string, targetId: string, targetOwnerId?: string, details?: string) => {
+    if (!user) return;
+    await supabase.from("moderation_logs" as any).insert({
+      moderator_id: user.id,
+      action_type: actionType,
+      target_type: targetType,
+      target_id: targetId,
+      target_owner_id: targetOwnerId || null,
+      details: details || null,
+    } as any);
+  };
+
   const deletePost = async (postId: string) => {
     if (!confirm("Tem certeza que deseja remover este post?")) return;
+    const post = reportedPosts.find(p => p.id === postId);
     const { error } = await supabase.from("posts").delete().eq("id", postId);
     if (error) { toast.error("Erro ao remover post"); return; }
+    await logAction("delete_post", "post", postId, post?.user_id, `Post de ${post?.userName}: "${post?.content.substring(0, 80)}..."`);
     toast.success("Post removido!");
     setReportedPosts(prev => prev.filter(p => p.id !== postId));
   };
 
   const deleteMarketplaceItem = async (itemId: string) => {
     if (!confirm("Tem certeza que deseja remover este anúncio?")) return;
+    const item = marketplaceItems.find(i => i.id === itemId);
     const { error } = await supabase.from("marketplace_items").delete().eq("id", itemId);
     if (error) { toast.error("Erro ao remover anúncio"); return; }
+    await logAction("delete_item", "marketplace_item", itemId, item?.user_id, `Anúncio: "${item?.title}" - ${item?.price}`);
     toast.success("Anúncio removido!");
     setMarketplaceItems(prev => prev.filter(i => i.id !== itemId));
   };
 
   const resolveReport = async (reportId: string, status: string) => {
+    const report = reports.find(r => r.id === reportId);
     await (supabase.from("reports").update({ status, resolved_at: new Date().toISOString() }).eq("id", reportId) as any);
+    await logAction(status === "resolved" ? "resolve_report" : "dismiss_report", "report", reportId, report?.reported_user_id, `Denúncia de ${report?.reporterName} contra ${report?.reportedName}: ${report?.reason}`);
     toast.success(status === "resolved" ? "Denúncia resolvida" : "Denúncia dispensada");
     fetchReports();
   };
