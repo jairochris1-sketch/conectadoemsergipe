@@ -12,6 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
+import ProfileMarketplaceStrip from "@/components/ProfileMarketplaceStrip";
 
 interface PublicProfile {
   user_id: string;
@@ -154,6 +155,8 @@ const PublicProfile = () => {
                 </div>
               </div>
             </div>
+
+            <ProfileMarketplaceStrip />
           </div>
           <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />
