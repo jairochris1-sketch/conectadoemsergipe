@@ -166,19 +166,19 @@ const SellerDashboard = () => {
 
           {/* Create campaign form */}
           {showForm && (
-            <div className="border border-border p-3 bg-accent mb-3 text-[11px] space-y-2">
-              <h3 className="font-bold text-[12px]">{t("ads.create_campaign")}</h3>
+            <div className="border border-[#d8dfea] p-2 bg-[#f2f2f2] mb-3 text-[11px] space-y-2">
+              <h3 className="font-bold text-[#3b5998] text-[12px] pb-1 border-b border-[#d8dfea] mb-2">{t("ads.create_campaign")}</h3>
 
               {myItems.length === 0 ? (
-                <p className="text-muted-foreground">{t("ads.no_items")}</p>
+                <p className="text-[#808080]">{t("ads.no_items")}</p>
               ) : (
                 <>
                   <div>
-                    <label className="block font-bold mb-1">{t("ads.select_product")}</label>
+                    <label className="block font-bold mb-1 text-[#333]">{t("ads.select_product")}</label>
                     <select
                       value={newCampaign.item_id}
                       onChange={(e) => setNewCampaign({ ...newCampaign, item_id: e.target.value })}
-                      className="w-full border border-border p-1 text-[11px] bg-card"
+                      className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
                     >
                       <option value="">{t("ads.choose_item")}</option>
                       {myItems.map((item) => (
@@ -189,16 +189,16 @@ const SellerDashboard = () => {
 
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block font-bold mb-1">{t("ads.budget")} ({t("ads.credits")})</label>
+                      <label className="block font-bold mb-1 text-[#333]">{t("ads.budget")} ({t("ads.credits")})</label>
                       <input
                         type="number"
                         min={1}
                         max={credits}
                         value={newCampaign.budget}
                         onChange={(e) => setNewCampaign({ ...newCampaign, budget: parseInt(e.target.value) || 0 })}
-                        className="w-full border border-border p-1 text-[11px] bg-card"
+                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
                       />
-                      <p className="text-[9px] text-muted-foreground mt-1">
+                      <p className="text-[9px] text-[#808080] mt-1">
                         {t("ads.available")}: {credits} {t("ads.credits")}
                       </p>
                     </div>
@@ -206,21 +206,21 @@ const SellerDashboard = () => {
 
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block font-bold mb-1">{t("ads.target_city")}</label>
+                      <label className="block font-bold mb-1 text-[#333]">{t("ads.target_city")}</label>
                       <input
                         type="text"
                         value={newCampaign.target_city}
                         onChange={(e) => setNewCampaign({ ...newCampaign, target_city: e.target.value })}
-                        className="w-full border border-border p-1 text-[11px] bg-card"
+                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
                         placeholder={t("ads.all_cities")}
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block font-bold mb-1">{t("ads.target_category")}</label>
+                      <label className="block font-bold mb-1 text-[#333]">{t("ads.target_category")}</label>
                       <select
                         value={newCampaign.target_category}
                         onChange={(e) => setNewCampaign({ ...newCampaign, target_category: e.target.value })}
-                        className="w-full border border-border p-1 text-[11px] bg-card"
+                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
                       >
                         <option value="">{t("ads.all_categories")}</option>
                         {CATEGORIES.map((c) => (
@@ -230,13 +230,15 @@ const SellerDashboard = () => {
                     </div>
                   </div>
 
-                  <button
-                    onClick={handleCreate}
-                    disabled={creating || !newCampaign.item_id || newCampaign.budget < 1 || newCampaign.budget > credits}
-                    className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50"
-                  >
-                    {creating ? "..." : t("ads.launch")}
-                  </button>
+                  <div className="pt-2">
+                    <button
+                      onClick={handleCreate}
+                      disabled={creating || !newCampaign.item_id || newCampaign.budget < 1 || newCampaign.budget > credits}
+                      className="bg-[#3b5998] text-white border border-[#29447e] px-3 py-1 text-[11px] font-bold cursor-pointer hover:bg-[#2d4373] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {creating ? "..." : t("ads.launch")}
+                    </button>
+                  </div>
                 </>
               )}
             </div>
