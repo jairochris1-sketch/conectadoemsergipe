@@ -67,7 +67,7 @@ const Login = () => {
         <div className="max-w-[760px] mx-auto px-2 py-2">
           <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-1">
             {/* Left: optional admin image + site name */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-center sm:justify-start">
               {bannerImage && (
                 <img
                   src={bannerImage}
