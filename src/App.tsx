@@ -18,6 +18,7 @@ import PublicProfile from "./pages/PublicProfile";
 import MessagesPage from "./pages/Messages";
 import ResetPassword from "./pages/ResetPassword";
 import SellerDashboard from "./pages/SellerDashboard";
+import SitePage from "./pages/SitePage";
 
 const queryClient = new QueryClient();
 
