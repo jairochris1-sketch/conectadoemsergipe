@@ -84,6 +84,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
           authorId: p.user_id,
           authorName: profile?.name || "User",
           authorPhoto: profile?.photo_url || "",
+          authorCity: profile?.city || "",
           content: p.content,
           timestamp: new Date(p.created_at),
         };
