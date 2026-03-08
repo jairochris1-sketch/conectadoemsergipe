@@ -418,6 +418,7 @@ const translations: Record<Language, Record<string, string>> = {
     "admin.banned_until_label": "Banned until",
     "admin.unban": "Remove Ban",
     "admin.panel": "Admin",
+    "public_profile.not_found": "User not found.",
   },
 };
 
