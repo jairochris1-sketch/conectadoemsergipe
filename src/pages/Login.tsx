@@ -210,7 +210,7 @@ const Login = () => {
         </div>
 
         {/* Right content - Welcome */}
-        <div className="flex-1 border border-border border-l-0 bg-card p-4">
+        <div className="flex-1 border border-border sm:border-l-0 bg-card p-4">
           <div className="border-b border-border pb-1 mb-3">
             <p className="text-[11px] text-primary font-bold">
               {t("login.welcome_bar")}
