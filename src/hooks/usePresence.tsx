@@ -74,10 +74,9 @@ export const usePresenceHeartbeat = () => {
     };
     document.addEventListener("visibilitychange", handleVisibility);
 
-    // On beforeunload, mark offline using user's actual token
-    const handleUnload = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    // On beforeunload, mark offline using cached token (sync-friendly)
+    const handleUnload = () => {
+      const token = tokenRef.current || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
       const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/user_presence?user_id=eq.${user.id}`;
       const headers = {
         "Content-Type": "application/json",
