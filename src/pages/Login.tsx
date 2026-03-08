@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage, Language } from "@/context/LanguageContext";
-import { lovable } from "@/integrations/lovable/index";
 
 const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 
