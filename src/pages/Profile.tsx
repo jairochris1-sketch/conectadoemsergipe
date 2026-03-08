@@ -115,7 +115,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="w-[180px] shrink-0">
+          <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />
           </div>
         </div>
