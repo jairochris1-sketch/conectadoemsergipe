@@ -144,6 +144,21 @@ const Messages = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Sound for new messages
+  const notificationSound = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+    notificationSound.current = new Audio("/sounds/new-message.mp3");
+  }, []);
+
+  const playNotificationSound = useCallback(() => {
+    try {
+      if (notificationSound.current) {
+        notificationSound.current.currentTime = 0;
+        notificationSound.current.play().catch(() => {});
+      }
+    } catch {}
+  }, []);
+
   // Realtime subscription for new messages
   useEffect(() => {
     if (!user) return;
@@ -156,6 +171,10 @@ const Messages = () => {
         (payload) => {
           const msg = payload.new as Message;
           if (msg.sender_id === user.id || msg.receiver_id === user.id) {
+            // Play sound only for incoming messages
+            if (msg.receiver_id === user.id) {
+              playNotificationSound();
+            }
             if (activeChat && (msg.sender_id === activeChat || msg.receiver_id === activeChat)) {
               setMessages((prev) => [...prev, msg]);
               if (msg.receiver_id === user.id) {
@@ -171,7 +190,6 @@ const Messages = () => {
         { event: "UPDATE", schema: "public", table: "messages" },
         (payload) => {
           const updated = payload.new as Message;
-          // Update read receipts in real time
           setMessages((prev) =>
             prev.map((m) => (m.id === updated.id ? { ...m, read: updated.read } : m))
           );
@@ -183,7 +201,7 @@ const Messages = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, activeChat, loadConversations]);
+  }, [user, activeChat, loadConversations, playNotificationSound]);
 
   const canMessage = activeChat ? isFriend(activeChat) : false;
 
