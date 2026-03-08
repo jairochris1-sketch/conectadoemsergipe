@@ -1,1 +1,4 @@
 project_id = "rkzjhpmoijnixmfljgip"
+
+[functions.check-nsfw]
+verify_jwt = false
