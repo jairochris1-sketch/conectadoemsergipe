@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Navigate, useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import VerificationBadge from "@/components/VerificationBadge";
 import { useBatchVerificationBadges, useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useOnlineStatus, OnlineIndicator } from "@/hooks/usePresence";
