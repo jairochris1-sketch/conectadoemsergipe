@@ -48,9 +48,15 @@ const getOnlineUsers = async (userIds: string[]): Promise<Set<string>> => {
 export const usePresenceHeartbeat = () => {
   const { user } = useAuth();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
+
+    // Cache token for beforeunload
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      tokenRef.current = session?.access_token || null;
+    });
 
     // Initial ping
     updateUserActivity(user.id);

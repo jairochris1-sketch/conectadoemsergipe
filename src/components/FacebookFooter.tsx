@@ -3,7 +3,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const OFFLINE_THRESHOLD = 2 * 60_000;
+const OFFLINE_THRESHOLD = 45_000;
 
 const FacebookFooter = () => {
   const { t } = useLanguage();
