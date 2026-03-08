@@ -18,6 +18,8 @@ const FriendsSidebar = () => {
     ...pendingRequests.map(r => r.fromId),
   ], [friends, pendingRequests]);
   const badges = useBatchVerificationBadges(allIds);
+  const friendIds = useMemo(() => friends.map(f => f.id), [friends]);
+  const onlineUsers = useOnlineStatus(friendIds);
 
   return (
     <div className="bg-card border border-border p-2 w-full">
