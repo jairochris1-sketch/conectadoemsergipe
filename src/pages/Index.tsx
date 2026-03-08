@@ -18,7 +18,7 @@ const Index = () => {
         {!user && (
           <div className="bg-accent border border-border p-3 mb-3 text-center">
             <h2 className="text-[16px] font-bold text-primary mb-1" style={{ fontFamily: 'Georgia, serif' }}>
-              [ thefacebook ]
+              [ conectadosemsergipe ]
             </h2>
             <p className="text-[11px] text-foreground mb-2">
               {t("index.description")}
