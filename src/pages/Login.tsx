@@ -65,7 +65,7 @@ const Login = () => {
       {/* Blue header bar — TheFacebook 2004 style */}
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-1">
             {/* Left: optional admin image + site name */}
             <div className="flex items-center gap-2">
               {bannerImage && (
