@@ -7,6 +7,7 @@ export interface Post {
   authorId: string;
   authorName: string;
   authorPhoto: string;
+  authorCity: string;
   content: string;
   timestamp: Date;
 }
