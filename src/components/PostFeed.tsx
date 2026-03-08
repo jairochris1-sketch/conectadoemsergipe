@@ -261,7 +261,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     )}
                   </>
                 )}
-                <p className="text-xs text-muted-foreground mt-1.5">{formatDate(post.timestamp)}</p>
+                <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
 
                 {/* Own post actions */}
                 {user && post.authorId === user.id && editingPostId !== post.id && (
