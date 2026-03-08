@@ -36,7 +36,17 @@ export const useMarketplaceRecommendations = () => {
     });
 
     // Update sponsored campaign impressions
-    await supabase.rpc("increment_campaign_impressions" as any, { p_item_id: itemId }).catch(() => {});
+    const { data: camp } = await supabase
+      .from("sponsored_campaigns")
+      .select("id, impressions")
+      .eq("item_id", itemId)
+      .eq("status", "active")
+      .maybeSingle();
+    if (camp) {
+      await supabase.from("sponsored_campaigns")
+        .update({ impressions: camp.impressions + 1 })
+        .eq("id", camp.id);
+    }
   }, [user]);
 
   // Track a product click (user actively clicked)
