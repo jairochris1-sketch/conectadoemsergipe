@@ -60,20 +60,7 @@ const Index = () => {
 
           <PostFeed userName={user?.name} />
 
-          {/* Mobile-only: Profile below marketplace */}
-          <div className="md:hidden mt-3">
-            <ProfileSidebar
-              name={user?.name || t("guest_user")}
-              bio={user?.bio || t("login_to_see")}
-              photoUrl={user?.photoUrl || "/placeholder.svg"}
-              school={user?.school}
-              city={user?.city}
-              birthdate={user?.birthdate}
-              createdAt={user?.createdAt}
-            />
-          </div>
-
-          {/* Mobile-only: Friends below profile */}
+          {/* Mobile-only: Friends below feed */}
           <div className="md:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
