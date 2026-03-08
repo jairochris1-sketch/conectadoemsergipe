@@ -30,6 +30,7 @@ const PublicProfile = () => {
   const { followerCount, followingCount } = useFollowers(userId);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const badge = useVerificationBadge(userId);
 
   useEffect(() => {
     if (!userId) return;
