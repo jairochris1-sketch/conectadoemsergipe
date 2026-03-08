@@ -21,6 +21,8 @@ const CATEGORY_KEYS: Record<string, string> = {
   "Outros": "marketplace.other",
 };
 
+const MAX_IMAGES = 5;
+
 interface Props {
   user: { id: string };
   onClose: () => void;
@@ -29,19 +31,41 @@ interface Props {
 
 const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
   const { t } = useLanguage();
-  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "" });
-  const [imagePreview, setImagePreview] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "" });
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [posting, setPosting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result as string);
-    reader.readAsDataURL(file);
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    const remaining = MAX_IMAGES - imageFiles.length;
+    if (remaining <= 0) {
+      toast.error(t("marketplace.max_images_reached"));
+      return;
+    }
+
+    const toAdd = files.slice(0, remaining);
+
+    toAdd.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setImageFiles((prev) => [...prev, ...toAdd]);
+
+    // Reset input so user can select more
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeImage = (index: number) => {
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    setImageFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const checkNSFW = async (base64: string): Promise<boolean> => {
@@ -49,44 +73,45 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
       const { data, error } = await supabase.functions.invoke("check-nsfw", {
         body: { imageBase64: base64 },
       });
-      if (error) {
-        console.error("NSFW check error:", error);
-        return true; // allow on error
-      }
+      if (error) return true;
       if (!data.safe) {
         toast.error(t("marketplace.nsfw_blocked") + (data.reason ? ` (${data.reason})` : ""));
         return false;
       }
       return true;
     } catch {
-      return true; // allow on error
+      return true;
     }
   };
 
   const handlePost = async () => {
-    if (!newItem.title || !newItem.price) return;
+    if (!newItem.title || !newItem.price || !newItem.whatsapp.trim()) {
+      toast.error(t("marketplace.whatsapp_required"));
+      return;
+    }
     setPosting(true);
 
-    // NSFW check before upload
-    if (imagePreview) {
-      const isSafe = await checkNSFW(imagePreview);
+    // NSFW check on all images
+    for (const preview of imagePreviews) {
+      const isSafe = await checkNSFW(preview);
       if (!isSafe) {
         setPosting(false);
         return;
       }
     }
 
-    let uploadedUrl = "";
-    if (imageFile) {
-      const ext = imageFile.name.split(".").pop();
-      const path = `marketplace/${user.id}/${Date.now()}.${ext}`;
+    // Upload all images
+    const uploadedUrls: string[] = [];
+    for (const file of imageFiles) {
+      const ext = file.name.split(".").pop();
+      const path = `marketplace/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(path, imageFile, { upsert: true });
+        .upload(path, file, { upsert: true });
 
       if (!uploadError) {
         const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-        uploadedUrl = urlData.publicUrl;
+        uploadedUrls.push(urlData.publicUrl);
       }
     }
 
@@ -97,12 +122,14 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
       description: newItem.description,
       category: newItem.category,
       city: newItem.city,
-      image_url: uploadedUrl,
-    });
+      whatsapp: newItem.whatsapp,
+      image_url: uploadedUrls[0] || "",
+      images: uploadedUrls,
+    } as any);
 
-    setNewItem({ title: "", price: "", description: "", category: "Outros", city: "" });
-    setImagePreview("");
-    setImageFile(null);
+    setNewItem({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "" });
+    setImagePreviews([]);
+    setImageFiles([]);
     onClose();
     setPosting(false);
     await onItemPosted();
@@ -133,11 +160,39 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
         <input type="text" value={newItem.city} onChange={(e) => setNewItem({ ...newItem, city: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="Aracaju" />
       </div>
       <div>
-        <label className="block font-bold mb-1">{t("marketplace.image")}</label>
-        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageChange} className="text-[11px]" />
-        {imagePreview && (
-          <div className="mt-1">
-            <img src={imagePreview} alt="Preview" className="w-[80px] h-[80px] object-cover border border-border" />
+        <label className="block font-bold mb-1">📱 {t("marketplace.whatsapp_label")} *</label>
+        <input
+          type="tel"
+          value={newItem.whatsapp}
+          onChange={(e) => setNewItem({ ...newItem, whatsapp: e.target.value })}
+          className="w-full border border-border p-1 text-[11px] bg-card"
+          placeholder="(79) 99999-9999"
+        />
+      </div>
+      <div>
+        <label className="block font-bold mb-1">{t("marketplace.image")} ({imageFiles.length}/{MAX_IMAGES})</label>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          ref={fileInputRef}
+          onChange={handleImageChange}
+          className="text-[11px]"
+          disabled={imageFiles.length >= MAX_IMAGES}
+        />
+        {imagePreviews.length > 0 && (
+          <div className="mt-1 flex gap-1 flex-wrap">
+            {imagePreviews.map((preview, i) => (
+              <div key={i} className="relative">
+                <img src={preview} alt={`Preview ${i + 1}`} className="w-[60px] h-[60px] object-cover border border-border" />
+                <button
+                  onClick={() => removeImage(i)}
+                  className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-4 h-4 text-[9px] flex items-center justify-center leading-none"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
           </div>
         )}
       </div>
