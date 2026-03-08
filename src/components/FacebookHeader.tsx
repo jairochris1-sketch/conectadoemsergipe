@@ -75,30 +75,29 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
   return (
     <div className="bg-primary text-primary-foreground">
-      <div className="max-w-[760px] mx-auto flex items-center justify-between px-2 py-1">
-        <Link to="/" className="text-primary-foreground no-underline hover:no-underline">
-          <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px]" style={{ fontFamily: 'Georgia, serif' }}>
-            [ conectadosemsergipe ]
-          </h1>
-        </Link>
+      <div className="max-w-[760px] mx-auto px-2 py-1">
+        {/* Top row: logo + search */}
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+            <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+              [ conectadosemsergipe ]
+            </h1>
+          </Link>
 
-        {/* Desktop search + nav */}
-        {!isMobile && (
-          <>
-            <form onSubmit={handleSearch} className="flex items-center">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("search")}
-                className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[140px]"
-              />
-              <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
-                <Search className="w-3 h-3 text-foreground" />
-              </button>
-            </form>
-
-            <div className="flex items-center gap-3 text-[11px]">
+          {!isMobile && (
+            <div className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("search")}
+                  className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[120px]"
+                />
+                <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
+                  <Search className="w-3 h-3 text-foreground" />
+                </button>
+              </form>
               <div className="flex items-center gap-1">
                 {(["pt", "es", "en"] as Language[]).map((lang) => (
                   <button
@@ -110,14 +109,10 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   </button>
                 ))}
               </div>
-              {isLoggedIn && <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>}
-              {navLinks()}
             </div>
-          </>
-        )}
+          )}
 
-        {/* Mobile hamburger */}
-        {isMobile && (
+          {isMobile && (
           <div className="flex items-center gap-2">
             {unreadCount > 0 && (
               <Link to="/messages" className="relative">
