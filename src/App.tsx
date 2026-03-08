@@ -34,6 +34,7 @@ const App = () => {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/admin" element={<AdminPanel />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
