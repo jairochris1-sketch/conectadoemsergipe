@@ -144,11 +144,13 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
       category: newItem.category,
       city: newItem.city,
       whatsapp: newItem.whatsapp,
+      condition: newItem.condition,
       image_url: uploadedUrls[0] || "",
       images: uploadedUrls,
     } as any);
 
-    setNewItem({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "" });
+    setNewItem({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "", condition: "used" });
+    setPriceDisplay("");
     setImagePreviews([]);
     setImageFiles([]);
     onClose();
