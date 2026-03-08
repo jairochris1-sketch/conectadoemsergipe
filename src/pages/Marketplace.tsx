@@ -172,10 +172,18 @@ const Marketplace = () => {
                     <span className="font-bold text-primary">{item.price}</span>
                   </div>
                   <p className="text-muted-foreground mt-1">{item.description}</p>
-                  <p className="mt-1">
+                  <p className="mt-1 flex items-center gap-1 flex-wrap">
                     {t("marketplace.seller")}: <a href="#">{item.seller}</a>
                     {item.city && <> · 📍 {item.city}</>}
                     {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
+                    {user && item.sellerId && item.sellerId !== user.id && (
+                      <button
+                        onClick={() => navigate(`/messages?with=${item.sellerId}`)}
+                        className="ml-1 bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
+                      >
+                        💬 {t("marketplace.contact")}
+                      </button>
+                    )}
                   </p>
                 </div>
               </div>
