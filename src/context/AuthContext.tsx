@@ -8,6 +8,8 @@ interface User {
   bio: string;
   photoUrl: string;
   school: string;
+  birthdate: string;
+  city: string;
 }
 
 interface AuthContextType {
