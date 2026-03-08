@@ -62,7 +62,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
   const refreshPosts = useCallback(async () => {
     const { data } = await supabase
       .from("posts")
-      .select("id, user_id, content, created_at")
+      .select("id, user_id, content, image_url, created_at")
       .order("created_at", { ascending: false })
       .limit(50);
 
