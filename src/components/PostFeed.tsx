@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Trash2, Check, X } from "lucide-react";
+import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import ReportButton from "@/components/ReportButton";
+import { supabase } from "@/integrations/supabase/client";
+import { validateAndCompressImage } from "@/lib/imageCompression";
+import { toast } from "sonner";
 
 interface PostFeedProps {
   userName?: string;
@@ -26,6 +29,9 @@ const abbreviateCity = (city: string) => {
 
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [newPost, setNewPost] = useState("");
+  const [postImage, setPostImage] = useState<{ blob: Blob; preview: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [openComments, setOpenComments] = useState<Record<string, boolean>>({});
@@ -39,10 +45,41 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
 
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const result = await validateAndCompressImage(file);
+      setPostImage(result);
+    } catch (err: any) {
+      if (err.message === "FILE_TOO_LARGE") {
+        toast.error(t("post.image_too_large"));
+      } else {
+        toast.error(t("post.image_error"));
+      }
+    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handlePost = async () => {
-    if (!newPost.trim() || !user) return;
-    await createPost(newPost.trim());
+    if ((!newPost.trim() && !postImage) || !user) return;
+    setUploading(true);
+    let imageUrl: string | undefined;
+
+    if (postImage) {
+      const ext = "jpg";
+      const path = `posts/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("avatars").upload(path, postImage.blob, { upsert: true, contentType: "image/jpeg" });
+      if (!error) {
+        const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+        imageUrl = data.publicUrl;
+      }
+    }
+
+    await createPost(newPost.trim(), imageUrl);
     setNewPost("");
+    setPostImage(null);
+    setUploading(false);
   };
 
   const toggleComments = async (postId: string) => {
@@ -109,9 +146,31 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             rows={3}
             placeholder={t("whats_on_mind")}
           />
-          <button onClick={handlePost} className="mt-1 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-            {t("post")}
-          </button>
+          {postImage && (
+            <div className="relative inline-block mt-1">
+              <img src={postImage.preview} alt="Preview" className="max-h-[100px] border border-border" />
+              <button
+                onClick={() => setPostImage(null)}
+                className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-4 h-4 text-[9px] flex items-center justify-center leading-none"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          <div className="flex gap-2 mt-1 items-center">
+            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50">
+              {uploading ? t("post.uploading") : t("post")}
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-muted text-foreground border border-border px-2 py-1 text-[11px] cursor-pointer hover:opacity-90 inline-flex items-center gap-1"
+              title={t("post.add_photo")}
+            >
+              <ImagePlus className="w-3 h-3" /> {t("post.add_photo")}
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+            <span className="text-[9px] text-muted-foreground">{t("post.max_5mb")}</span>
+          </div>
         </div>
       )}
       <div className="space-y-2">
@@ -150,7 +209,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-[11px] mt-[2px]">{post.content}</p>
+                  <>
+                    {post.content && <p className="text-[11px] mt-[2px]">{post.content}</p>}
+                    {post.imageUrl && (
+                      <img src={post.imageUrl} alt="Post" className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded" />
+                    )}
+                  </>
                 )}
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
 

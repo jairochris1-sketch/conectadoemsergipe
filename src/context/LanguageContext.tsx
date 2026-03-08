@@ -247,6 +247,11 @@ const translations: Record<Language, Record<string, string>> = {
     "post.edit": "Editar",
     "post.delete": "Excluir",
     "post.delete_confirm": "Tem certeza que deseja excluir este post?",
+    "post.add_photo": "Foto",
+    "post.max_5mb": "máx. 5MB",
+    "post.uploading": "Enviando...",
+    "post.image_too_large": "Imagem muito grande! Máximo 5MB.",
+    "post.image_error": "Erro ao processar imagem.",
   },
   es: {
     "welcome": "bienvenido",
@@ -473,6 +478,11 @@ const translations: Record<Language, Record<string, string>> = {
     "post.edit": "Editar",
     "post.delete": "Eliminar",
     "post.delete_confirm": "¿Estás seguro de que deseas eliminar esta publicación?",
+    "post.add_photo": "Foto",
+    "post.max_5mb": "máx. 5MB",
+    "post.uploading": "Subiendo...",
+    "post.image_too_large": "¡Imagen demasiado grande! Máximo 5MB.",
+    "post.image_error": "Error al procesar la imagen.",
   },
   en: {
     "welcome": "welcome",
@@ -699,6 +709,11 @@ const translations: Record<Language, Record<string, string>> = {
     "post.edit": "Edit",
     "post.delete": "Delete",
     "post.delete_confirm": "Are you sure you want to delete this post?",
+    "post.add_photo": "Photo",
+    "post.max_5mb": "max 5MB",
+    "post.uploading": "Uploading...",
+    "post.image_too_large": "Image too large! Max 5MB.",
+    "post.image_error": "Error processing image.",
   },
 };
 

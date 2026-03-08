@@ -9,6 +9,7 @@ export interface Post {
   authorPhoto: string;
   authorCity: string;
   content: string;
+  imageUrl: string | null;
   timestamp: Date;
 }
 
@@ -35,7 +36,7 @@ interface SocialContextType {
   posts: Post[];
   deleteOwnPost: (postId: string) => Promise<void>;
   updatePost: (postId: string, content: string) => Promise<void>;
-  createPost: (content: string) => Promise<void>;
+  createPost: (content: string, imageUrl?: string) => Promise<void>;
   friendRequests: FriendRequest[];
   sendFriendRequest: (toId: string) => Promise<void>;
   acceptFriendRequest: (requestId: string) => Promise<void>;
@@ -61,7 +62,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
   const refreshPosts = useCallback(async () => {
     const { data } = await supabase
       .from("posts")
-      .select("id, user_id, content, created_at")
+      .select("id, user_id, content, image_url, created_at")
       .order("created_at", { ascending: false })
       .limit(50);
 
@@ -86,6 +87,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
           authorPhoto: profile?.photo_url || "",
           authorCity: profile?.city || "",
           content: p.content,
+          imageUrl: (p as any).image_url || null,
           timestamp: new Date(p.created_at),
         };
       })
@@ -136,9 +138,11 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     refreshFriendships();
   }, [refreshFriendships]);
 
-  const createPost = async (content: string) => {
+  const createPost = async (content: string, imageUrl?: string) => {
     if (!user) return;
-    await supabase.from("posts").insert({ user_id: user.id, content });
+    const insertData: any = { user_id: user.id, content };
+    if (imageUrl) insertData.image_url = imageUrl;
+    await supabase.from("posts").insert(insertData);
     await refreshPosts();
   };
 
