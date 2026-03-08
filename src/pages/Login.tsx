@@ -114,9 +114,9 @@ const Login = () => {
       </div>
 
       {/* Main content area */}
-      <div className="max-w-[760px] mx-auto px-2 py-3 flex gap-0">
+      <div className="max-w-[760px] mx-auto px-2 py-3 flex flex-col sm:flex-row gap-0">
         {/* Left sidebar - login form */}
-        <div className="w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
+        <div className="w-full sm:w-[160px] shrink-0 border border-border bg-accent p-2 text-[11px]">
           {!forgotMode ? (
             <form onSubmit={handleSubmit} className="space-y-1">
               <div>
