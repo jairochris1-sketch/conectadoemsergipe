@@ -92,7 +92,7 @@ const Login = () => {
               <Link to="/register" className="text-primary-foreground hover:underline">
                 {t("register")}
               </Link>
-              <Link to="/page/about" className="text-primary-foreground hover:underline">
+              <Link to="/sobre" className="text-primary-foreground hover:underline">
                 {t("login.about")}
               </Link>
               <span className="text-primary-foreground/50">|</span>
