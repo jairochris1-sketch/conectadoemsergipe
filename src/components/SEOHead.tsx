@@ -11,7 +11,7 @@ interface SEOHeadProps {
 const BASE_URL = "https://conectadoemsergipe.lovable.app";
 const DEFAULT_OG_IMAGE = "https://storage.googleapis.com/gpt-engineer-file-uploads/7QRlYRXn6KMdpPSlH1neUmMRWDh1/social-images/social-1772944286796-fgfgfgfgfgfgfgfg.webp";
 
-const SEOHead = ({ title, description, path = "/", ogImage }: SEOHeadProps) => {
+const SEOHead = ({ title, description, path = "/", ogImage, jsonLd }: SEOHeadProps) => {
   useEffect(() => {
     const fullTitle = title === "Conectados em Sergipe" ? title : `${title} | Conectados em Sergipe`;
     document.title = fullTitle;
