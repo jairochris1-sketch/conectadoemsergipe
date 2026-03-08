@@ -16,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (identifier: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string, school: string, phone?: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
 }
