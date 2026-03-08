@@ -21,6 +21,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerImage, setBannerImage] = useState("");
+  const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
