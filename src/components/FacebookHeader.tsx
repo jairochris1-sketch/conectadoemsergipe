@@ -21,6 +21,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerImage, setBannerImage] = useState("");
+  const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
@@ -31,11 +32,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   useEffect(() => {
     supabase
       .from("site_settings")
-      .select("value")
-      .eq("key", "login_banner")
-      .single()
+      .select("key, value")
+      .in("key", ["login_banner", "header_overlay_opacity"])
       .then(({ data }) => {
-        if (data && (data as any).value) setBannerImage((data as any).value);
+        data?.forEach((row: any) => {
+          if (row.key === "login_banner" && row.value) setBannerImage(row.value);
+          if (row.key === "header_overlay_opacity" && row.value) setOverlayOpacity(Number(row.value) / 100);
+        });
       });
   }, []);
 
@@ -90,7 +93,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <div
       className="bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat"
       style={bannerImage ? {
-        backgroundImage: `linear-gradient(rgba(59,89,152,0.85), rgba(59,89,152,0.85)), url(${bannerImage})`,
+        backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
     >
       <div className="max-w-[760px] mx-auto px-2 py-1">
