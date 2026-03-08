@@ -23,6 +23,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerImage, setBannerImage] = useState("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
@@ -30,6 +31,21 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      setDarkMode(true);
+    }
+  }, []);
 
   useEffect(() => {
     supabase
