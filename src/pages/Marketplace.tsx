@@ -215,9 +215,55 @@ const Marketplace = () => {
             ))}
           </div>
 
+          {/* Recommendations section */}
+          {recommendations.length > 0 && category === "All" && (
+            <div className="mb-4">
+              <h3 className="text-[13px] font-bold text-primary mb-2 border-b border-border pb-1" style={{ fontFamily: 'Georgia, serif' }}>
+                ⭐ {t("marketplace.recommended")}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {recommendations.map((item) => (
+                  <div
+                    key={`rec-${item.id}`}
+                    className="border border-primary/30 bg-accent/50 p-2 cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => {
+                      trackView(item.id, item.category);
+                    }}
+                  >
+                    <div className="w-full h-[60px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-1">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[18px]">📦</span>
+                      )}
+                    </div>
+                    <p className="text-[10px] font-bold truncate">{item.title}</p>
+                    <p className="text-[10px] font-bold text-primary">{item.price}</p>
+                    <p className="text-[9px] text-muted-foreground truncate">
+                      {item.city && <>📍 {item.city} · </>}
+                      {item.seller}
+                    </p>
+                    {user && item.sellerId && item.sellerId !== user.id && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); navigate(`/messages?with=${item.sellerId}`); }}
+                        className="mt-1 bg-primary text-primary-foreground border-none px-2 py-[1px] text-[9px] cursor-pointer hover:opacity-90"
+                      >
+                        💬 {t("marketplace.contact")}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-2">
             {filtered.map((item) => (
-              <div key={item.id} className="border border-border p-2 flex gap-3">
+              <div
+                key={item.id}
+                className="border border-border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors"
+                onClick={() => trackView(item.id, item.category)}
+              >
                 <div className="w-[70px] h-[70px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
@@ -237,7 +283,7 @@ const Marketplace = () => {
                     {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
                     {user && item.sellerId && item.sellerId !== user.id && (
                       <button
-                        onClick={() => navigate(`/messages?with=${item.sellerId}`)}
+                        onClick={(e) => { e.stopPropagation(); navigate(`/messages?with=${item.sellerId}`); }}
                         className="ml-1 bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
                       >
                         💬 {t("marketplace.contact")}
