@@ -4,7 +4,7 @@ import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
-import BannerAd from "@/components/BannerAd";
+import BannerAdColumn from "@/components/BannerAdColumn";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -20,7 +20,7 @@ const Index = () => {
         {/* Left ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
           <div className="sticky top-3">
-            <BannerAd position="left" />
+            <BannerAdColumn position="left" />
           </div>
         </div>
 
@@ -65,7 +65,7 @@ const Index = () => {
         {/* Right ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
           <div className="sticky top-3">
-            <BannerAd position="right" />
+            <BannerAdColumn position="right" />
           </div>
         </div>
       </div>
