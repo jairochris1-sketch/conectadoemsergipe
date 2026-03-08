@@ -20,19 +20,9 @@ const Index = () => {
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
       <div className="w-full flex justify-center gap-3 px-2 py-3">
-        {/* Left column: Profile + Ads */}
+        {/* Left column: Marketplace */}
         <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
           <div className="sticky top-3 flex flex-col gap-3">
-            <ProfileSidebar
-              name={user?.name || t("guest_user")}
-              bio={user?.bio || t("login_to_see")}
-              photoUrl={user?.photoUrl || "/placeholder.svg"}
-              school={user?.school}
-              city={user?.city}
-              birthdate={user?.birthdate}
-              createdAt={user?.createdAt}
-            />
-            <BannerAdColumn position="left" />
             <MarketplaceHighlights />
           </div>
         </div>
@@ -53,15 +43,11 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only: Marketplace highlights above feed */}
-          <div className="md:hidden mb-3">
-            <MarketplaceHighlights />
-          </div>
-
           <PostFeed userName={user?.name} />
 
-          {/* Mobile-only: Profile below marketplace */}
-          <div className="md:hidden mt-3">
+          {/* Mobile-only sections below feed */}
+          <div className="md:hidden mt-3 space-y-3">
+            <MarketplaceHighlights />
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -71,10 +57,6 @@ const Index = () => {
               birthdate={user?.birthdate}
               createdAt={user?.createdAt}
             />
-          </div>
-
-          {/* Mobile-only: Friends below profile */}
-          <div className="md:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
@@ -88,6 +70,7 @@ const Index = () => {
             <BannerAdColumn position="right" />
           </div>
         </div>
+      </div>
       </div>
 
       <FacebookFooter />
