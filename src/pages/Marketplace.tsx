@@ -250,11 +250,16 @@ const Marketplace = () => {
                 {recommendations.map((item) => (
                   <div
                     key={`rec-${item.id}`}
-                    className="border border-primary/30 bg-accent/50 p-2 cursor-pointer hover:bg-accent transition-colors"
-                    onClick={() => {
-                      trackView(item.id, item.category);
-                    }}
+                    className={`relative border p-2 cursor-pointer hover:bg-accent transition-colors ${
+                      item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
+                    }`}
+                    onClick={() => trackView(item.id, item.category)}
                   >
+                    {item.isSponsored && (
+                      <span className="absolute top-0 right-0 text-[7px] font-bold text-primary-foreground bg-primary px-[4px] py-[1px]">
+                        ⭐ {t("ads.sponsored")}
+                      </span>
+                    )}
                     <div className="w-full h-[60px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-1">
                       {item.imageUrl ? (
                         <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
