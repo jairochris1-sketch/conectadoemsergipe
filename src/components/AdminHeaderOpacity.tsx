@@ -70,14 +70,21 @@ const AdminHeaderOpacity = () => {
       </div>
 
       <div
-        className="h-[40px] rounded border border-border flex items-center justify-center text-primary-foreground text-[11px] font-bold bg-cover bg-center"
+        className="h-[40px] rounded border border-border flex items-center justify-center text-primary-foreground text-[11px] font-bold bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100}))`,
+          backgroundImage: bannerImage
+            ? `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100})), url(${bannerImage})`
+            : `linear-gradient(rgba(59,89,152,${opacity / 100}), rgba(59,89,152,${opacity / 100}))`,
           backgroundColor: "hsl(var(--primary))",
         }}
       >
         Preview: [ conectadosemsergipe ]
       </div>
+      {!bannerImage && (
+        <p className="text-[9px] text-muted-foreground italic">
+          Nenhuma imagem de fundo configurada. Envie uma acima para ver o preview real.
+        </p>
+      )}
 
       <div className="flex items-center gap-2">
         <button
