@@ -253,7 +253,7 @@ const Marketplace = () => {
                     className={`relative border p-2 cursor-pointer hover:bg-accent transition-colors ${
                       item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
                     }`}
-                    onClick={() => trackView(item.id, item.category)}
+                    onClick={() => trackClick(item.id, item.category)}
                   >
                     {item.isSponsored && (
                       <span className="absolute top-0 right-0 text-[7px] font-bold text-primary-foreground bg-primary px-[4px] py-[1px]">
