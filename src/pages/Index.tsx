@@ -53,7 +53,19 @@ const Index = () => {
 
           <PostFeed userName={user?.name} />
 
-          {/* Mobile-only: Profile below feed */}
+          {/* Mobile-only: Marketplace below feed */}
+          <div className="md:hidden mt-3">
+            <div className="bg-card border border-border p-2">
+              <div className="border-b border-border pb-1 mb-2">
+                <h3 className="text-[13px] font-bold text-primary">Marketplace</h3>
+              </div>
+              <a href="/marketplace" className="text-[11px] text-primary hover:underline">
+                {t("marketplace") || "Ver Marketplace"} →
+              </a>
+            </div>
+          </div>
+
+          {/* Mobile-only: Profile below marketplace */}
           <div className="md:hidden mt-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
