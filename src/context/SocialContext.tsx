@@ -142,6 +142,19 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     await refreshPosts();
   };
 
+  const deleteOwnPost = async (postId: string) => {
+    if (!user) return;
+    await supabase.from("comments").delete().eq("post_id", postId);
+    await supabase.from("posts").delete().eq("id", postId).eq("user_id", user.id);
+    await refreshPosts();
+  };
+
+  const updatePost = async (postId: string, content: string) => {
+    if (!user) return;
+    await supabase.from("posts").update({ content }).eq("id", postId).eq("user_id", user.id);
+    await refreshPosts();
+  };
+
   const sendFriendRequest = async (toId: string) => {
     if (!user) return;
     await supabase.from("friendships").insert({ requester_id: user.id, addressee_id: toId });
