@@ -45,7 +45,7 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 min-w-0">
             <div className="bg-card border border-border p-3">
               <div className="border-b border-border pb-2 mb-3">
