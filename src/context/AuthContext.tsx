@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface User {
   id: string;
@@ -14,8 +13,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string, school: string) => Promise<boolean>;
+  login: (identifier: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, school: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
 }
@@ -67,17 +66,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return !error;
+  const login = async (identifier: string, password: string): Promise<boolean> => {
+    // Check if identifier looks like a phone number
+    const isPhone = identifier.startsWith("+") || /^\d{10,}$/.test(identifier.trim());
+
+    if (isPhone) {
+      const phone = identifier.startsWith("+") ? identifier : `+55${identifier}`;
+      const { error } = await supabase.auth.signInWithPassword({ phone, password });
+      return !error;
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email: identifier, password });
+      return !error;
+    }
   };
 
-  const register = async (name: string, email: string, password: string, school: string): Promise<boolean> => {
-    const { data, error } = await supabase.auth.signUp({
+  const register = async (name: string, email: string, password: string, school: string, phone?: string): Promise<boolean> => {
+    const options: any = {
       email,
       password,
       options: { data: { name } },
-    });
+    };
+    if (phone) {
+      options.phone = phone;
+    }
+
+    const { data, error } = await supabase.auth.signUp(options);
     if (error || !data.user) return false;
 
     // Update profile with school info
