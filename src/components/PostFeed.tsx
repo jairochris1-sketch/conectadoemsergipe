@@ -191,8 +191,10 @@ const PostFeed = ({ userName }: PostFeedProps) => {
         </div>
       )}
       <div className="space-y-2">
-        {posts.map((post) => (
-          <div key={post.id} className="border-b border-border pb-2">
+        {posts.map((post, index) => (
+          <div key={post.id}>
+            {index > 0 && index % 3 === 0 && <InlineBannerAd />}
+            <div className="border-b border-border pb-2">
             <div className="flex items-start gap-2">
               <div className="w-[32px] h-[32px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                 {post.authorPhoto ? (
