@@ -65,7 +65,7 @@ const Index = () => {
         {/* Right ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
           <div className="sticky top-3">
-            <BannerAd position="right" />
+            <BannerAdColumn position="right" />
           </div>
         </div>
       </div>
