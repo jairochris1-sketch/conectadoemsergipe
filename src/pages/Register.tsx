@@ -15,10 +15,6 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes(".edu")) {
-      setError("You must use a valid .edu email address.");
-      return;
-    }
     if (register(name, email, password, school)) {
       navigate("/");
     } else {
