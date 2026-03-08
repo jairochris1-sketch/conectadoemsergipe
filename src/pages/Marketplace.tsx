@@ -11,6 +11,7 @@ interface MarketItem {
   price: string;
   description: string;
   seller: string;
+  sellerId: string;
   category: string;
   city: string;
   imageUrl: string;
