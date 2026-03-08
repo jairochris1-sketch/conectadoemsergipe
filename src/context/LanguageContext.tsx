@@ -452,7 +452,6 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.seller": "Seller",
     "marketplace.no_items": "No items in this category.",
     "marketplace.all": "All",
-    "marketplace.all": "All",
     "marketplace.books": "Books",
     "marketplace.electronics": "Electronics",
     "marketplace.clothing": "Clothing",
