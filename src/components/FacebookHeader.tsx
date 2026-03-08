@@ -18,6 +18,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
+  const { unreadCount } = useUnreadMessages();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
