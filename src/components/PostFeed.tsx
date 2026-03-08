@@ -215,7 +215,15 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                   </div>
                 ) : (
                   <>
-                    {post.content && <p className="text-[11px] mt-[2px]">{post.content}</p>}
+                    {post.content && (
+                      <p className="text-[11px] mt-[2px]">
+                        {post.content.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+                          /^https?:\/\//.test(part) ? (
+                            <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all hover:opacity-80">{part}</a>
+                          ) : part
+                        )}
+                      </p>
+                    )}
                     {post.imageUrl && (
                       <img src={post.imageUrl} alt="Post" className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded" />
                     )}
