@@ -10,11 +10,16 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
+import { sergipeCities } from "@/lib/sergipeCities";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
   const [editing, setEditing] = useState(false);
-  const [bio, setBio] = useState(user?.bio || "");
+  const [editName, setEditName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editSchool, setEditSchool] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editBirthdate, setEditBirthdate] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
   const { getFriends } = useSocial();
@@ -22,11 +27,26 @@ const Profile = () => {
   if (!user) return <Navigate to="/login" />;
 
   const friends = getFriends();
-  const { followerCount, followingCount } = useFollowers(user?.id);
+  const { followerCount } = useFollowers(user?.id);
   const badge = useVerificationBadge(user?.id);
 
+  const startEditing = () => {
+    setEditName(user.name);
+    setEditBio(user.bio);
+    setEditSchool(user.school);
+    setEditCity(user.city);
+    setEditBirthdate(user.birthdate);
+    setEditing(true);
+  };
+
   const handleSave = async () => {
-    await updateProfile({ bio });
+    await updateProfile({
+      name: editName,
+      bio: editBio,
+      school: editSchool,
+      city: editCity,
+      birthdate: editBirthdate,
+    });
     setEditing(false);
   };
 
@@ -71,30 +91,76 @@ const Profile = () => {
                     {t("change_photo")}
                   </button>
                 </div>
-                <div className="text-[11px] space-y-1">
-                  <p><b>{t("name")}:</b> {user.name}</p>
-                  <p><b>{t("school")}:</b> {user.school}</p>
-                  <p><b>{t("city")}:</b> {user.city || "-"}</p>
-                  <p><b>{t("birthdate")}:</b> {user.birthdate ? new Date(user.birthdate).toLocaleDateString() : "-"}</p>
-                  <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
-                  <p><b>{t("friends")}:</b> {friends.length}</p>
-                  <p><b>{t("admin.followers")}:</b> {followerCount}</p>
-                </div>
+                {!editing ? (
+                  <div className="text-[11px] space-y-1">
+                    <p><b>{t("name")}:</b> {user.name}</p>
+                    <p><b>{t("school")}:</b> {user.school || "-"}</p>
+                    <p><b>{t("city")}:</b> {user.city || "-"}</p>
+                    <p><b>{t("birthdate")}:</b> {user.birthdate ? new Date(user.birthdate).toLocaleDateString() : "-"}</p>
+                    <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
+                    <p><b>{t("friends")}:</b> {friends.length}</p>
+                    <p><b>{t("admin.followers")}:</b> {followerCount}</p>
+                  </div>
+                ) : (
+                  <div className="text-[11px] space-y-2 flex-1">
+                    <div>
+                      <label className="block font-bold mb-1">{t("name")}:</label>
+                      <input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full border border-border p-1 text-[11px] bg-card"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold mb-1">{t("school")}:</label>
+                      <input
+                        value={editSchool}
+                        onChange={(e) => setEditSchool(e.target.value)}
+                        className="w-full border border-border p-1 text-[11px] bg-card"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold mb-1">{t("city")}:</label>
+                      <select
+                        value={editCity}
+                        onChange={(e) => setEditCity(e.target.value)}
+                        className="w-full border border-border p-1 text-[11px] bg-card"
+                      >
+                        <option value="">Selecione...</option>
+                        {sergipeCities.map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-bold mb-1">{t("birthdate")}:</label>
+                      <input
+                        type="date"
+                        value={editBirthdate}
+                        onChange={(e) => setEditBirthdate(e.target.value)}
+                        className="w-full border border-border p-1 text-[11px] bg-card"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold mb-1">{t("bio")}:</label>
+                      <textarea
+                        value={editBio}
+                        onChange={(e) => setEditBio(e.target.value)}
+                        className="w-full border border-border p-1 text-[11px] resize-none bg-card"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
               {!editing ? (
-                <button onClick={() => { setEditing(true); setBio(user.bio); }} className="mt-3 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
+                <button onClick={startEditing} className="mt-3 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
                   {t("edit_profile")}
                 </button>
               ) : (
-                <div className="mt-3 border-t border-border pt-3 text-[11px] space-y-2">
-                  <div>
-                    <label className="block font-bold mb-1">{t("bio")}:</label>
-                    <textarea value={bio} onChange={(e) => setBio(e.target.value)} className="w-full border border-border p-1 text-[11px] resize-none bg-card" rows={3} />
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">{t("save")}</button>
-                    <button onClick={() => setEditing(false)} className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">{t("cancel")}</button>
-                  </div>
+                <div className="flex gap-2 mt-3">
+                  <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">{t("save")}</button>
+                  <button onClick={() => setEditing(false)} className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">{t("cancel")}</button>
                 </div>
               )}
             </div>
