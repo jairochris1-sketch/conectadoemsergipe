@@ -53,15 +53,8 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only: Marketplace highlights above feed */}
+          {/* Mobile-only: Profile first */}
           <div className="md:hidden mb-3">
-            <MarketplaceHighlights />
-          </div>
-
-          <PostFeed userName={user?.name} />
-
-          {/* Mobile-only: Profile below marketplace */}
-          <div className="md:hidden mt-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -73,7 +66,14 @@ const Index = () => {
             />
           </div>
 
-          {/* Mobile-only: Friends below profile */}
+          {/* Mobile-only: Marketplace highlights */}
+          <div className="md:hidden mb-3">
+            <MarketplaceHighlights />
+          </div>
+
+          <PostFeed userName={user?.name} />
+
+          {/* Mobile-only: Friends below feed */}
           <div className="md:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
