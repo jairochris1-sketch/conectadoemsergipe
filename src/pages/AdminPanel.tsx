@@ -74,7 +74,7 @@ const AdminPanel = () => {
 
     if (!data || data.length === 0) { setReports([]); setLoading(false); return; }
 
-    const userIds = [...new Set(data.flatMap((r: any) => [r.reporter_id as string, r.reported_user_id as string]))];
+    const userIds = Array.from(new Set<string>(data.flatMap((r: any) => [r.reporter_id, r.reported_user_id])));
     const { data: profiles } = await supabase.from("profiles").select("user_id, name").in("user_id", userIds);
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
 
