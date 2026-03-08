@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useAdmin } from "@/hooks/useAdmin";
 import ReportButton from "@/components/ReportButton";
 import VerificationBadge from "@/components/VerificationBadge";
+import InlineBannerAd from "@/components/InlineBannerAd";
 import { useBatchVerificationBadges } from "@/hooks/useVerificationBadges";
 import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
