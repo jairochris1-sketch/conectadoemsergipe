@@ -20,8 +20,8 @@ const Index = () => {
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
       <div className="w-full flex justify-center gap-3 px-2 py-3">
-        {/* Column 1: Profile */}
-        <div className="hidden md:flex flex-col gap-3 w-[200px] shrink-0">
+        {/* Left column: Profile + Ads */}
+        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
           <div className="sticky top-3 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
@@ -33,18 +33,12 @@ const Index = () => {
               createdAt={user?.createdAt}
             />
             <BannerAdColumn position="left" />
-          </div>
-        </div>
-
-        {/* Column 2: Marketplace */}
-        <div className="hidden md:flex flex-col gap-3 w-[200px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
             <MarketplaceHighlights />
           </div>
         </div>
 
-        {/* Column 3: Feed */}
-        <div className="flex-1 min-w-0 max-w-[500px]">
+        {/* Center: Feed */}
+        <div className="flex-1 min-w-0 max-w-[600px]">
           {!user && (
             <div className="bg-accent border border-border p-3 mb-3 text-center">
               <h2 className="text-[16px] font-bold text-primary mb-1" style={{ fontFamily: 'Georgia, serif' }}>
@@ -86,8 +80,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Column 4: Friends */}
-        <div className="hidden md:block w-[200px] shrink-0">
+        {/* Right column: Friends + Ads */}
+        <div className="hidden md:block w-[220px] shrink-0">
           <div className="sticky top-3 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
