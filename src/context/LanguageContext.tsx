@@ -135,6 +135,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.city": "Cidade:",
     "marketplace.image": "Foto do produto:",
     "marketplace.contact": "Contatar vendedor",
+    "marketplace.recommended": "Recomendado para você",
     // Footer
     "footer.production": "uma produção Jairo dos Santos",
     "footer.about": "sobre",
