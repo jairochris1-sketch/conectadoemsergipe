@@ -59,7 +59,7 @@ const HomepageMarketplace = () => {
       category: d.category,
       city: d.city || "",
       imageUrl: d.image_url || "",
-      images: d.images || [],
+      images: Array.isArray(d.images) ? (d.images as string[]) : [],
       whatsapp: d.whatsapp || "",
       isSponsored: sponsoredSet.has(d.id),
       sold: d.sold || false,
