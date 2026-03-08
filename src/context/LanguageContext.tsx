@@ -143,6 +143,10 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.delete_confirm_desc": "Tem certeza que deseja excluir este anúncio? Esta ação não pode ser desfeita.",
     "marketplace.nsfw_blocked": "Imagem bloqueada: conteúdo impróprio detectado",
     "marketplace.checking_image": "Verificando imagem...",
+    "marketplace.whatsapp_label": "WhatsApp (contato)",
+    "marketplace.whatsapp_required": "Informe o número do WhatsApp para contato",
+    "marketplace.whatsapp_message": "Olá! Tenho interesse no produto:",
+    "marketplace.max_images_reached": "Limite de 5 fotos atingido",
     // Ads
     "ads.title": "Painel de Anúncios",
     "ads.credits": "créditos",
