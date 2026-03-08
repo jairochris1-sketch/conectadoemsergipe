@@ -264,12 +264,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                 </SheetTrigger>
                 <SheetContent side="right" className="bg-primary border-primary/80 w-[260px] p-4">
                   <SheetTitle className="text-primary-foreground text-[14px] mb-3">Menu</SheetTitle>
-                  <form onSubmit={handleSearch} className="flex items-center mb-4">
-                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("search")} className="border border-border px-2 py-1 text-[12px] text-foreground bg-card flex-1" />
-                    <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center">
-                      <Search className="w-3 h-3 text-foreground" />
-                    </button>
-                  </form>
+                  <div className="relative mb-4">
+                    <form onSubmit={handleSearch} className="flex items-center">
+                      <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-2 py-1 text-[12px] text-foreground bg-card flex-1" />
+                      <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center">
+                        <Search className="w-3 h-3 text-foreground" />
+                      </button>
+                    </form>
+                    <SuggestionsDropdown />
+                  </div>
                   <div className="flex items-center gap-2 mb-4">
                     {(["pt", "es", "en"] as Language[]).map((lang) => (
                       <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-[11px] px-1 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
