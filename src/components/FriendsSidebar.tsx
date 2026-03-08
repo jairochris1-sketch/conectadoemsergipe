@@ -77,7 +77,7 @@ const FriendsSidebar = () => {
                 )}
               </div>
               <div>
-                <a href="#" className="font-bold">{friend.name}</a>
+                <Link to={`/user/${friend.id}`} className="font-bold hover:underline">{friend.name}</Link>
                 <VerificationBadge {...(badges.get(friend.id) || {})} />
               </div>
             </div>
