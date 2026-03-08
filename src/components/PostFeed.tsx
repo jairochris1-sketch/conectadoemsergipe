@@ -160,8 +160,8 @@ const PostFeed = ({ userName }: PostFeedProps) => {
       <div className="fb-box-header">{t("the_wall")}</div>
       <div className="fb-box-body">
       {userName && (
-        <div className="mb-4 border border-border p-3 bg-accent">
-          <p className="text-sm font-bold mb-2">{t("write_something")}</p>
+      <div className="mb-3 border border-border p-2.5 bg-accent">
+          <p className="text-[12px] font-bold mb-1.5">{t("write_something")}</p>
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
