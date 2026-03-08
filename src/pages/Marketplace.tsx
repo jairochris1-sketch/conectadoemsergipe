@@ -61,6 +61,7 @@ const Marketplace = () => {
   const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "" });
   const [imagePreview, setImagePreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
