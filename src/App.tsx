@@ -21,6 +21,7 @@ import ResetPassword from "./pages/ResetPassword";
 import SellerDashboard from "./pages/SellerDashboard";
 import SitePage from "./pages/SitePage";
 import ModeratorPanel from "./pages/ModeratorPanel";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
