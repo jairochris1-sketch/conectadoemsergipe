@@ -46,6 +46,7 @@ const Index = () => {
           </div>
           <div className="w-full md:w-[180px] md:shrink-0">
             <FriendsSidebar />
+            {user && <FriendSuggestions />}
           </div>
         </div>
       </div>
