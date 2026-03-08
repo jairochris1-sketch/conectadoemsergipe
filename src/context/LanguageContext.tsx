@@ -372,6 +372,17 @@ const translations: Record<Language, Record<string, string>> = {
     "comments.hide": "Hide comments",
     "comments.placeholder": "Write a comment...",
     "comments.send": "Send",
+    "admin.delete_post": "Delete post",
+    "admin.ban_user": "Ban user",
+    "admin.ban_days": "Ban duration",
+    "admin.ban_reason": "Reason",
+    "admin.confirm_ban": "Confirm Ban",
+    "admin.day": "day",
+    "admin.days": "days",
+    "admin.year": "year",
+    "admin.follow": "Follow",
+    "admin.unfollow": "Unfollow",
+    "admin.followers": "Followers",
   },
 };
 

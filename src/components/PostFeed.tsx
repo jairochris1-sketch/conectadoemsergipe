@@ -152,6 +152,57 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           <p className="text-[11px] text-muted-foreground">{t("friends.none")}</p>
         )}
       </div>
+
+      {/* Ban Modal */}
+      {banModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-card border border-border p-4 max-w-[300px] w-full">
+            <h4 className="text-[13px] font-bold text-primary mb-2">{t("admin.ban_user")}: {banModal.userName}</h4>
+            <div className="space-y-2 text-[11px]">
+              <div>
+                <label className="block font-bold mb-1">{t("admin.ban_days")}:</label>
+                <select value={banDays} onChange={(e) => setBanDays(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card">
+                  <option value="1">1 {t("admin.day")}</option>
+                  <option value="3">3 {t("admin.days")}</option>
+                  <option value="7">7 {t("admin.days")}</option>
+                  <option value="30">30 {t("admin.days")}</option>
+                  <option value="365">1 {t("admin.year")}</option>
+                </select>
+              </div>
+              <div>
+                <label className="block font-bold mb-1">{t("admin.ban_reason")}:</label>
+                <textarea value={banReason} onChange={(e) => setBanReason(e.target.value)} className="w-full border border-border p-1 text-[11px] resize-none bg-card" rows={2} />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    const { banUser } = await import("@/hooks/useAdmin").then(() => ({ banUser: null }));
+                    // Use inline ban
+                    const { supabase } = await import("@/integrations/supabase/client");
+                    const bannedUntil = new Date();
+                    bannedUntil.setDate(bannedUntil.getDate() + parseInt(banDays));
+                    await supabase.from("bans").insert({
+                      user_id: banModal.userId,
+                      banned_by: user!.id,
+                      reason: banReason,
+                      banned_until: bannedUntil.toISOString(),
+                    });
+                    setBanModal(null);
+                    setBanReason("");
+                    setBanDays("1");
+                  }}
+                  className="bg-destructive text-destructive-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                >
+                  {t("admin.confirm_ban")}
+                </button>
+                <button onClick={() => setBanModal(null)} className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
+                  {t("cancel")}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
