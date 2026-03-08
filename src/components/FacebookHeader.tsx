@@ -4,6 +4,7 @@ import { Search, Mail, Menu, X } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
+import { useModerator } from "@/hooks/useModerator";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { useAdminReports } from "@/hooks/useAdminReports";
 import { useIsMobile } from "@/hooks/use-mobile";
