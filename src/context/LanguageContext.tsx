@@ -709,6 +709,11 @@ const translations: Record<Language, Record<string, string>> = {
     "post.edit": "Edit",
     "post.delete": "Delete",
     "post.delete_confirm": "Are you sure you want to delete this post?",
+    "post.add_photo": "Photo",
+    "post.max_5mb": "max 5MB",
+    "post.uploading": "Uploading...",
+    "post.image_too_large": "Image too large! Max 5MB.",
+    "post.image_error": "Error processing image.",
   },
 };
 

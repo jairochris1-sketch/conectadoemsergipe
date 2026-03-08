@@ -209,7 +209,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-[11px] mt-[2px]">{post.content}</p>
+                  <>
+                    {post.content && <p className="text-[11px] mt-[2px]">{post.content}</p>}
+                    {post.imageUrl && (
+                      <img src={post.imageUrl} alt="Post" className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded" />
+                    )}
+                  </>
                 )}
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
 
