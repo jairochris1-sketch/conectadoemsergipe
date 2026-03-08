@@ -7,6 +7,7 @@ export interface Post {
   authorId: string;
   authorName: string;
   authorPhoto: string;
+  authorCity: string;
   content: string;
   timestamp: Date;
 }
@@ -32,6 +33,8 @@ export interface FriendRequest {
 
 interface SocialContextType {
   posts: Post[];
+  deleteOwnPost: (postId: string) => Promise<void>;
+  updatePost: (postId: string, content: string) => Promise<void>;
   createPost: (content: string) => Promise<void>;
   friendRequests: FriendRequest[];
   sendFriendRequest: (toId: string) => Promise<void>;
@@ -68,7 +71,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     const userIds = [...new Set(data.map((p) => p.user_id))];
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("user_id, name, photo_url")
+      .select("user_id, name, photo_url, city")
       .in("user_id", userIds);
 
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
@@ -81,6 +84,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
           authorId: p.user_id,
           authorName: profile?.name || "User",
           authorPhoto: profile?.photo_url || "",
+          authorCity: profile?.city || "",
           content: p.content,
           timestamp: new Date(p.created_at),
         };
@@ -135,6 +139,19 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
   const createPost = async (content: string) => {
     if (!user) return;
     await supabase.from("posts").insert({ user_id: user.id, content });
+    await refreshPosts();
+  };
+
+  const deleteOwnPost = async (postId: string) => {
+    if (!user) return;
+    await supabase.from("comments").delete().eq("post_id", postId);
+    await supabase.from("posts").delete().eq("id", postId).eq("user_id", user.id);
+    await refreshPosts();
+  };
+
+  const updatePost = async (postId: string, content: string) => {
+    if (!user) return;
+    await supabase.from("posts").update({ content }).eq("id", postId).eq("user_id", user.id);
     await refreshPosts();
   };
 
@@ -243,6 +260,8 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
       value={{
         posts,
         createPost,
+        deleteOwnPost,
+        updatePost,
         friendRequests,
         sendFriendRequest,
         acceptFriendRequest,

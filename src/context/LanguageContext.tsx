@@ -244,6 +244,9 @@ const translations: Record<Language, Record<string, string>> = {
     "messages.placeholder": "Digite sua mensagem...",
     "messages.send": "Enviar",
     "messages.send_message": "Enviar mensagem",
+    "post.edit": "Editar",
+    "post.delete": "Excluir",
+    "post.delete_confirm": "Tem certeza que deseja excluir este post?",
   },
   es: {
     "welcome": "bienvenido",
@@ -467,6 +470,9 @@ const translations: Record<Language, Record<string, string>> = {
     "messages.placeholder": "Escribe tu mensaje...",
     "messages.send": "Enviar",
     "messages.send_message": "Enviar mensaje",
+    "post.edit": "Editar",
+    "post.delete": "Eliminar",
+    "post.delete_confirm": "¿Estás seguro de que deseas eliminar esta publicación?",
   },
   en: {
     "welcome": "welcome",
@@ -690,6 +696,9 @@ const translations: Record<Language, Record<string, string>> = {
     "messages.placeholder": "Type your message...",
     "messages.send": "Send",
     "messages.send_message": "Send message",
+    "post.edit": "Edit",
+    "post.delete": "Delete",
+    "post.delete_confirm": "Are you sure you want to delete this post?",
   },
 };
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Pencil, Trash2, Check, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
@@ -10,13 +11,28 @@ interface PostFeedProps {
   userName?: string;
 }
 
+const abbreviateCity = (city: string) => {
+  if (!city) return "";
+  const parts = city.split(" ");
+  if (parts.length <= 2) return city;
+  // e.g. "Nossa Senhora da Glória" -> "N. S. da Glória"
+  const lastWord = parts[parts.length - 1];
+  const abbreviated = parts.slice(0, -1).map((w, i) => {
+    if (["de", "da", "do", "das", "dos", "e"].includes(w.toLowerCase())) return w;
+    return w[0].toUpperCase() + ".";
+  }).join(" ");
+  return `${abbreviated} ${lastWord}`;
+};
+
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [newPost, setNewPost] = useState("");
   const [commentTexts, setCommentTexts] = useState<Record<string, string>>({});
   const [comments, setComments] = useState<Record<string, Comment[]>>({});
   const [openComments, setOpenComments] = useState<Record<string, boolean>>({});
-  const { t } = useLanguage();
-  const { posts, createPost, getComments, addComment, refreshPosts } = useSocial();
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const { language, t } = useLanguage();
+  const { posts, createPost, deleteOwnPost, updatePost, getComments, addComment, refreshPosts } = useSocial();
   const { user } = useAuth();
   const { isAdmin, deletePost } = useAdmin();
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
@@ -47,10 +63,35 @@ const PostFeed = ({ userName }: PostFeedProps) => {
     setComments((prev) => ({ ...prev, [postId]: data }));
   };
 
+  const localeMap: Record<string, string> = { pt: "pt-BR", es: "es-ES", en: "en-US" };
+
   const formatDate = (date: Date) => {
-    return date.toLocaleString("en-US", {
-      month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true,
+    const locale = localeMap[language] || "pt-BR";
+    return date.toLocaleString(locale, {
+      month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: language === "en",
     });
+  };
+
+  const handleDeleteOwn = async (postId: string) => {
+    if (!confirm(t("post.delete_confirm"))) return;
+    await deleteOwnPost(postId);
+  };
+
+  const startEdit = (postId: string, content: string) => {
+    setEditingPostId(postId);
+    setEditContent(content);
+  };
+
+  const cancelEdit = () => {
+    setEditingPostId(null);
+    setEditContent("");
+  };
+
+  const saveEdit = async () => {
+    if (!editingPostId || !editContent.trim()) return;
+    await updatePost(editingPostId, editContent.trim());
+    setEditingPostId(null);
+    setEditContent("");
   };
 
   return (
@@ -86,9 +127,52 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px]">
-                  <Link to={`/user/${post.authorId}`} className="font-bold">{post.authorName}</Link>{" "}{post.content}
+                  <Link to={`/user/${post.authorId}`} className="font-bold">{post.authorName}</Link>
+                  {post.authorCity && (
+                    <span className="text-muted-foreground text-[10px]"> · {abbreviateCity(post.authorCity)}</span>
+                  )}
                 </p>
+                {editingPostId === post.id ? (
+                  <div className="mt-1">
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className="w-full border border-border p-1 text-[11px] resize-none bg-card"
+                      rows={2}
+                    />
+                    <div className="flex gap-1 mt-1">
+                      <button onClick={saveEdit} className="bg-primary text-primary-foreground border-none px-2 py-[2px] text-[10px] cursor-pointer hover:opacity-90 flex items-center gap-1">
+                        <Check className="w-3 h-3" /> {t("save")}
+                      </button>
+                      <button onClick={cancelEdit} className="bg-muted text-foreground border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:opacity-90 flex items-center gap-1">
+                        <X className="w-3 h-3" /> {t("cancel")}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[11px] mt-[2px]">{post.content}</p>
+                )}
                 <p className="text-[10px] text-muted-foreground mt-1">{formatDate(post.timestamp)}</p>
+
+                {/* Own post actions */}
+                {user && post.authorId === user.id && editingPostId !== post.id && (
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      onClick={() => startEdit(post.id, post.content)}
+                      className="text-[9px] text-primary bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-[2px]"
+                    >
+                      <Pencil className="w-3 h-3" /> {t("post.edit")}
+                    </button>
+                    <button
+                      onClick={() => handleDeleteOwn(post.id)}
+                      className="text-[9px] text-destructive bg-transparent border-none cursor-pointer hover:underline inline-flex items-center gap-[2px]"
+                    >
+                      <Trash2 className="w-3 h-3" /> {t("post.delete")}
+                    </button>
+                  </div>
+                )}
+
+                {/* Admin actions */}
                 {isAdmin && post.authorId !== user?.id && (
                   <div className="flex gap-2 mt-1">
                     <button
@@ -186,8 +270,6 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               <div className="flex gap-2">
                 <button
                   onClick={async () => {
-                    const { banUser } = await import("@/hooks/useAdmin").then(() => ({ banUser: null }));
-                    // Use inline ban
                     const { supabase } = await import("@/integrations/supabase/client");
                     const bannedUntil = new Date();
                     bannedUntil.setDate(bannedUntil.getDate() + parseInt(banDays));
