@@ -279,6 +279,39 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_logs: {
+        Row: {
+          action_type: string
+          created_at: string
+          details: string | null
+          id: string
+          moderator_id: string
+          target_id: string
+          target_owner_id: string | null
+          target_type: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          moderator_id: string
+          target_id: string
+          target_owner_id?: string | null
+          target_type: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          moderator_id?: string
+          target_id?: string
+          target_owner_id?: string | null
+          target_type?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           content: string
