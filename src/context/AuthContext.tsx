@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (name: string, email: string, password: string, school: string, phone?: string): Promise<boolean> => {
+  const register = async (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string): Promise<boolean> => {
     const options: any = {
       email,
       password,
@@ -97,10 +97,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data, error } = await supabase.auth.signUp(options);
     if (error || !data.user) return false;
 
-    // Update profile with school info
+    // Update profile with extra info
     await supabase
       .from("profiles")
-      .update({ school, name })
+      .update({ school, name, birthdate, city })
       .eq("user_id", data.user.id);
 
     return true;
