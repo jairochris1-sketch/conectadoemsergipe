@@ -53,7 +53,7 @@ const Profile = () => {
                   {t("profile_of")} {user.name}
                 </h2>
               </div>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="shrink-0">
                   <img
                     src={user.photoUrl || "/placeholder.svg"}
