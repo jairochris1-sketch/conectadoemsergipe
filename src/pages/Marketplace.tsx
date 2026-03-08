@@ -136,7 +136,22 @@ const Marketplace = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Marketplace" description="Compre e venda produtos em Sergipe. Encontre ofertas locais no marketplace do Conectados em Sergipe." path="/marketplace" />
+      <SEOHead
+        title="Marketplace"
+        description="Compre e venda produtos em Sergipe. Encontre ofertas locais no marketplace do Conectados em Sergipe."
+        path="/marketplace"
+        jsonLd={{
+          "@type": "WebPage",
+          "name": "Marketplace - Conectados em Sergipe",
+          "description": "Compre e venda produtos em Sergipe. Encontre ofertas locais no marketplace do Conectados em Sergipe.",
+          "url": "https://conectadoemsergipe.lovable.app/marketplace",
+          "isPartOf": { "@type": "WebSite", "name": "Conectados em Sergipe", "url": "https://conectadoemsergipe.lovable.app" },
+          "breadcrumb": { "@type": "BreadcrumbList", "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://conectadoemsergipe.lovable.app/" },
+            { "@type": "ListItem", "position": 2, "name": "Marketplace", "item": "https://conectadoemsergipe.lovable.app/marketplace" }
+          ]}
+        }}
+      />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="bg-card border border-border p-3">

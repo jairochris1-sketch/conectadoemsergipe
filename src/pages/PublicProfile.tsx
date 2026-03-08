@@ -78,7 +78,23 @@ const PublicProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title={profile?.name || "Perfil"} description={`Veja o perfil de ${profile?.name || "usuário"} no Conectados em Sergipe.`} path={`/user/${userId}`} />
+      <SEOHead
+        title={profile?.name || "Perfil"}
+        description={`Veja o perfil de ${profile?.name || "usuário"} no Conectados em Sergipe.`}
+        path={`/user/${userId}`}
+        ogImage={profile?.photo_url || undefined}
+        jsonLd={{
+          "@type": "ProfilePage",
+          "mainEntity": {
+            "@type": "Person",
+            "name": profile.name,
+            ...(profile.photo_url ? { "image": profile.photo_url } : {}),
+            ...(profile.bio ? { "description": profile.bio } : {}),
+            ...(profile.city ? { "address": { "@type": "PostalAddress", "addressLocality": profile.city, "addressRegion": "Sergipe", "addressCountry": "BR" } } : {}),
+          },
+          "url": `https://conectadoemsergipe.lovable.app/user/${userId}`,
+        }}
+      />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="flex flex-col md:flex-row gap-3">

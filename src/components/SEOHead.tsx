@@ -5,12 +5,13 @@ interface SEOHeadProps {
   description: string;
   path?: string;
   ogImage?: string;
+  jsonLd?: Record<string, any>;
 }
 
 const BASE_URL = "https://conectadoemsergipe.lovable.app";
 const DEFAULT_OG_IMAGE = "https://storage.googleapis.com/gpt-engineer-file-uploads/7QRlYRXn6KMdpPSlH1neUmMRWDh1/social-images/social-1772944286796-fgfgfgfgfgfgfgfg.webp";
 
-const SEOHead = ({ title, description, path = "/", ogImage }: SEOHeadProps) => {
+const SEOHead = ({ title, description, path = "/", ogImage, jsonLd }: SEOHeadProps) => {
   useEffect(() => {
     const fullTitle = title === "Conectados em Sergipe" ? title : `${title} | Conectados em Sergipe`;
     document.title = fullTitle;
@@ -46,7 +47,23 @@ const SEOHead = ({ title, description, path = "/", ogImage }: SEOHeadProps) => {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute("href", url);
-  }, [title, description, path, ogImage]);
+
+    // JSON-LD
+    const existingLd = document.querySelector('script[data-seo-jsonld]');
+    if (existingLd) existingLd.remove();
+    if (jsonLd) {
+      const script = document.createElement("script");
+      script.setAttribute("type", "application/ld+json");
+      script.setAttribute("data-seo-jsonld", "true");
+      script.textContent = JSON.stringify({ "@context": "https://schema.org", ...jsonLd });
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      const ld = document.querySelector('script[data-seo-jsonld]');
+      if (ld) ld.remove();
+    };
+  }, [title, description, path, ogImage, jsonLd]);
 
   return null;
 };
