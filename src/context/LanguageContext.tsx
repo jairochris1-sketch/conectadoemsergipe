@@ -198,7 +198,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.electronics": "Electrónicos",
     "marketplace.clothing": "Ropa",
     "marketplace.other": "Otros",
-    "footer.production": "una producción de Mark Zuckerberg",
+    "footer.production": "una producción de Jairo dos Santos",
     "footer.about": "acerca de",
     "footer.contact": "contacto",
     "footer.privacy": "privacidad",
