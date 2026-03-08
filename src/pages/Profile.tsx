@@ -20,6 +20,7 @@ const Profile = () => {
   if (!user) return <Navigate to="/login" />;
 
   const friends = getFriends();
+  const { followerCount, followingCount } = useFollowers(user?.id);
 
   const handleSave = async () => {
     await updateProfile({ bio });
