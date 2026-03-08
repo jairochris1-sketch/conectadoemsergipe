@@ -39,6 +39,7 @@ const Index = () => {
               school={user?.school}
               city={user?.city}
               birthdate={user?.birthdate}
+              createdAt={user?.createdAt}
             />
           </div>
           <div className="flex-1 min-w-0">
