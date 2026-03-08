@@ -232,7 +232,7 @@ const Marketplace = () => {
             {CATEGORIES.map((c) => (
               <button
                 key={c}
-                onClick={() => setCategory(c)}
+                onClick={() => { setCategory(c); trackCategoryFilter(c); }}
                 className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
                 {t(CATEGORY_KEYS[c])}
