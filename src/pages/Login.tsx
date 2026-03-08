@@ -69,7 +69,7 @@ const Login = () => {
       <div
         className="bg-primary bg-cover bg-center bg-no-repeat"
         style={bannerImage ? {
-          backgroundImage: `linear-gradient(rgba(59,89,152,0.85), rgba(59,89,152,0.85)), url(${bannerImage})`,
+          backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
         } : undefined}
       >
         <div className="max-w-[760px] mx-auto px-2 py-2">
