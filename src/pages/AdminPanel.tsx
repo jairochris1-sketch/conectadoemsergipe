@@ -95,7 +95,7 @@ const AdminPanel = () => {
   useEffect(() => {
     if (!isAdmin) return;
     if (tab === "reports") fetchReports();
-    else fetchBans();
+    else if (tab === "active" || tab === "expired") fetchBans();
   }, [isAdmin, tab, reportTab]);
 
   if (!user) return <Navigate to="/login" />;
