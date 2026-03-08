@@ -64,11 +64,11 @@ const Login = () => {
     <div className="min-h-screen bg-card">
       {/* Banner image from admin */}
       {bannerImage && (
-        <div className="max-w-[760px] mx-auto">
+        <div className="max-w-[760px] mx-auto bg-primary overflow-hidden" style={{ height: '140px' }}>
           <img
             src={bannerImage}
             alt="Banner"
-            className="w-full h-auto object-cover block"
+            className="w-full h-full object-cover block"
           />
         </div>
       )}
