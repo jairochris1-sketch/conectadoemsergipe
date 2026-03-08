@@ -22,8 +22,6 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validate age >= 16
     if (birthdate) {
       const birth = new Date(birthdate);
       const today = new Date();
@@ -35,7 +33,6 @@ const Register = () => {
         return;
       }
     }
-
     const result = await register(name, email, password, school, birthdate, city, phone || undefined);
     if (result) {
       navigate("/");
@@ -48,56 +45,64 @@ const Register = () => {
     <div className="min-h-screen bg-background">
       <SEOHead title="Cadastro" description="Crie sua conta no Conectados em Sergipe. Junte-se à rede social sergipana." path="/register" />
       <FacebookHeader isLoggedIn={false} />
-      <div className="max-w-[400px] mx-auto mt-8 px-2">
-        <div className="bg-card border border-border p-4">
-          <h2 className="text-[16px] font-bold text-primary mb-3 border-b border-border pb-2" style={{ fontFamily: 'Georgia, serif' }}>
-            {t("register.title")}
-          </h2>
-          <p className="text-[11px] text-muted-foreground mb-3">{t("register.description")}</p>
-          {error && <p className="text-destructive text-[11px] mb-2">{error}</p>}
-          <form onSubmit={handleSubmit} className="space-y-3 text-[11px]">
-            <div>
-              <label className="block font-bold mb-1">{t("register.full_name")}</label>
-              <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required />
+
+      <div className="mx-auto py-3 px-2" style={{ width: "980px", maxWidth: "100%" }}>
+        <div className="max-w-[400px] mx-auto">
+          <div className="bg-card border border-border p-3">
+            <div className="border-b border-border pb-1.5 mb-2">
+              <h2 className="text-[14px] font-bold text-primary" style={{ fontFamily: "klavika, 'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                {t("register.title")}
+              </h2>
             </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.email")}</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.phone")}</label>
-              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" placeholder={t("register.phone_placeholder")} />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.birthdate")}</label>
-              <input type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.city")}</label>
-              <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required>
-                <option value="">{t("register.select_city")}</option>
-                {SERGIPE_CITIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.password")}</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required minLength={6} />
-            </div>
-            <div>
-              <label className="block font-bold mb-1">{t("register.school")}</label>
-              <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} className="w-full border border-border p-1 text-[11px] bg-card" required placeholder={t("register.school_placeholder")} />
-            </div>
-            <button type="submit" className="bg-primary text-primary-foreground border-none px-4 py-1 text-[11px] cursor-pointer hover:opacity-90">
-              {t("register.submit")}
-            </button>
-          </form>
-          <p className="mt-3 text-[11px]">
-            {t("register.already")} <Link to="/login">{t("register.login_here")}</Link>
-          </p>
+            <p className="text-[11px] text-muted-foreground mb-2">{t("register.description")}</p>
+            {error && <p className="text-destructive text-[10px] mb-2">{error}</p>}
+            <form onSubmit={handleSubmit} className="space-y-2 text-[11px]">
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.full_name")}</label>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required />
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.email")}</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required />
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.phone")}</label>
+                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" placeholder={t("register.phone_placeholder")} />
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.birthdate")}</label>
+                <input type="date" value={birthdate} onChange={(e) => setBirthdate(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required />
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.city")}</label>
+                <select value={city} onChange={(e) => setCity(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required>
+                  <option value="">{t("register.select_city")}</option>
+                  {SERGIPE_CITIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.password")}</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required minLength={6} />
+              </div>
+              <div>
+                <label className="block font-bold mb-0.5">{t("register.school")}</label>
+                <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} className="w-full border border-border p-1.5 text-[11px] bg-card" required placeholder={t("register.school_placeholder")} />
+              </div>
+              <div className="pt-1">
+                <button type="submit" className="bg-primary text-primary-foreground border-none px-4 py-1.5 text-[11px] cursor-pointer font-bold hover:opacity-90">
+                  {t("register.submit")}
+                </button>
+              </div>
+            </form>
+            <p className="mt-2 text-[11px]">
+              {t("register.already")} <Link to="/login">{t("register.login_here")}</Link>
+            </p>
+          </div>
         </div>
       </div>
+
       <FacebookFooter />
     </div>
   );
