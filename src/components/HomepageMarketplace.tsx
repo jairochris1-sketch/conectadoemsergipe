@@ -115,6 +115,21 @@ const HomepageMarketplace = () => {
         </div>
       </div>
 
+      {/* Category filters */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c}
+            onClick={() => setCategory(c)}
+            className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${
+              category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+            }`}
+          >
+            {t(CATEGORY_KEYS[c])}
+          </button>
+        ))}
+      </div>
+
       {/* Form */}
       {showForm && user && (
         <MarketplaceForm
@@ -125,9 +140,11 @@ const HomepageMarketplace = () => {
       )}
 
       {/* Products grid */}
-      {loading ? (
-        <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
-      ) : items.length === 0 ? (
+      {(() => {
+        const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+        return loading ? (
+          <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
+        ) : filtered.length === 0 ? (
         <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
