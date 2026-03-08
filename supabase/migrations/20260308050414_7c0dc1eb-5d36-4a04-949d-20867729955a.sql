@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN birthdate date, ADD COLUMN city text DEFAULT '';
