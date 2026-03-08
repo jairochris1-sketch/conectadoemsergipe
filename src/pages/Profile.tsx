@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Navigate } from "react-router-dom";
+import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import FriendsSidebar from "@/components/FriendsSidebar";
