@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 
-const HEARTBEAT_INTERVAL = 30_000; // 30 seconds
-const OFFLINE_THRESHOLD = 2 * 60_000; // 2 minutes
+const HEARTBEAT_INTERVAL = 15_000; // 15 seconds
+const OFFLINE_THRESHOLD = 45_000; // 45 seconds (3x heartbeat)
 
 /**
  * Updates the current user's last_seen_at timestamp.
