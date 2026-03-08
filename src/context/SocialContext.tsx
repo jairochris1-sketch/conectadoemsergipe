@@ -202,6 +202,42 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     }));
   };
 
+  const getComments = async (postId: string): Promise<Comment[]> => {
+    const { data } = await supabase
+      .from("comments")
+      .select("id, post_id, user_id, content, created_at")
+      .eq("post_id", postId)
+      .order("created_at", { ascending: true });
+
+    if (!data || data.length === 0) return [];
+
+    const userIds = [...new Set(data.map((c: any) => c.user_id))];
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("user_id, name, photo_url")
+      .in("user_id", userIds);
+
+    const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
+
+    return data.map((c: any) => {
+      const profile = profileMap.get(c.user_id);
+      return {
+        id: c.id,
+        postId: c.post_id,
+        authorId: c.user_id,
+        authorName: profile?.name || "User",
+        authorPhoto: profile?.photo_url || "",
+        content: c.content,
+        timestamp: new Date(c.created_at),
+      };
+    });
+  };
+
+  const addComment = async (postId: string, content: string) => {
+    if (!user) return;
+    await supabase.from("comments").insert({ post_id: postId, user_id: user.id, content });
+  };
+
   return (
     <SocialContext.Provider
       value={{
