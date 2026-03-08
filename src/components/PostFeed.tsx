@@ -105,6 +105,14 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     </button>
                   </div>
                 )}
+                {user && post.authorId !== user.id && (
+                  <ReportButton
+                    contentType="post"
+                    contentId={post.id}
+                    reportedUserId={post.authorId}
+                    className="text-[9px] mt-1"
+                  />
+                )}
               </div>
             </div>
 
