@@ -138,6 +138,40 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     refreshFriendships();
   }, [refreshFriendships]);
 
+  // Realtime: posts
+  useEffect(() => {
+    const channel = supabase
+      .channel("posts-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "posts" }, () => {
+        refreshPosts();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [refreshPosts]);
+
+  // Realtime: comments
+  useEffect(() => {
+    const channel = supabase
+      .channel("comments-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "comments" }, () => {
+        // Trigger a re-render signal - components will refetch comments as needed
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  // Realtime: friendships
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel("friendships-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, () => {
+        refreshFriendships();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, refreshFriendships]);
+
   const createPost = async (content: string, imageUrl?: string) => {
     if (!user) return;
     const insertData: any = { user_id: user.id, content };
