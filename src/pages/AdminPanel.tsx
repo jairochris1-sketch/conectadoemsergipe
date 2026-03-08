@@ -10,6 +10,7 @@ import AdminModeratorManager from "@/components/AdminModeratorManager";
 import AdminModerationLogs from "@/components/AdminModerationLogs";
 import AdminBannerManager from "@/components/AdminBannerManager";
 import AdminForbiddenWords from "@/components/AdminForbiddenWords";
+import AdminFeaturedMarketplace from "@/components/AdminFeaturedMarketplace";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
