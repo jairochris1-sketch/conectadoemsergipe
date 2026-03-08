@@ -78,6 +78,11 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               )}
             </Link>
           )}
+          {isModerator && !isAdmin && (
+            <Link to="/moderator" className="text-primary-foreground font-bold text-[11px] hover:underline" onClick={onNav}>
+              ⭐ Colaborador
+            </Link>
+          )}
           <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline text-left">
             {t("logout")}
           </button>
