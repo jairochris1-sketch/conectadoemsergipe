@@ -173,6 +173,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "banners" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📢 Banners
             </button>
+            <button onClick={() => setTab("forbidden")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "forbidden" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🚫 Filtro
+            </button>
           </div>
 
           {tab === "reports" && (
