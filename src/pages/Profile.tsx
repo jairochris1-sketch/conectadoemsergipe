@@ -74,6 +74,7 @@ const Profile = () => {
                   <p><b>{t("birthdate")}:</b> {user.birthdate ? new Date(user.birthdate).toLocaleDateString() : "-"}</p>
                   <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                   <p><b>{t("friends")}:</b> {friends.length}</p>
+                  <p><b>{t("admin.followers")}:</b> {followerCount}</p>
                 </div>
               </div>
               {!editing ? (

@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
+import FollowButton from "@/components/FollowButton";
 
 const MOCK_SHOPS = [
   { name: "Harvard Book Store", description: "Textbooks and supplies" },
