@@ -4,12 +4,14 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
   const [editing, setEditing] = useState(false);
   const [bio, setBio] = useState(user?.bio || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
 
   if (!user) return <Navigate to="/login" />;
 
@@ -34,7 +36,7 @@ const Profile = () => {
             <div className="bg-card border border-border p-3">
               <div className="border-b border-border pb-2 mb-3">
                 <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
-                  {user.name}'s Profile
+                  {t("profile_of")} {user.name}
                 </h2>
               </div>
 
@@ -45,7 +47,7 @@ const Profile = () => {
                     alt={user.name}
                     className="w-[150px] h-[150px] border border-border object-cover cursor-pointer"
                     onClick={() => fileInputRef.current?.click()}
-                    title="Clique para alterar a foto"
+                    title={t("click_to_change")}
                   />
                   <input
                     ref={fileInputRef}
@@ -58,15 +60,15 @@ const Profile = () => {
                     onClick={() => fileInputRef.current?.click()}
                     className="mt-1 text-[10px] text-primary cursor-pointer bg-transparent border-none hover:underline w-full text-center"
                   >
-                    Alterar foto
+                    {t("change_photo")}
                   </button>
                 </div>
                 <div className="text-[11px] space-y-1">
-                  <p><b>Name:</b> {user.name}</p>
-                  <p><b>Email:</b> {user.email}</p>
-                  <p><b>School:</b> {user.school}</p>
-                  <p><b>Member since:</b> February 2004</p>
-                  <p><b>Bio:</b> {user.bio || "No bio yet."}</p>
+                  <p><b>{t("name")}:</b> {user.name}</p>
+                  <p><b>{t("email")}:</b> {user.email}</p>
+                  <p><b>{t("school")}:</b> {user.school}</p>
+                  <p><b>{t("member_since")}:</b> February 2004</p>
+                  <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                 </div>
               </div>
 
@@ -75,12 +77,12 @@ const Profile = () => {
                   onClick={() => { setEditing(true); setBio(user.bio); }}
                   className="mt-3 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
                 >
-                  Edit Profile
+                  {t("edit_profile")}
                 </button>
               ) : (
                 <div className="mt-3 border-t border-border pt-3 text-[11px] space-y-2">
                   <div>
-                    <label className="block font-bold mb-1">Bio:</label>
+                    <label className="block font-bold mb-1">{t("bio")}:</label>
                     <textarea
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
@@ -90,10 +92,10 @@ const Profile = () => {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-                      Save
+                      {t("save")}
                     </button>
                     <button onClick={() => setEditing(false)} className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-                      Cancel
+                      {t("cancel")}
                     </button>
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface MarketItem {
   id: number;
@@ -21,7 +22,8 @@ const INITIAL_ITEMS: MarketItem[] = [
   { id: 6, title: "Harvard Hoodie XL", price: "$25", description: "Worn twice, too big for me.", seller: "Arie Hasit", category: "Clothing" },
 ];
 
-const CATEGORIES = ["All", "Books", "Electronics", "Clothing", "Other"];
+const CATEGORY_KEYS = ["marketplace.all", "marketplace.books", "marketplace.electronics", "marketplace.clothing", "marketplace.other"];
+const CATEGORY_VALUES = ["All", "Books", "Electronics", "Clothing", "Other"];
 
 const Marketplace = () => {
   const { user, logout } = useAuth();
@@ -29,6 +31,7 @@ const Marketplace = () => {
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Other" });
+  const { t } = useLanguage();
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
@@ -46,61 +49,60 @@ const Marketplace = () => {
         <div className="bg-card border border-border p-3">
           <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
             <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
-              Marketplace
+              {t("marketplace.title")}
             </h2>
             {user && (
               <button
                 onClick={() => setShowForm(!showForm)}
                 className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
               >
-                {showForm ? "Cancel" : "+ Sell Item"}
+                {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
               </button>
             )}
           </div>
 
-          {/* Post form */}
           {showForm && user && (
             <div className="border border-border p-2 bg-accent mb-3 text-[11px] space-y-2">
               <div>
-                <label className="block font-bold mb-1">Title:</label>
+                <label className="block font-bold mb-1">{t("marketplace.item_title")}</label>
                 <input type="text" value={newItem.title} onChange={(e) => setNewItem({ ...newItem, title: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" />
               </div>
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <label className="block font-bold mb-1">Price:</label>
+                  <label className="block font-bold mb-1">{t("marketplace.price")}</label>
                   <input type="text" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="$25" />
                 </div>
                 <div className="flex-1">
-                  <label className="block font-bold mb-1">Category:</label>
+                  <label className="block font-bold mb-1">{t("marketplace.category")}</label>
                   <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
-                    {CATEGORIES.filter((c) => c !== "All").map((c) => <option key={c}>{c}</option>)}
+                    {CATEGORY_VALUES.filter((c) => c !== "All").map((c, i) => (
+                      <option key={c} value={c}>{t(CATEGORY_KEYS[i + 1])}</option>
+                    ))}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="block font-bold mb-1">Description:</label>
+                <label className="block font-bold mb-1">{t("marketplace.description")}</label>
                 <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full border border-border p-1 text-[11px] resize-none bg-card" rows={2} />
               </div>
               <button onClick={handlePost} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-                Post Item
+                {t("marketplace.post_item")}
               </button>
             </div>
           )}
 
-          {/* Category filter */}
           <div className="flex gap-2 mb-3 text-[11px]">
-            {CATEGORIES.map((c) => (
+            {CATEGORY_VALUES.map((c, i) => (
               <button
                 key={c}
                 onClick={() => setCategory(c)}
                 className={`px-2 py-[2px] border border-border cursor-pointer text-[11px] ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
-                {c}
+                {t(CATEGORY_KEYS[i])}
               </button>
             ))}
           </div>
 
-          {/* Items list */}
           <div className="space-y-2">
             {filtered.map((item) => (
               <div key={item.id} className="border border-border p-2 flex gap-3">
@@ -113,12 +115,12 @@ const Marketplace = () => {
                     <span className="font-bold text-primary">{item.price}</span>
                   </div>
                   <p className="text-muted-foreground mt-1">{item.description}</p>
-                  <p className="mt-1">Seller: <a href="#">{item.seller}</a> · <span className="text-muted-foreground">{item.category}</span></p>
+                  <p className="mt-1">{t("marketplace.seller")}: <a href="#">{item.seller}</a> · <span className="text-muted-foreground">{t(`marketplace.${item.category.toLowerCase()}`)}</span></p>
                 </div>
               </div>
             ))}
             {filtered.length === 0 && (
-              <p className="text-[11px] text-muted-foreground">No items in this category.</p>
+              <p className="text-[11px] text-muted-foreground">{t("marketplace.no_items")}</p>
             )}
           </div>
         </div>

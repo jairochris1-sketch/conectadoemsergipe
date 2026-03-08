@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Post {
   id: number;
@@ -21,6 +22,7 @@ interface PostFeedProps {
 const PostFeed = ({ userName }: PostFeedProps) => {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [newPost, setNewPost] = useState("");
+  const { t } = useLanguage();
 
   const handlePost = () => {
     if (!newPost.trim() || !userName) return;
@@ -39,24 +41,24 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   return (
     <div className="bg-card border border-border p-2 w-full">
       <div className="border-b border-border pb-1 mb-2">
-        <h3 className="text-[13px] font-bold text-primary">The Wall</h3>
+        <h3 className="text-[13px] font-bold text-primary">{t("the_wall")}</h3>
       </div>
 
       {userName && (
         <div className="mb-3 border border-border p-2 bg-accent">
-          <p className="text-[11px] font-bold mb-1">Write something:</p>
+          <p className="text-[11px] font-bold mb-1">{t("write_something")}</p>
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             className="w-full border border-border p-1 text-[11px] resize-none bg-card"
             rows={3}
-            placeholder="What's on your mind?"
+            placeholder={t("whats_on_mind")}
           />
           <button
             onClick={handlePost}
             className="mt-1 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
           >
-            Post
+            {t("post")}
           </button>
         </div>
       )}

@@ -1,3 +1,5 @@
+import { useLanguage } from "@/context/LanguageContext";
+
 interface ProfileSidebarProps {
   name: string;
   bio: string;
@@ -6,6 +8,8 @@ interface ProfileSidebarProps {
 }
 
 const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) => {
+  const { t } = useLanguage();
+
   return (
     <div className="bg-card border border-border p-2 w-full">
       <div className="border-b border-border pb-1 mb-2">
@@ -19,16 +23,16 @@ const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) =>
         />
         <div className="text-[11px] w-full">
           {school && (
-            <p className="mb-1"><b>School:</b> {school}</p>
+            <p className="mb-1"><b>{t("school")}:</b> {school}</p>
           )}
           <p className="text-muted-foreground">{bio}</p>
         </div>
       </div>
       <div className="mt-3 border-t border-border pt-2 text-[11px]">
-        <p className="font-bold text-primary mb-1">Info</p>
-        <p>Member since: February 2004</p>
-        <p>Status: Student</p>
-        <p>Looking for: Friendship</p>
+        <p className="font-bold text-primary mb-1">{t("sidebar.info")}</p>
+        <p>{t("sidebar.member_since")}</p>
+        <p>{t("sidebar.status")}</p>
+        <p>{t("sidebar.looking_for")}</p>
       </div>
     </div>
   );

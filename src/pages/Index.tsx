@@ -4,9 +4,11 @@ import PostFeed from "@/components/PostFeed";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-background">
@@ -19,31 +21,26 @@ const Index = () => {
               [ thefacebook ]
             </h2>
             <p className="text-[11px] text-foreground mb-2">
-              Thefacebook is an online directory that connects people through social networks at colleges.
+              {t("index.description")}
             </p>
             <p className="text-[11px]">
-              <a href="/register">Register</a> or <a href="/login">Login</a> to get started.
+              <a href="/register">{t("index.register")}</a> {t("index.or")} <a href="/login">{t("index.login")}</a> {t("index.cta")}
             </p>
           </div>
         )}
 
         <div className="flex gap-3">
-          {/* Left column */}
           <div className="w-[180px] shrink-0">
             <ProfileSidebar
-              name={user?.name || "Guest User"}
-              bio={user?.bio || "Login to see your profile"}
+              name={user?.name || t("guest_user")}
+              bio={user?.bio || t("login_to_see")}
               photoUrl={user?.photoUrl || "/placeholder.svg"}
               school={user?.school}
             />
           </div>
-
-          {/* Center column */}
           <div className="flex-1 min-w-0">
             <PostFeed userName={user?.name} />
           </div>
-
-          {/* Right column */}
           <div className="w-[180px] shrink-0">
             <FriendsSidebar />
           </div>

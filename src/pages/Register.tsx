@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -12,13 +13,14 @@ const Register = () => {
   const [error, setError] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (register(name, email, password, school)) {
       navigate("/");
     } else {
-      setError("An account with this email already exists.");
+      setError(t("register.email_exists"));
     }
   };
 
@@ -28,15 +30,15 @@ const Register = () => {
       <div className="max-w-[400px] mx-auto mt-8 px-2">
         <div className="bg-card border border-border p-4">
           <h2 className="text-[16px] font-bold text-primary mb-3 border-b border-border pb-2" style={{ fontFamily: 'Georgia, serif' }}>
-            Register for [ thefacebook ]
+            {t("register.title")}
           </h2>
           <p className="text-[11px] text-muted-foreground mb-3">
-            Thefacebook is a social directory for college students. You must have a valid .edu email to register.
+            {t("register.description")}
           </p>
           {error && <p className="text-destructive text-[11px] mb-2">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-3 text-[11px]">
             <div>
-              <label className="block font-bold mb-1">Full Name:</label>
+              <label className="block font-bold mb-1">{t("register.full_name")}</label>
               <input
                 type="text"
                 value={name}
@@ -46,18 +48,17 @@ const Register = () => {
               />
             </div>
             <div>
-              <label className="block font-bold mb-1">College Email (.edu):</label>
+              <label className="block font-bold mb-1">{t("register.email")}</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-border p-1 text-[11px] bg-card"
                 required
-                placeholder="your.name@college.edu"
               />
             </div>
             <div>
-              <label className="block font-bold mb-1">Password:</label>
+              <label className="block font-bold mb-1">{t("register.password")}</label>
               <input
                 type="password"
                 value={password}
@@ -68,22 +69,22 @@ const Register = () => {
               />
             </div>
             <div>
-              <label className="block font-bold mb-1">School:</label>
+              <label className="block font-bold mb-1">{t("register.school")}</label>
               <input
                 type="text"
                 value={school}
                 onChange={(e) => setSchool(e.target.value)}
                 className="w-full border border-border p-1 text-[11px] bg-card"
                 required
-                placeholder="Harvard University"
+                placeholder={t("register.school_placeholder")}
               />
             </div>
             <button type="submit" className="bg-primary text-primary-foreground border-none px-4 py-1 text-[11px] cursor-pointer hover:opacity-90">
-              Register
+              {t("register.submit")}
             </button>
           </form>
           <p className="mt-3 text-[11px]">
-            Already have an account? <Link to="/login">Login here</Link>
+            {t("register.already")} <Link to="/login">{t("register.login_here")}</Link>
           </p>
         </div>
       </div>
