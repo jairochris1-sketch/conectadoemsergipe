@@ -269,7 +269,7 @@ const translations: Record<Language, Record<string, string>> = {
     "index.login": "Inicia sesión",
     "guest_user": "Visitante",
     "login_to_see": "Inicia sesión para ver tu perfil",
-    "the_wall": "El Muro",
+    "the_wall": "Destacados",
     "write_something": "Escribe algo:",
     "whats_on_mind": "¿Qué tienes en mente?",
     "post": "Publicar",
