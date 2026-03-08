@@ -68,17 +68,17 @@ export const usePresenceHeartbeat = () => {
     };
     document.addEventListener("visibilitychange", handleVisibility);
 
-    // On beforeunload, mark offline
-    const handleUnload = () => {
-      // Use sendBeacon for reliability
+    // On beforeunload, mark offline using user's actual token
+    const handleUnload = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
       const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/user_presence?user_id=eq.${user.id}`;
       const headers = {
         "Content-Type": "application/json",
         "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        "Authorization": `Bearer ${token}`,
         "Prefer": "return=minimal",
       };
-      // sendBeacon doesn't support custom headers, fall back to fetch keepalive
       fetch(url, {
         method: "PATCH",
         headers,
