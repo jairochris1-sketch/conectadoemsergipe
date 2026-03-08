@@ -1,12 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MarketItem {
-  id: number;
+  id: string;
   title: string;
   price: string;
   description: string;
@@ -44,42 +45,98 @@ const CATEGORY_KEYS: Record<string, string> = {
   "Outros": "marketplace.other",
 };
 
-const INITIAL_ITEMS: MarketItem[] = [
-  { id: 1, title: "Geladeira Consul 340L", price: "R$ 800", description: "Funcionando perfeitamente, pouco uso.", seller: "Maria Silva", sellerId: "", category: "Geladeira", city: "Aracaju", imageUrl: "" },
-  { id: 2, title: "Moto Honda CG 160", price: "R$ 12.000", description: "2022, única dona, revisada.", seller: "João Santos", sellerId: "", category: "Motos", city: "Itabaiana", imageUrl: "" },
-  { id: 3, title: "Samsung Galaxy A54", price: "R$ 1.200", description: "6 meses de uso, com nota fiscal.", seller: "Pedro Lima", sellerId: "", category: "Celulares", city: "Lagarto", imageUrl: "" },
-  { id: 4, title: "Sofá 3 lugares", price: "R$ 450", description: "Bom estado, cor cinza.", seller: "Ana Costa", sellerId: "", category: "Sofá/Mesa/Cadeiras", city: "Estância", imageUrl: "" },
-  { id: 5, title: "Bolo de chocolate decorado", price: "R$ 80", description: "Encomendas com 2 dias de antecedência.", seller: "Carla Oliveira", sellerId: "", category: "Bolos/Doces", city: "Aracaju", imageUrl: "" },
-  { id: 6, title: "Mudas de manga e acerola", price: "R$ 15", description: "Mudas saudáveis, prontas para plantar.", seller: "José Ferreira", sellerId: "", category: "Mudas Frutíferas", city: "Tobias Barreto", imageUrl: "" },
-];
-
 const Marketplace = () => {
   const { user, logout } = useAuth();
-  const [items, setItems] = useState<MarketItem[]>(INITIAL_ITEMS);
+  const [items, setItems] = useState<MarketItem[]>([]);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "" });
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [posting, setPosting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const { t } = useLanguage();
+
+  const loadItems = useCallback(async () => {
+    const { data } = await supabase
+      .from("marketplace_items")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (!data) return;
+
+    const userIds = [...new Set(data.map((d: any) => d.user_id))];
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("user_id, name")
+      .in("user_id", userIds);
+
+    const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
+
+    setItems(
+      data.map((d: any) => ({
+        id: d.id,
+        title: d.title,
+        price: d.price,
+        description: d.description || "",
+        seller: profileMap.get(d.user_id) || "Usuário",
+        sellerId: d.user_id,
+        category: d.category,
+        city: d.city || "",
+        imageUrl: d.image_url || "",
+      }))
+    );
+  }, []);
+
+  useEffect(() => { loadItems(); }, [loadItems]);
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setImageFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!newItem.title || !newItem.price || !user) return;
-    setItems([{ id: Date.now(), ...newItem, seller: user.name, sellerId: user.id, imageUrl: imagePreview }, ...items]);
+    setPosting(true);
+
+    let uploadedUrl = "";
+    if (imageFile) {
+      const ext = imageFile.name.split(".").pop();
+      const path = `marketplace/${user.id}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, imageFile, { upsert: true });
+
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+        uploadedUrl = urlData.publicUrl;
+      }
+    }
+
+    await supabase.from("marketplace_items").insert({
+      user_id: user.id,
+      title: newItem.title,
+      price: newItem.price,
+      description: newItem.description,
+      category: newItem.category,
+      city: newItem.city,
+      image_url: uploadedUrl,
+    });
+
     setNewItem({ title: "", price: "", description: "", category: "Outros", city: "" });
     setImagePreview("");
+    setImageFile(null);
     setShowForm(false);
+    setPosting(false);
+    await loadItems();
   };
 
   return (
@@ -138,8 +195,8 @@ const Marketplace = () => {
                 <label className="block font-bold mb-1">{t("marketplace.description")}</label>
                 <textarea value={newItem.description} onChange={(e) => setNewItem({ ...newItem, description: e.target.value })} className="w-full border border-border p-1 text-[11px] resize-none bg-card" rows={2} />
               </div>
-              <button onClick={handlePost} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-                {t("marketplace.post_item")}
+              <button onClick={handlePost} disabled={posting} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50">
+                {posting ? "..." : t("marketplace.post_item")}
               </button>
             </div>
           )}
