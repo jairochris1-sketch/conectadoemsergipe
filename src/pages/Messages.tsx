@@ -217,11 +217,14 @@ const Messages = () => {
                       activeChat === conv.oderId ? "bg-accent" : "bg-card"
                     }`}
                   >
-                    <div className="w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="relative w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                       {conv.otherPhoto ? (
                         <img src={conv.otherPhoto} alt={conv.otherName} className="w-full h-full object-cover" />
                       ) : (
                         <span className="text-[8px] text-muted-foreground">👤</span>
+                      )}
+                      {onlineUsers.has(conv.oderId) && (
+                        <span className="absolute -bottom-[1px] -right-[1px] w-[8px] h-[8px] rounded-full bg-green-500 border border-card" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
