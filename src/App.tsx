@@ -22,6 +22,7 @@ import SellerDashboard from "./pages/SellerDashboard";
 import SitePage from "./pages/SitePage";
 import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
+import FriendsPage from "./pages/Friends";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/seller-dashboard" element={<SellerDashboard />} />
                 <Route path="/sobre" element={<About />} />
+                <Route path="/amigos" element={<FriendsPage />} />
                 <Route path="/page/:slug" element={<SitePage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
