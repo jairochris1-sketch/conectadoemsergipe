@@ -313,13 +313,22 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             {openComments[post.id] && (
               <div className="ml-8 mt-1 space-y-1">
                 {(comments[post.id] || []).map((c) => (
-                  <div key={c.id} className="border-l-2 border-border pl-2 py-1">
-                    <p className="text-[10px]">
-                      <span className="font-bold">{c.authorName}</span>
-                      <VerificationBadge {...(badges.get(c.authorId) || {})} />
-                      {" "}{c.content}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
+                  <div key={c.id} className="border-l-2 border-border pl-2 py-1 flex gap-2">
+                    <div className="shrink-0 w-[22px] h-[22px] bg-muted border border-border rounded-full overflow-hidden mt-[1px]">
+                      {c.authorPhoto ? (
+                        <img src={c.authorPhoto} alt={c.authorName} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[7px] text-muted-foreground flex items-center justify-center h-full">👤</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-[10px]">
+                        <Link to={`/user/${c.authorId}`} className="font-bold">{c.authorName}</Link>
+                        <VerificationBadge {...(badges.get(c.authorId) || {})} />
+                        {" "}{c.content}
+                      </p>
+                      <p className="text-[9px] text-muted-foreground">{formatDate(c.timestamp)}</p>
+                    </div>
                   </div>
                 ))}
                 {user && (
