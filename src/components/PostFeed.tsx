@@ -49,6 +49,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
+  const { containsForbiddenWord } = useForbiddenWords();
 
   // Collect all unique user IDs from posts and comments for badge fetching
   const allUserIds = useMemo(() => {
