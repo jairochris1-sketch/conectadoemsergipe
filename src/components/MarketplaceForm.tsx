@@ -165,13 +165,33 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
       <div className="flex gap-2">
         <div className="flex-1">
           <label className="block font-bold mb-1">{t("marketplace.price")}</label>
-          <input type="text" value={newItem.price} onChange={(e) => setNewItem({ ...newItem, price: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="R$ 25" />
+          <input
+            type="text"
+            value={priceDisplay}
+            onChange={(e) => {
+              const formatted = formatBRL(e.target.value);
+              setPriceDisplay(formatted);
+              setNewItem({ ...newItem, price: parseBRLToNumber(e.target.value) });
+            }}
+            className="w-full border border-border p-1 text-[11px] bg-card"
+            placeholder="R$ 0,00"
+          />
         </div>
         <div className="flex-1">
           <label className="block font-bold mb-1">{t("marketplace.category")}</label>
           <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
             {CATEGORIES_NO_ALL.map((c) => (
               <option key={c} value={c}>{t(CATEGORY_KEYS[c])}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <label className="block font-bold mb-1">{t("marketplace.condition") || "Condição"}</label>
+          <select value={newItem.condition} onChange={(e) => setNewItem({ ...newItem, condition: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
+            {CONDITIONS.map((c) => (
+              <option key={c.value} value={c.value}>{t(c.label) || c.value}</option>
             ))}
           </select>
         </div>
