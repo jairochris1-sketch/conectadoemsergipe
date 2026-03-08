@@ -117,6 +117,10 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const handleAddComment = async (postId: string) => {
     const text = commentTexts[postId]?.trim();
     if (!text || !user) return;
+    if (containsForbiddenWord(text)) {
+      toast.error("Palavras ou mensagem proibida segundo as regras do conectadoemsergipe.");
+      return;
+    }
     await addComment(postId, text);
     setCommentTexts((prev) => ({ ...prev, [postId]: "" }));
     const data = await getComments(postId);

@@ -106,9 +106,16 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
     }
   };
 
+  const { containsForbiddenWord } = useForbiddenWords();
+
   const handlePost = async () => {
     if (!newItem.title || !newItem.price || !newItem.whatsapp.trim()) {
       toast.error(t("marketplace.whatsapp_required"));
+      return;
+    }
+    const textToCheck = `${newItem.title} ${newItem.description}`;
+    if (containsForbiddenWord(textToCheck)) {
+      toast.error("Palavras ou mensagem proibida segundo as regras do conectadoemsergipe.");
       return;
     }
     setPosting(true);
