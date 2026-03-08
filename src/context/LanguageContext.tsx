@@ -64,7 +64,7 @@ const translations: Record<Language, Record<string, string>> = {
     "login.feature4": "Ver uma visualização da sua rede social",
     "login.get_started": "Para começar, clique abaixo para se cadastrar. Se já tem conta, faça login.",
     "login.about": "sobre",
-    "login.welcome_bar": "Bem-vindo ao Thefacebook!",
+    "login.welcome_bar": "Bem-vindo ao Conectados em Sergipe!",
     // Register
     "register.title": "Cadastro no [ thefacebook ]",
     "register.description": "Thefacebook é um diretório social para estudantes universitários.",
