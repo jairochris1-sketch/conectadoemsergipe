@@ -18,16 +18,6 @@ const formatPrice = (price: string): string => {
   return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 };
 
-const CATEGORIES = [
-  { key: "Eletrônicos", icon: "📱", label: "Eletrônicos" },
-  { key: "Veículos", icon: "🚗", label: "Veículos" },
-  { key: "Móveis", icon: "🛋️", label: "Móveis" },
-  { key: "Imóveis", icon: "🏠", label: "Imóveis" },
-  { key: "Roupas", icon: "👕", label: "Roupas" },
-  { key: "Serviços", icon: "🔧", label: "Serviços" },
-  { key: "Outros", icon: "📦", label: "Outros" },
-];
-
 const MarketplaceHighlights = () => {
   const { t } = useLanguage();
   const [items, setItems] = useState<HighlightItem[]>([]);
@@ -58,8 +48,7 @@ const MarketplaceHighlights = () => {
   };
 
   return (
-    <div className="bg-card border border-border p-2 w-full">
-      {/* Header */}
+    <div className="bg-card border border-border p-2">
       <div className="border-b border-border pb-1 mb-2 flex items-center justify-between">
         <h3 className="text-[13px] font-bold text-primary">🛒 Marketplace</h3>
         <Link to="/marketplace" className="text-[10px] text-primary hover:underline">
@@ -67,13 +56,12 @@ const MarketplaceHighlights = () => {
         </Link>
       </div>
 
-      {/* Featured Items */}
       {items.length === 0 ? (
         <p className="text-[10px] text-muted-foreground py-2 text-center">
           {t("marketplace.no_items") || "Nenhum item disponível"}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-2 mb-3">
+        <div className="grid grid-cols-2 gap-2">
           {items.map((item) => {
             const thumb = getThumb(item);
             return (
@@ -99,22 +87,6 @@ const MarketplaceHighlights = () => {
           })}
         </div>
       )}
-
-      {/* Categories */}
-      <div className="border-t border-border pt-2">
-        <p className="text-[11px] font-bold text-primary mb-1.5">Categorias</p>
-        <div className="flex flex-wrap gap-1">
-          {CATEGORIES.map((cat) => (
-            <Link
-              key={cat.key}
-              to={`/marketplace?category=${encodeURIComponent(cat.key)}`}
-              className="text-[9px] bg-accent hover:bg-accent/80 text-foreground border border-border px-1.5 py-0.5 no-underline transition-colors"
-            >
-              {cat.icon} {cat.label}
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
