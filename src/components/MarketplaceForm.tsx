@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useForbiddenWords } from "@/hooks/useForbiddenWords";
 import { toast } from "sonner";
 
 const CATEGORIES_NO_ALL = [
