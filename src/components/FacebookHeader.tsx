@@ -20,12 +20,24 @@ const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bannerImage, setBannerImage] = useState("");
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { unreadCount } = useUnreadMessages();
   const { pendingCount: pendingReports } = useAdminReports();
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "login_banner")
+      .single()
+      .then(({ data }) => {
+        if (data && (data as any).value) setBannerImage((data as any).value);
+      });
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
