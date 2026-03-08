@@ -113,6 +113,13 @@ const Marketplace = () => {
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
+  // Track impressions for visible items
+  useEffect(() => {
+    filtered.slice(0, 10).forEach((item) => {
+      trackImpression(item.id, item.category);
+    });
+  }, [filtered, trackImpression]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
