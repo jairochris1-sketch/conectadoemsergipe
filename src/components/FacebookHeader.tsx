@@ -70,7 +70,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               <Link to="/" className="text-primary-foreground">{t("home")}</Link>
               <Link to="/profile" className="text-primary-foreground">{t("profile")}</Link>
               <Link to="/marketplace" className="text-primary-foreground">{t("marketplace")}</Link>
-              <Link to="/messages" className="text-primary-foreground">{t("messages")}</Link>
+              <Link to="/messages" className="text-primary-foreground relative inline-flex items-center gap-[2px]">
+                <Mail className="w-3 h-3" />
+                {t("messages")}
+                {unreadCount > 0 && (
+                  <span className="bg-destructive text-destructive-foreground text-[8px] font-bold px-[4px] py-[1px] rounded-full leading-none">
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
               {isAdmin && <Link to="/admin" className="text-primary-foreground font-bold">{t("admin.panel")}</Link>}
               <button onClick={onLogout} className="text-primary-foreground bg-transparent border-none cursor-pointer text-[11px] hover:underline">
                 {t("logout")}
