@@ -7,6 +7,7 @@ interface ProfileSidebarProps {
   school?: string;
   city?: string;
   birthdate?: string;
+  createdAt?: string;
 }
 
 const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate }: ProfileSidebarProps) => {
