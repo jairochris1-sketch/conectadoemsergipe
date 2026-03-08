@@ -20,6 +20,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { unreadCount } = useUnreadMessages();
+  const { pendingCount: pendingReports } = useAdminReports();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
