@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SocialProvider } from "@/context/SocialContext";
+import { PresenceProvider } from "@/components/PresenceProvider";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -30,6 +31,7 @@ const App = () => {
       <LanguageProvider>
         <AuthProvider>
           <SocialProvider>
+            <PresenceProvider />
             <Toaster />
             <Sonner />
             <BrowserRouter>
