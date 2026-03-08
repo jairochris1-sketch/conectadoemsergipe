@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 
@@ -13,22 +13,22 @@ interface RecommendedItem {
   city: string;
   imageUrl: string;
   score: number;
+  isSponsored: boolean;
 }
 
 export const useMarketplaceRecommendations = () => {
   const { user } = useAuth();
   const [recommendations, setRecommendations] = useState<RecommendedItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const refreshTimer = useRef<ReturnType<typeof setInterval>>();
 
   const trackView = useCallback(async (itemId: string, category: string) => {
     if (!user) return;
-    // Insert view record
     await supabase.from("marketplace_views").insert({
       user_id: user.id,
       item_id: itemId,
       category,
     });
-    // Increment view_count on the item
     const { data: item } = await supabase
       .from("marketplace_items")
       .select("view_count")
@@ -40,17 +40,25 @@ export const useMarketplaceRecommendations = () => {
         .update({ view_count: (item.view_count || 0) + 1 })
         .eq("id", itemId);
     }
+    // Auto-refresh recommendations after a view
+    loadRecommendations();
   }, [user]);
 
   const loadRecommendations = useCallback(async () => {
     setLoading(true);
     try {
-      // Get user's preferred categories from view history
       let preferredCategories: string[] = [];
       let userCity = "";
 
+      // 1. Get sponsored item IDs
+      const { data: campaigns } = await supabase
+        .from("sponsored_campaigns")
+        .select("item_id")
+        .eq("status", "active");
+      const sponsoredIds = new Set((campaigns || []).map((c: any) => c.item_id));
+
+      // 2. Get user context
       if (user) {
-        // Get user's city from profile
         const { data: profile } = await supabase
           .from("profiles")
           .select("city")
@@ -58,10 +66,9 @@ export const useMarketplaceRecommendations = () => {
           .single();
         userCity = profile?.city || "";
 
-        // Get top viewed categories
         const { data: views } = await supabase
           .from("marketplace_views")
-          .select("category, item_id")
+          .select("category")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(50);
@@ -78,7 +85,7 @@ export const useMarketplaceRecommendations = () => {
         }
       }
 
-      // Fetch all items for scoring
+      // 3. Fetch items
       const { data: allItems } = await supabase
         .from("marketplace_items")
         .select("*")
@@ -90,16 +97,6 @@ export const useMarketplaceRecommendations = () => {
         return;
       }
 
-      // Get viewed item IDs to avoid recommending already-viewed
-      let viewedIds = new Set<string>();
-      if (user) {
-        const { data: viewedData } = await supabase
-          .from("marketplace_views")
-          .select("item_id")
-          .eq("user_id", user.id);
-        viewedIds = new Set((viewedData || []).map((v) => v.item_id));
-      }
-
       // Get seller names
       const userIds = [...new Set(allItems.map((d: any) => d.user_id))];
       const { data: profiles } = await supabase
@@ -108,32 +105,35 @@ export const useMarketplaceRecommendations = () => {
         .in("user_id", userIds);
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
 
-      // Score each item
+      // 4. Score with priority: sponsored > category > location > popularity
       const scored: RecommendedItem[] = allItems
-        .filter((item: any) => !user || item.user_id !== user.id) // exclude own items
+        .filter((item: any) => !user || item.user_id !== user.id)
         .map((item: any) => {
           let score = 0;
+          const isSponsored = sponsoredIds.has(item.id);
 
-          // Category match: +30
-          if (preferredCategories.includes(item.category)) {
-            score += 30 + (preferredCategories.indexOf(item.category) === 0 ? 15 : 0);
+          // Priority 1: Sponsored (+100)
+          if (isSponsored) score += 100;
+
+          // Priority 2: Category match (+40 top category, +25 others)
+          if (preferredCategories.length > 0) {
+            const catIdx = preferredCategories.indexOf(item.category);
+            if (catIdx === 0) score += 40;
+            else if (catIdx > 0) score += 25;
           }
 
-          // City match: +25
+          // Priority 3: Location match (+30)
           if (userCity && item.city && item.city.toLowerCase() === userCity.toLowerCase()) {
-            score += 25;
+            score += 30;
           }
 
-          // Popularity: up to +20
+          // Priority 4: Popularity (+up to 20)
           score += Math.min(20, (item.view_count || 0) * 2);
 
-          // Recency: +10 if posted in last 3 days
+          // Bonus: recency
           const daysSince = (Date.now() - new Date(item.created_at).getTime()) / (1000 * 60 * 60 * 24);
-          if (daysSince < 3) score += 10;
-          else if (daysSince < 7) score += 5;
-
-          // Not yet viewed: small bonus
-          if (!viewedIds.has(item.id)) score += 5;
+          if (daysSince < 3) score += 8;
+          else if (daysSince < 7) score += 4;
 
           return {
             id: item.id,
@@ -146,17 +146,23 @@ export const useMarketplaceRecommendations = () => {
             city: item.city || "",
             imageUrl: item.image_url || "",
             score,
+            isSponsored,
           };
         });
 
       scored.sort((a, b) => b.score - a.score);
-      setRecommendations(scored.slice(0, 6));
+      setRecommendations(scored.slice(0, 8));
     } finally {
       setLoading(false);
     }
   }, [user]);
 
-  useEffect(() => { loadRecommendations(); }, [loadRecommendations]);
+  // Initial load + auto-refresh every 60s
+  useEffect(() => {
+    loadRecommendations();
+    refreshTimer.current = setInterval(loadRecommendations, 60_000);
+    return () => { if (refreshTimer.current) clearInterval(refreshTimer.current); };
+  }, [loadRecommendations]);
 
   return { recommendations, loading, trackView, refresh: loadRecommendations };
 };
