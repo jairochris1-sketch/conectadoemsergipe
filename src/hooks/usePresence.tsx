@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 
-const HEARTBEAT_INTERVAL = 30_000; // 30 seconds
-const OFFLINE_THRESHOLD = 2 * 60_000; // 2 minutes
+const HEARTBEAT_INTERVAL = 15_000; // 15 seconds
+const OFFLINE_THRESHOLD = 45_000; // 45 seconds (3x heartbeat)
 
 /**
  * Updates the current user's last_seen_at timestamp.
@@ -48,9 +48,15 @@ const getOnlineUsers = async (userIds: string[]): Promise<Set<string>> => {
 export const usePresenceHeartbeat = () => {
   const { user } = useAuth();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const tokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
+
+    // Cache token for beforeunload
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      tokenRef.current = session?.access_token || null;
+    });
 
     // Initial ping
     updateUserActivity(user.id);
@@ -68,17 +74,16 @@ export const usePresenceHeartbeat = () => {
     };
     document.addEventListener("visibilitychange", handleVisibility);
 
-    // On beforeunload, mark offline
+    // On beforeunload, mark offline using cached token (sync-friendly)
     const handleUnload = () => {
-      // Use sendBeacon for reliability
+      const token = tokenRef.current || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
       const url = `${import.meta.env.VITE_SUPABASE_URL}/rest/v1/user_presence?user_id=eq.${user.id}`;
       const headers = {
         "Content-Type": "application/json",
         "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-        "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        "Authorization": `Bearer ${token}`,
         "Prefer": "return=minimal",
       };
-      // sendBeacon doesn't support custom headers, fall back to fetch keepalive
       fetch(url, {
         method: "PATCH",
         headers,
