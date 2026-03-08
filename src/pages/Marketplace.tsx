@@ -23,6 +23,7 @@ export interface MarketItem {
   whatsapp?: string;
   isSponsored?: boolean;
   sold?: boolean;
+  condition?: string;
 }
 
 const CATEGORIES = [
