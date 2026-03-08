@@ -187,12 +187,12 @@ const Marketplace = () => {
             />
           )}
 
-          <div className="flex flex-wrap gap-1.5 mb-4 text-sm">
+          <div className="flex flex-wrap gap-1 mb-3">
             {CATEGORIES.map((c) => (
               <button
                 key={c}
                 onClick={() => { setCategory(c); trackCategoryFilter(c); }}
-                className={`px-3 py-1 border border-border cursor-pointer text-xs rounded-sm ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
+                className={`px-2 py-[2px] border cursor-pointer text-[11px] ${category === c ? "border-[#3b5998] bg-[#6d84b4] text-white font-bold" : "border-[#d8dfea] bg-[#edeff4] text-[#3b5998] hover:bg-[#d8dfea]"}`}
               >
                 {t(CATEGORY_KEYS[c])}
               </button>
