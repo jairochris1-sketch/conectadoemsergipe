@@ -25,6 +25,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
   const { isAdmin } = useAdmin();
   const { isModerator } = useModerator();
