@@ -51,10 +51,8 @@ const Index = () => {
             </div>
           )}
 
-          <PostFeed userName={user?.name} />
-
-          {/* Mobile-only: Marketplace below feed */}
-          <div className="md:hidden mt-3">
+          {/* Mobile-only: Marketplace above feed */}
+          <div className="md:hidden mb-3">
             <div className="bg-card border border-border p-2">
               <div className="border-b border-border pb-1 mb-2">
                 <h3 className="text-[13px] font-bold text-primary">Marketplace</h3>
@@ -64,6 +62,8 @@ const Index = () => {
               </a>
             </div>
           </div>
+
+          <PostFeed userName={user?.name} />
 
           {/* Mobile-only: Profile below marketplace */}
           <div className="md:hidden mt-3">
