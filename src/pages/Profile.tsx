@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSocial } from "@/context/SocialContext";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
@@ -12,8 +13,11 @@ const Profile = () => {
   const [bio, setBio] = useState(user?.bio || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
+  const { getFriends } = useSocial();
 
   if (!user) return <Navigate to="/login" />;
+
+  const friends = getFriends(user.id);
 
   const handleSave = () => {
     updateProfile({ bio });
@@ -69,6 +73,7 @@ const Profile = () => {
                   <p><b>{t("school")}:</b> {user.school}</p>
                   <p><b>{t("member_since")}:</b> February 2004</p>
                   <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
+                  <p><b>{t("friends")}:</b> {friends.length}</p>
                 </div>
               </div>
 
@@ -100,6 +105,33 @@ const Profile = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Friends list on profile */}
+            <div className="bg-card border border-border p-3 mt-3">
+              <div className="border-b border-border pb-2 mb-3">
+                <h3 className="text-[14px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
+                  {t("friends")} ({friends.length})
+                </h3>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {friends.length > 0 ? (
+                  friends.map((friend) => (
+                    <div key={friend.id} className="flex items-center gap-2 text-[11px] border border-border p-1">
+                      <div className="w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
+                        {friend.photo ? (
+                          <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-[8px] text-muted-foreground">{t("photo")}</span>
+                        )}
+                      </div>
+                      <a href="#" className="font-bold truncate">{friend.name}</a>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-[11px] text-muted-foreground col-span-3">{t("friends.none")}</p>
+                )}
+              </div>
             </div>
           </div>
 
