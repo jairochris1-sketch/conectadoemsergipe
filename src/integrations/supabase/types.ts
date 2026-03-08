@@ -178,6 +178,7 @@ export type Database = {
           id: string
           image_url: string | null
           price: string
+          sold: boolean
           title: string
           user_id: string
           view_count: number
@@ -190,6 +191,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           price: string
+          sold?: boolean
           title: string
           user_id: string
           view_count?: number
@@ -202,6 +204,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           price?: string
+          sold?: boolean
           title?: string
           user_id?: string
           view_count?: number

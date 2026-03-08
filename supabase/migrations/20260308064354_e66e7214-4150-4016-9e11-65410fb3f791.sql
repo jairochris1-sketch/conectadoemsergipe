@@ -1,0 +1,1 @@
+ALTER TABLE public.marketplace_items ADD COLUMN sold boolean NOT NULL DEFAULT false;
