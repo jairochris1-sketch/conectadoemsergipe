@@ -71,7 +71,7 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     const userIds = [...new Set(data.map((p) => p.user_id))];
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("user_id, name, photo_url")
+      .select("user_id, name, photo_url, city")
       .in("user_id", userIds);
 
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
