@@ -62,48 +62,53 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-card">
-      {/* Blue header bar with optional banner */}
+      {/* Blue header bar — TheFacebook 2004 style */}
       <div className="bg-primary">
-        {bannerImage && (
-          <div className="max-w-[760px] mx-auto overflow-hidden" style={{ height: '140px' }}>
-            <img
-              src={bannerImage}
-              alt="Banner"
-              className="w-full h-full object-cover block"
-            />
-          </div>
-        )}
-        <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
-          <h1
-            className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
-            style={{ fontFamily: "Georgia, serif" }}
-          >
-            [ conectadosemsergipe ]
-          </h1>
-          <div className="flex justify-center gap-4 text-[11px] mt-1">
-            <Link to="/login" className="text-primary-foreground">
-              {t("login")}
-            </Link>
-            <Link to="/register" className="text-primary-foreground">
-              {t("register")}
-            </Link>
-            <Link to="/page/about" className="text-primary-foreground">
-              {t("login.about")}
-            </Link>
-            <span className="text-primary-foreground/50">|</span>
-            {(["pt", "es", "en"] as Language[]).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`bg-transparent border-none cursor-pointer text-[11px] ${
-                  language === lang
-                    ? "font-bold underline text-primary-foreground"
-                    : "text-primary-foreground/70 hover:underline"
-                }`}
+        <div className="max-w-[760px] mx-auto px-2 py-2">
+          <div className="flex items-center justify-between">
+            {/* Left: optional admin image + site name */}
+            <div className="flex items-center gap-2">
+              {bannerImage && (
+                <img
+                  src={bannerImage}
+                  alt=""
+                  className="h-[60px] w-auto opacity-80"
+                  style={{ filter: "grayscale(100%) hue-rotate(180deg)" }}
+                />
+              )}
+              <h1
+                className="text-[28px] font-bold text-primary-foreground tracking-[-1px]"
+                style={{ fontFamily: "Georgia, serif" }}
               >
-                {LANG_LABELS[lang]}
-              </button>
-            ))}
+                [ conectadosemsergipe ]
+              </h1>
+            </div>
+            {/* Right: nav links */}
+            <div className="flex items-center gap-3 text-[11px]">
+              <Link to="/login" className="text-primary-foreground hover:underline">
+                {t("login")}
+              </Link>
+              <Link to="/register" className="text-primary-foreground hover:underline">
+                {t("register")}
+              </Link>
+              <Link to="/page/about" className="text-primary-foreground hover:underline">
+                {t("login.about")}
+              </Link>
+              <span className="text-primary-foreground/50">|</span>
+              {(["pt", "es", "en"] as Language[]).map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                  className={`bg-transparent border-none cursor-pointer text-[11px] ${
+                    language === lang
+                      ? "font-bold underline text-primary-foreground"
+                      : "text-primary-foreground/70 hover:underline"
+                  }`}
+                >
+                  {LANG_LABELS[lang]}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
