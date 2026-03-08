@@ -15,6 +15,7 @@ import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 import AdminPanel from "./pages/AdminPanel";
 import PublicProfile from "./pages/PublicProfile";
+import MessagesPage from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => {
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/user/:userId" element={<PublicProfile />} />
+                <Route path="/messages" element={<MessagesPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Navigate } from "react-router-dom";
+import { useParams, Navigate, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import FriendsSidebar from "@/components/FriendsSidebar";
@@ -115,6 +115,12 @@ const PublicProfile = () => {
                           + {t("friends.add")}
                         </button>
                       )}
+                      <Link
+                        to={`/messages?with=${userId}`}
+                        className="bg-accent text-foreground border border-border px-2 py-[2px] text-[10px] cursor-pointer hover:bg-muted no-underline"
+                      >
+                        ✉ {t("messages.send_message")}
+                      </Link>
                     </div>
                   )}
                 </div>
