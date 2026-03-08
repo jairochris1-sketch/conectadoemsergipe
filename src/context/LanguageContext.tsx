@@ -134,6 +134,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.guarda_roupa": "Guarda-Roupa",
     "marketplace.city": "Cidade:",
     "marketplace.image": "Foto do produto:",
+    "marketplace.contact": "Contatar vendedor",
     // Footer
     "footer.production": "uma produção Jairo dos Santos",
     "footer.about": "sobre",
@@ -304,6 +305,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.guarda_roupa": "Armario",
     "marketplace.city": "Ciudad:",
     "marketplace.image": "Foto del producto:",
+    "marketplace.contact": "Contactar vendedor",
     "footer.production": "una producción de Jairo dos Santos",
     "footer.about": "acerca de",
     "footer.contact": "contacto",
@@ -471,6 +473,7 @@ const translations: Record<Language, Record<string, string>> = {
     "marketplace.guarda_roupa": "Wardrobe",
     "marketplace.city": "City:",
     "marketplace.image": "Product photo:",
+    "marketplace.contact": "Contact seller",
     "footer.production": "a Jairo dos Santos production",
     "footer.about": "about",
     "footer.contact": "contact",

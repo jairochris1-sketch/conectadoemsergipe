@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
@@ -10,6 +11,7 @@ interface MarketItem {
   price: string;
   description: string;
   seller: string;
+  sellerId: string;
   category: string;
   city: string;
   imageUrl: string;
@@ -43,12 +45,12 @@ const CATEGORY_KEYS: Record<string, string> = {
 };
 
 const INITIAL_ITEMS: MarketItem[] = [
-  { id: 1, title: "Geladeira Consul 340L", price: "R$ 800", description: "Funcionando perfeitamente, pouco uso.", seller: "Maria Silva", category: "Geladeira", city: "Aracaju", imageUrl: "" },
-  { id: 2, title: "Moto Honda CG 160", price: "R$ 12.000", description: "2022, única dona, revisada.", seller: "João Santos", category: "Motos", city: "Itabaiana", imageUrl: "" },
-  { id: 3, title: "Samsung Galaxy A54", price: "R$ 1.200", description: "6 meses de uso, com nota fiscal.", seller: "Pedro Lima", category: "Celulares", city: "Lagarto", imageUrl: "" },
-  { id: 4, title: "Sofá 3 lugares", price: "R$ 450", description: "Bom estado, cor cinza.", seller: "Ana Costa", category: "Sofá/Mesa/Cadeiras", city: "Estância", imageUrl: "" },
-  { id: 5, title: "Bolo de chocolate decorado", price: "R$ 80", description: "Encomendas com 2 dias de antecedência.", seller: "Carla Oliveira", category: "Bolos/Doces", city: "Aracaju", imageUrl: "" },
-  { id: 6, title: "Mudas de manga e acerola", price: "R$ 15", description: "Mudas saudáveis, prontas para plantar.", seller: "José Ferreira", category: "Mudas Frutíferas", city: "Tobias Barreto", imageUrl: "" },
+  { id: 1, title: "Geladeira Consul 340L", price: "R$ 800", description: "Funcionando perfeitamente, pouco uso.", seller: "Maria Silva", sellerId: "", category: "Geladeira", city: "Aracaju", imageUrl: "" },
+  { id: 2, title: "Moto Honda CG 160", price: "R$ 12.000", description: "2022, única dona, revisada.", seller: "João Santos", sellerId: "", category: "Motos", city: "Itabaiana", imageUrl: "" },
+  { id: 3, title: "Samsung Galaxy A54", price: "R$ 1.200", description: "6 meses de uso, com nota fiscal.", seller: "Pedro Lima", sellerId: "", category: "Celulares", city: "Lagarto", imageUrl: "" },
+  { id: 4, title: "Sofá 3 lugares", price: "R$ 450", description: "Bom estado, cor cinza.", seller: "Ana Costa", sellerId: "", category: "Sofá/Mesa/Cadeiras", city: "Estância", imageUrl: "" },
+  { id: 5, title: "Bolo de chocolate decorado", price: "R$ 80", description: "Encomendas com 2 dias de antecedência.", seller: "Carla Oliveira", sellerId: "", category: "Bolos/Doces", city: "Aracaju", imageUrl: "" },
+  { id: 6, title: "Mudas de manga e acerola", price: "R$ 15", description: "Mudas saudáveis, prontas para plantar.", seller: "José Ferreira", sellerId: "", category: "Mudas Frutíferas", city: "Tobias Barreto", imageUrl: "" },
 ];
 
 const Marketplace = () => {
@@ -59,6 +61,7 @@ const Marketplace = () => {
   const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "" });
   const [imagePreview, setImagePreview] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   const { t } = useLanguage();
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
@@ -73,7 +76,7 @@ const Marketplace = () => {
 
   const handlePost = () => {
     if (!newItem.title || !newItem.price || !user) return;
-    setItems([{ id: Date.now(), ...newItem, seller: user.name, imageUrl: imagePreview }, ...items]);
+    setItems([{ id: Date.now(), ...newItem, seller: user.name, sellerId: user.id, imageUrl: imagePreview }, ...items]);
     setNewItem({ title: "", price: "", description: "", category: "Outros", city: "" });
     setImagePreview("");
     setShowForm(false);
@@ -169,10 +172,18 @@ const Marketplace = () => {
                     <span className="font-bold text-primary">{item.price}</span>
                   </div>
                   <p className="text-muted-foreground mt-1">{item.description}</p>
-                  <p className="mt-1">
+                  <p className="mt-1 flex items-center gap-1 flex-wrap">
                     {t("marketplace.seller")}: <a href="#">{item.seller}</a>
                     {item.city && <> · 📍 {item.city}</>}
                     {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
+                    {user && item.sellerId && item.sellerId !== user.id && (
+                      <button
+                        onClick={() => navigate(`/messages?with=${item.sellerId}`)}
+                        className="ml-1 bg-primary text-primary-foreground border-none px-2 py-[1px] text-[10px] cursor-pointer hover:opacity-90"
+                      >
+                        💬 {t("marketplace.contact")}
+                      </button>
+                    )}
                   </p>
                 </div>
               </div>
