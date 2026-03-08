@@ -75,30 +75,29 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
   return (
     <div className="bg-primary text-primary-foreground">
-      <div className="max-w-[760px] mx-auto flex items-center justify-between px-2 py-1">
-        <Link to="/" className="text-primary-foreground no-underline hover:no-underline">
-          <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px]" style={{ fontFamily: 'Georgia, serif' }}>
-            [ conectadosemsergipe ]
-          </h1>
-        </Link>
+      <div className="max-w-[760px] mx-auto px-2 py-1">
+        {/* Top row: logo + search */}
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+            <h1 className="text-[16px] sm:text-[20px] font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+              [ conectadosemsergipe ]
+            </h1>
+          </Link>
 
-        {/* Desktop search + nav */}
-        {!isMobile && (
-          <>
-            <form onSubmit={handleSearch} className="flex items-center">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("search")}
-                className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[140px]"
-              />
-              <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
-                <Search className="w-3 h-3 text-foreground" />
-              </button>
-            </form>
-
-            <div className="flex items-center gap-3 text-[11px]">
+          {!isMobile && (
+            <div className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("search")}
+                  className="border border-border px-1 py-[2px] text-[11px] text-foreground bg-card w-[120px]"
+                />
+                <button type="submit" className="bg-muted border border-border border-l-0 px-1 py-[2px] cursor-pointer flex items-center">
+                  <Search className="w-3 h-3 text-foreground" />
+                </button>
+              </form>
               <div className="flex items-center gap-1">
                 {(["pt", "es", "en"] as Language[]).map((lang) => (
                   <button
@@ -110,65 +109,54 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   </button>
                 ))}
               </div>
-              {isLoggedIn && <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>}
-              {navLinks()}
             </div>
-          </>
-        )}
+          )}
 
-        {/* Mobile hamburger */}
-        {isMobile && (
-          <div className="flex items-center gap-2">
-            {unreadCount > 0 && (
-              <Link to="/messages" className="relative">
-                <Mail className="w-4 h-4 text-primary-foreground" />
-                <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-[7px] font-bold w-3 h-3 rounded-full flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              </Link>
-            )}
-            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-              <SheetTrigger asChild>
-                <button className="bg-transparent border-none cursor-pointer p-1">
-                  <Menu className="w-5 h-5 text-primary-foreground" />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="right" className="bg-primary border-primary/80 w-[260px] p-4">
-                <SheetTitle className="text-primary-foreground text-[14px] mb-3">Menu</SheetTitle>
-                
-                {/* Mobile search */}
-                <form onSubmit={handleSearch} className="flex items-center mb-4">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={t("search")}
-                    className="border border-border px-2 py-1 text-[12px] text-foreground bg-card flex-1"
-                  />
-                  <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center">
-                    <Search className="w-3 h-3 text-foreground" />
+          {isMobile && (
+            <div className="flex items-center gap-2">
+              {unreadCount > 0 && (
+                <Link to="/messages" className="relative">
+                  <Mail className="w-4 h-4 text-primary-foreground" />
+                  <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-[7px] font-bold w-3 h-3 rounded-full flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                </Link>
+              )}
+              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                <SheetTrigger asChild>
+                  <button className="bg-transparent border-none cursor-pointer p-1">
+                    <Menu className="w-5 h-5 text-primary-foreground" />
                   </button>
-                </form>
-
-                {/* Language selector */}
-                <div className="flex items-center gap-2 mb-4">
-                  {(["pt", "es", "en"] as Language[]).map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setLanguage(lang)}
-                      className={`bg-transparent border-none cursor-pointer text-[11px] px-1 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}
-                    >
-                      {LANG_LABELS[lang]}
+                </SheetTrigger>
+                <SheetContent side="right" className="bg-primary border-primary/80 w-[260px] p-4">
+                  <SheetTitle className="text-primary-foreground text-[14px] mb-3">Menu</SheetTitle>
+                  <form onSubmit={handleSearch} className="flex items-center mb-4">
+                    <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder={t("search")} className="border border-border px-2 py-1 text-[12px] text-foreground bg-card flex-1" />
+                    <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center">
+                      <Search className="w-3 h-3 text-foreground" />
                     </button>
-                  ))}
-                </div>
+                  </form>
+                  <div className="flex items-center gap-2 mb-4">
+                    {(["pt", "es", "en"] as Language[]).map((lang) => (
+                      <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-[11px] px-1 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                        {LANG_LABELS[lang]}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {navLinks(() => setMenuOpen(false))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
+        </div>
 
-                {/* Nav links stacked */}
-                <div className="flex flex-col gap-3">
-                  {navLinks(() => setMenuOpen(false))}
-                </div>
-              </SheetContent>
-            </Sheet>
+        {/* Desktop nav row */}
+        {!isMobile && (
+          <div className="flex items-center justify-end gap-3 text-[11px] mt-[2px]">
+            {isLoggedIn && <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>}
+            {navLinks()}
           </div>
         )}
       </div>
