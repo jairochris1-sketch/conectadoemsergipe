@@ -95,7 +95,7 @@ const ModeratorPanel = () => {
 
     if (!reportData || reportData.length === 0) { setReportedPosts([]); setDataLoading(false); return; }
 
-    const postIds = [...new Set(reportData.map((r: any) => r.content_id))];
+    const postIds = [...new Set(reportData.map((r: any) => r.content_id))] as string[];
     const { data: posts } = await supabase.from("posts").select("*").in("id", postIds);
 
     if (!posts || posts.length === 0) { setReportedPosts([]); setDataLoading(false); return; }

@@ -41,6 +41,7 @@ const App = () => {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/moderator" element={<ModeratorPanel />} />
                 <Route path="/user/:userId" element={<PublicProfile />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
