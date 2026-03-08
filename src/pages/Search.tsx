@@ -56,7 +56,7 @@ const SearchPage = () => {
                         {p.photo ? <img src={p.photo} alt={p.name} className="w-full h-full object-cover" /> : t("photo")}
                       </div>
                       <div>
-                        <a href="#" className="font-bold">{p.name}</a>
+                        <Link to={`/user/${p.id}`} className="font-bold">{p.name}</Link>
                         <p className="text-muted-foreground">{p.school}</p>
                       </div>
                     </div>
