@@ -165,8 +165,8 @@ const PostFeed = ({ userName }: PostFeedProps) => {
           <textarea
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            className="w-full border border-border p-2 text-sm resize-none bg-card rounded-sm"
-            rows={3}
+            className="w-full border border-border p-2 text-[12px] resize-none bg-card"
+            rows={2}
             placeholder={t("whats_on_mind")}
           />
           {postImage && (
