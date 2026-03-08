@@ -260,6 +260,8 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
       value={{
         posts,
         createPost,
+        deleteOwnPost,
+        updatePost,
         friendRequests,
         sendFriendRequest,
         acceptFriendRequest,
