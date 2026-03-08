@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useMarketplaceRecommendations } from "@/hooks/useMarketplaceRecommendations";
 
 interface MarketItem {
   id: string;
