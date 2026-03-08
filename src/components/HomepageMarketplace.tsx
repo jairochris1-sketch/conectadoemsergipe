@@ -6,8 +6,15 @@ import { supabase } from "@/integrations/supabase/client";
 import MarketplaceForm from "@/components/MarketplaceForm";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import type { MarketItem } from "@/pages/Marketplace";
+import { CATEGORY_KEYS } from "@/pages/Marketplace";
 
 const ITEMS_TO_SHOW = 8;
+
+const CATEGORIES = [
+  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
+  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
+  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
+];
 
 const HomepageMarketplace = () => {
   const { user } = useAuth();
@@ -16,6 +23,7 @@ const HomepageMarketplace = () => {
   const [items, setItems] = useState<MarketItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState("All");
 
   const loadItems = useCallback(async () => {
     setLoading(true);
@@ -107,6 +115,21 @@ const HomepageMarketplace = () => {
         </div>
       </div>
 
+      {/* Category filters */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        {CATEGORIES.map((c) => (
+          <button
+            key={c}
+            onClick={() => setCategory(c)}
+            className={`px-2 py-[2px] border border-border cursor-pointer text-[10px] ${
+              category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+            }`}
+          >
+            {t(CATEGORY_KEYS[c])}
+          </button>
+        ))}
+      </div>
+
       {/* Form */}
       {showForm && user && (
         <MarketplaceForm
@@ -119,24 +142,27 @@ const HomepageMarketplace = () => {
       {/* Products grid */}
       {loading ? (
         <p className="text-[11px] text-muted-foreground py-4 text-center">Carregando...</p>
-      ) : items.length === 0 ? (
-        <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {items.map((item) => (
-            <MarketplaceItemCard
-              key={item.id}
-              item={item}
-              variant="grid"
-              currentUserId={user?.id}
-              onTrackClick={noopTrack}
-              onDelete={handleDelete}
-              onMarkSold={handleMarkSold}
-              onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
-            />
-          ))}
-        </div>
-      )}
+      ) : (() => {
+        const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+        return filtered.length === 0 ? (
+          <p className="text-[11px] text-muted-foreground py-4 text-center">{t("marketplace.no_items")}</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {filtered.map((item) => (
+              <MarketplaceItemCard
+                key={item.id}
+                item={item}
+                variant="grid"
+                currentUserId={user?.id}
+                onTrackClick={noopTrack}
+                onDelete={handleDelete}
+                onMarkSold={handleMarkSold}
+                onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+              />
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Footer link */}
       {items.length > 0 && (
