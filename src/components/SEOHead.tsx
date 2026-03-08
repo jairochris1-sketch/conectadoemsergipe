@@ -47,7 +47,23 @@ const SEOHead = ({ title, description, path = "/", ogImage, jsonLd }: SEOHeadPro
       document.head.appendChild(canonical);
     }
     canonical.setAttribute("href", url);
-  }, [title, description, path, ogImage]);
+
+    // JSON-LD
+    const existingLd = document.querySelector('script[data-seo-jsonld]');
+    if (existingLd) existingLd.remove();
+    if (jsonLd) {
+      const script = document.createElement("script");
+      script.setAttribute("type", "application/ld+json");
+      script.setAttribute("data-seo-jsonld", "true");
+      script.textContent = JSON.stringify({ "@context": "https://schema.org", ...jsonLd });
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      const ld = document.querySelector('script[data-seo-jsonld]');
+      if (ld) ld.remove();
+    };
+  }, [title, description, path, ogImage, jsonLd]);
 
   return null;
 };
