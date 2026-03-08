@@ -226,7 +226,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </p>
                     )}
                     {post.imageUrl && (
-                      <img src={post.imageUrl} alt="Post" className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded" />
+                      <img
+                        src={post.imageUrl}
+                        alt="Post"
+                        className="mt-1 max-w-full max-h-[300px] object-contain border border-border rounded cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setLightboxUrl(post.imageUrl!)}
+                      />
                     )}
                   </>
                 )}
