@@ -78,6 +78,34 @@ const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: str
   );
 };
 
+const ShareButton = ({ item, t, size = "normal" }: { item: { title: string; price: string; id: string }; t: (k: string) => string; size?: "small" | "normal" }) => {
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/marketplace?item=${item.id}`;
+    const text = `${item.title} - ${formatPriceDisplay(item.price)}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: item.title, text, url });
+      } catch { /* user cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      const { toast } = await import("sonner");
+      toast.success(t("marketplace.link_copied"));
+    }
+  };
+
+  return (
+    <button
+      onClick={handleShare}
+      className={`inline-flex items-center gap-1 bg-muted text-foreground border border-border cursor-pointer hover:bg-accent rounded-sm ${
+        size === "small" ? "px-1.5 py-[1px] text-[8px]" : "px-2 py-[2px] text-[10px]"
+      }`}
+    >
+      🔗 {t("marketplace.share")}
+    </button>
+  );
+};
+
 const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl: string; title: string }) => {
   const [current, setCurrent] = useState(0);
   const [open, setOpen] = useState(false);
