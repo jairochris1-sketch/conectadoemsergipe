@@ -60,7 +60,7 @@ const Marketplace = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { recommendations, trackView } = useMarketplaceRecommendations();
-
+  const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
   const loadItems = useCallback(async () => {
     const { data } = await supabase
       .from("marketplace_items")
