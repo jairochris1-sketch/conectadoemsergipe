@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import FriendsSidebar from "@/components/FriendsSidebar";
 import FollowButton from "@/components/FollowButton";
 import VerificationBadge from "@/components/VerificationBadge";
@@ -77,6 +78,7 @@ const PublicProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title={profile?.name || "Perfil"} description={`Veja o perfil de ${profile?.name || "usuário"} no Conectados em Sergipe.`} path={`/user/${userId}`} />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="flex flex-col md:flex-row gap-3">

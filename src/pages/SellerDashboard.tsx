@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Navigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -139,6 +140,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Painel do Vendedor" description="Gerencie suas campanhas e anúncios no marketplace do Conectados em Sergipe." path="/seller-dashboard" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="bg-card border border-border p-3">

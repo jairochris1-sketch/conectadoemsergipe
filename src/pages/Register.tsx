@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
@@ -45,6 +46,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Cadastro" description="Crie sua conta no Conectados em Sergipe. Junte-se à rede social sergipana." path="/register" />
       <FacebookHeader isLoggedIn={false} />
       <div className="max-w-[400px] mx-auto mt-8 px-2">
         <div className="bg-card border border-border p-4">

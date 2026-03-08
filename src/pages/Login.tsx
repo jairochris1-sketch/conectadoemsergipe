@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import SEOHead from "@/components/SEOHead";
 
 const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 
@@ -65,6 +66,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-card">
+      <SEOHead title="Entrar" description="Faça login no Conectados em Sergipe e conecte-se com pessoas de todo o estado." path="/login" />
       {/* Blue header bar — TheFacebook 2004 style */}
       <div
         className="bg-primary bg-cover bg-center bg-no-repeat"

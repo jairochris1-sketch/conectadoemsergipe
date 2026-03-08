@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -135,6 +136,7 @@ const Marketplace = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Marketplace" description="Compre e venda produtos em Sergipe. Encontre ofertas locais no marketplace do Conectados em Sergipe." path="/marketplace" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
         <div className="bg-card border border-border p-3">

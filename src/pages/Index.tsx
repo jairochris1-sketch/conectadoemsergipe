@@ -5,6 +5,7 @@ import FriendsSidebar from "@/components/FriendsSidebar";
 import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
 import BannerAdColumn from "@/components/BannerAdColumn";
+import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext"; // cache bust
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -14,6 +15,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead title="Conectados em Sergipe" description="Rede social que conecta pessoas em Sergipe. Faça amigos, compartilhe momentos e descubra o marketplace local." path="/" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
       <div className="w-full flex justify-center gap-3 px-2 py-3">

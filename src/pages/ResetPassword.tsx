@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import { useLanguage } from "@/context/LanguageContext";
 
 const ResetPassword = () => {
@@ -60,6 +61,7 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen bg-card">
+      <SEOHead title="Redefinir Senha" description="Redefina sua senha no Conectados em Sergipe." path="/reset-password" />
       <div className="bg-primary">
         <div className="max-w-[760px] mx-auto px-2 py-3 text-center">
           <h1 className="text-[28px] font-bold text-primary-foreground tracking-[-1px]" style={{ fontFamily: "Georgia, serif" }}>

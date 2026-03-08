@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Navigate, useSearchParams, Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
+import SEOHead from "@/components/SEOHead";
 import VerificationBadge from "@/components/VerificationBadge";
 import { useBatchVerificationBadges, useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useOnlineStatus, OnlineIndicator } from "@/hooks/usePresence";
@@ -227,6 +228,7 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen sm:min-h-screen bg-background flex flex-col">
+      <SEOHead title="Mensagens" description="Converse com seus amigos no Conectados em Sergipe." path="/messages" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       
       {/* On mobile with active chat, make full screen chat */}
