@@ -34,6 +34,7 @@ const translations: Record<Language, Record<string, string>> = {
     "post": "Postar",
     // FriendsSidebar
     "friends": "Amigos",
+    "see_all": "Ver tudo",
     "see_all_friends": "Ver Todos os Amigos",
     "photo": "foto",
     // Profile
@@ -282,6 +283,7 @@ const translations: Record<Language, Record<string, string>> = {
     "whats_on_mind": "¿Qué tienes en mente?",
     "post": "Publicar",
     "friends": "Amigos",
+    "see_all": "Ver todo",
     "see_all_friends": "Ver Todos los Amigos",
     "photo": "foto",
     "profile_of": "Perfil de",
@@ -521,6 +523,7 @@ const translations: Record<Language, Record<string, string>> = {
     "whats_on_mind": "What's on your mind?",
     "post": "Post",
     "friends": "Friends",
+    "see_all": "See all",
     "see_all_friends": "See All Friends",
     "photo": "photo",
     "profile_of": "Profile of",
