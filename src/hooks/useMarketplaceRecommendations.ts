@@ -75,7 +75,22 @@ export const useMarketplaceRecommendations = () => {
     }
 
     // Update sponsored campaign clicks
-    await supabase.rpc("increment_campaign_clicks" as any, { p_item_id: itemId }).catch(() => {});
+    const { data: clickCamp } = await supabase
+      .from("sponsored_campaigns")
+      .select("id, clicks, spent, budget")
+      .eq("item_id", itemId)
+      .eq("status", "active")
+      .maybeSingle();
+    if (clickCamp) {
+      const newSpent = clickCamp.spent + 1;
+      await supabase.from("sponsored_campaigns")
+        .update({
+          clicks: clickCamp.clicks + 1,
+          spent: newSpent,
+          ...(newSpent >= clickCamp.budget ? { status: "ended" } : {}),
+        })
+        .eq("id", clickCamp.id);
+    }
 
     // Upsert category access count
     const { data: existing } = await supabase
