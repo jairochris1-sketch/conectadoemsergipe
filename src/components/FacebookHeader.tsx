@@ -110,7 +110,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   </button>
                 ))}
               </div>
-              {navLinks}
+              {isLoggedIn && <span className="text-[11px]">{t("welcome")}, <b>{userName}</b></span>}
+              {navLinks()}
             </div>
           </>
         )}
