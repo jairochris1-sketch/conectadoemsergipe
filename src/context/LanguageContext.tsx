@@ -126,6 +126,10 @@ const translations: Record<Language, Record<string, string>> = {
     "friends.already": "Amigos",
     "friends.pending": "Pendente",
     "friends.none": "Nenhum amigo ainda.",
+    "comments.show": "Comentários",
+    "comments.hide": "Ocultar comentários",
+    "comments.placeholder": "Escreva um comentário...",
+    "comments.send": "Enviar",
   },
   es: {
     "welcome": "bienvenido",
@@ -232,6 +236,10 @@ const translations: Record<Language, Record<string, string>> = {
     "friends.already": "Amigos",
     "friends.pending": "Pendiente",
     "friends.none": "Aún no hay amigos.",
+    "comments.show": "Comentarios",
+    "comments.hide": "Ocultar comentarios",
+    "comments.placeholder": "Escribe un comentario...",
+    "comments.send": "Enviar",
   },
   en: {
     "welcome": "welcome",
@@ -338,6 +346,10 @@ const translations: Record<Language, Record<string, string>> = {
     "friends.already": "Friends",
     "friends.pending": "Pending",
     "friends.none": "No friends yet.",
+    "comments.show": "Comments",
+    "comments.hide": "Hide comments",
+    "comments.placeholder": "Write a comment...",
+    "comments.send": "Send",
   },
 };
 
