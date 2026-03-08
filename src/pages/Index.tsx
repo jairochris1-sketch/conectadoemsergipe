@@ -5,8 +5,9 @@ import FriendsSidebar from "@/components/FriendsSidebar";
 import FriendSuggestions from "@/components/FriendSuggestions";
 import FacebookFooter from "@/components/FacebookFooter";
 import BannerAdColumn from "@/components/BannerAdColumn";
+import MarketplaceHighlights from "@/components/MarketplaceHighlights";
 import SEOHead from "@/components/SEOHead";
-import { useAuth } from "@/context/AuthContext"; // cache bust
+import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
@@ -51,16 +52,9 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only: Marketplace above feed */}
+          {/* Mobile-only: Marketplace highlights above feed */}
           <div className="md:hidden mb-3">
-            <div className="bg-card border border-border p-2">
-              <div className="border-b border-border pb-1 mb-2">
-                <h3 className="text-[13px] font-bold text-primary">Marketplace</h3>
-              </div>
-              <a href="/marketplace" className="text-[11px] text-primary hover:underline">
-                {t("marketplace") || "Ver Marketplace"} →
-              </a>
-            </div>
+            <MarketplaceHighlights />
           </div>
 
           <PostFeed userName={user?.name} />
