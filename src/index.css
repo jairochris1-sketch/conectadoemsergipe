@@ -6,33 +6,33 @@
 
 @layer base {
   :root {
-    --background: 0 0% 90%;
-    --foreground: 0 0% 10%;
+    --background: 220 10% 93%;
+    --foreground: 0 0% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 0 0% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 0 0% 20%;
 
-    --primary: 220 70% 32%;
+    --primary: 220 56% 34%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 60% 94%;
-    --secondary-foreground: 220 70% 32%;
+    --secondary: 220 44% 94%;
+    --secondary-foreground: 220 56% 34%;
 
-    --muted: 220 20% 92%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 220 14% 90%;
+    --muted-foreground: 0 0% 46%;
 
-    --accent: 220 60% 94%;
-    --accent-foreground: 220 70% 32%;
+    --accent: 214 55% 94%;
+    --accent-foreground: 220 56% 34%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 80%;
-    --input: 220 20% 80%;
-    --ring: 220 70% 32%;
+    --border: 220 10% 82%;
+    --input: 220 10% 82%;
+    --ring: 220 56% 34%;
 
     --radius: 0px;
 
@@ -45,8 +45,9 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --fb-header: 220 70% 32%;
-    --fb-link: 220 80% 40%;
+    --fb-header: 220 56% 34%;
+    --fb-header-dark: 220 60% 28%;
+    --fb-link: 220 72% 38%;
     --fb-light-blue: 214 80% 96%;
   }
 
@@ -79,6 +80,7 @@
     --sidebar-border: 220 15% 22%;
     --sidebar-ring: 220 40% 60%;
     --fb-header: 220 50% 18%;
+    --fb-header-dark: 220 55% 14%;
     --fb-link: 220 60% 75%;
     --fb-light-blue: 220 20% 20%;
   }
@@ -92,7 +94,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
-    font-size: 16px;
+    font-size: 11px;
+    line-height: 1.4;
   }
 }
 
