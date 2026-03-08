@@ -8,13 +8,15 @@ interface User {
   bio: string;
   photoUrl: string;
   school: string;
+  birthdate: string;
+  city: string;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (identifier: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string, school: string, phone?: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string) => Promise<boolean>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
 }
@@ -35,6 +37,8 @@ async function fetchProfile(userId: string): Promise<User | null> {
     bio: data.bio || "",
     photoUrl: data.photo_url || "",
     school: data.school || "",
+    birthdate: data.birthdate || "",
+    city: data.city || "",
   };
 }
 
@@ -80,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const register = async (name: string, email: string, password: string, school: string, phone?: string): Promise<boolean> => {
+  const register = async (name: string, email: string, password: string, school: string, birthdate: string, city: string, phone?: string): Promise<boolean> => {
     const options: any = {
       email,
       password,
@@ -93,10 +97,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const { data, error } = await supabase.auth.signUp(options);
     if (error || !data.user) return false;
 
-    // Update profile with school info
+    // Update profile with extra info
     await supabase
       .from("profiles")
-      .update({ school, name })
+      .update({ school, name, birthdate, city })
       .eq("user_id", data.user.id);
 
     return true;
@@ -114,6 +118,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data.school !== undefined) updates.school = data.school;
     if (data.name !== undefined) updates.name = data.name;
     if (data.photoUrl !== undefined) updates.photo_url = data.photoUrl;
+    if (data.birthdate !== undefined) updates.birthdate = data.birthdate;
+    if (data.city !== undefined) updates.city = data.city;
 
     await supabase.from("profiles").update(updates).eq("user_id", user.id);
     setUser({ ...user, ...data });

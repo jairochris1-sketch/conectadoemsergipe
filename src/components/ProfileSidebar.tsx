@@ -5,9 +5,11 @@ interface ProfileSidebarProps {
   bio: string;
   photoUrl: string;
   school?: string;
+  city?: string;
+  birthdate?: string;
 }
 
-const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) => {
+const ProfileSidebar = ({ name, bio, photoUrl, school, city, birthdate }: ProfileSidebarProps) => {
   const { t } = useLanguage();
 
   return (
@@ -24,6 +26,12 @@ const ProfileSidebar = ({ name, bio, photoUrl, school }: ProfileSidebarProps) =>
         <div className="text-[11px] w-full">
           {school && (
             <p className="mb-1"><b>{t("school")}:</b> {school}</p>
+          )}
+          {city && (
+            <p className="mb-1"><b>{t("city")}:</b> {city}</p>
+          )}
+          {birthdate && (
+            <p className="mb-1"><b>{t("birthdate")}:</b> {new Date(birthdate).toLocaleDateString()}</p>
           )}
           <p className="text-muted-foreground">{bio}</p>
         </div>
