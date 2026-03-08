@@ -146,9 +146,31 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             rows={3}
             placeholder={t("whats_on_mind")}
           />
-          <button onClick={handlePost} className="mt-1 bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90">
-            {t("post")}
-          </button>
+          {postImage && (
+            <div className="relative inline-block mt-1">
+              <img src={postImage.preview} alt="Preview" className="max-h-[100px] border border-border" />
+              <button
+                onClick={() => setPostImage(null)}
+                className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground rounded-full w-4 h-4 text-[9px] flex items-center justify-center leading-none"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          <div className="flex gap-2 mt-1 items-center">
+            <button onClick={handlePost} disabled={uploading} className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50">
+              {uploading ? t("post.uploading") : t("post")}
+            </button>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-muted text-foreground border border-border px-2 py-1 text-[11px] cursor-pointer hover:opacity-90 inline-flex items-center gap-1"
+              title={t("post.add_photo")}
+            >
+              <ImagePlus className="w-3 h-3" /> {t("post.add_photo")}
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+            <span className="text-[9px] text-muted-foreground">{t("post.max_5mb")}</span>
+          </div>
         </div>
       )}
       <div className="space-y-2">
