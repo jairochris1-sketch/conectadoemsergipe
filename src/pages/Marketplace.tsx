@@ -17,6 +17,7 @@ interface MarketItem {
   category: string;
   city: string;
   imageUrl: string;
+  isSponsored?: boolean;
 }
 
 const CATEGORIES = [
@@ -59,8 +60,16 @@ const Marketplace = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
   const { recommendations, trackView } = useMarketplaceRecommendations();
-
+  const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
   const loadItems = useCallback(async () => {
+    // Load active sponsored campaign item IDs
+    const { data: campaigns } = await supabase
+      .from("sponsored_campaigns")
+      .select("item_id")
+      .eq("status", "active");
+    const sponsoredSet = new Set((campaigns || []).map((c: any) => c.item_id));
+    setSponsoredIds(sponsoredSet);
+
     const { data } = await supabase
       .from("marketplace_items")
       .select("*")
@@ -77,19 +86,27 @@ const Marketplace = () => {
 
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p.name]) || []);
 
-    setItems(
-      data.map((d: any) => ({
-        id: d.id,
-        title: d.title,
-        price: d.price,
-        description: d.description || "",
-        seller: profileMap.get(d.user_id) || "Usuário",
-        sellerId: d.user_id,
-        category: d.category,
-        city: d.city || "",
-        imageUrl: d.image_url || "",
-      }))
-    );
+    const mapped = data.map((d: any) => ({
+      id: d.id,
+      title: d.title,
+      price: d.price,
+      description: d.description || "",
+      seller: profileMap.get(d.user_id) || "Usuário",
+      sellerId: d.user_id,
+      category: d.category,
+      city: d.city || "",
+      imageUrl: d.image_url || "",
+      isSponsored: sponsoredSet.has(d.id),
+    }));
+
+    // Sort: sponsored first, then by date
+    mapped.sort((a, b) => {
+      if (a.isSponsored && !b.isSponsored) return -1;
+      if (!a.isSponsored && b.isSponsored) return 1;
+      return 0;
+    });
+
+    setItems(mapped);
   }, []);
 
   useEffect(() => { loadItems(); }, [loadItems]);
@@ -151,12 +168,20 @@ const Marketplace = () => {
               {t("marketplace.title")}
             </h2>
             {user && (
-              <button
-                onClick={() => setShowForm(!showForm)}
-                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-              >
-                {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
-              </button>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => navigate("/seller-dashboard")}
+                  className="bg-muted text-foreground border border-border px-3 py-1 text-[11px] cursor-pointer hover:bg-accent"
+                >
+                  📢 {t("ads.my_ads")}
+                </button>
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+                >
+                  {showForm ? t("marketplace.cancel") : t("marketplace.sell")}
+                </button>
+              </div>
             )}
           </div>
 
@@ -261,9 +286,16 @@ const Marketplace = () => {
             {filtered.map((item) => (
               <div
                 key={item.id}
-                className="border border-border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors"
+                className={`relative border p-2 flex gap-3 cursor-pointer hover:bg-accent/30 transition-colors ${
+                  item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
+                }`}
                 onClick={() => trackView(item.id, item.category)}
               >
+                {item.isSponsored && (
+                  <span className="absolute top-0 right-0 text-[8px] font-bold text-primary-foreground bg-primary px-[6px] py-[1px]">
+                    ⭐ {t("ads.sponsored")}
+                  </span>
+                )}
                 <div className="w-[70px] h-[70px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden">
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />

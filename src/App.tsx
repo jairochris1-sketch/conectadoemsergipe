@@ -17,6 +17,7 @@ import AdminPanel from "./pages/AdminPanel";
 import PublicProfile from "./pages/PublicProfile";
 import MessagesPage from "./pages/Messages";
 import ResetPassword from "./pages/ResetPassword";
+import SellerDashboard from "./pages/SellerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => {
                 <Route path="/user/:userId" element={<PublicProfile />} />
                 <Route path="/messages" element={<MessagesPage />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/seller-dashboard" element={<SellerDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
