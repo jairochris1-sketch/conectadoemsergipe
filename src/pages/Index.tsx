@@ -17,14 +17,7 @@ const Index = () => {
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
       <div className="w-full flex justify-center gap-3 px-2 py-3">
-        {/* Outer left ad - only on ultrawide (>=1600px) */}
-        <div className="hidden 2xl-wide:block w-[160px] shrink-0">
-          <div className="sticky top-3">
-            <BannerAdColumn position="left" />
-          </div>
-        </div>
-
-        {/* Inner left ad - visible on lg+ */}
+        {/* Left ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
           <div className="sticky top-3">
             <BannerAdColumn position="left" />
@@ -69,15 +62,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Inner right ad - visible on lg+ */}
+        {/* Right ad space */}
         <div className="hidden lg:block w-[160px] shrink-0">
-          <div className="sticky top-3">
-            <BannerAdColumn position="right" />
-          </div>
-        </div>
-
-        {/* Outer right ad - only on ultrawide (>=1600px) */}
-        <div className="hidden 2xl-wide:block w-[160px] shrink-0">
           <div className="sticky top-3">
             <BannerAdColumn position="right" />
           </div>
