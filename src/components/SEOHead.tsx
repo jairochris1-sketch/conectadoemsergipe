@@ -5,6 +5,7 @@ interface SEOHeadProps {
   description: string;
   path?: string;
   ogImage?: string;
+  jsonLd?: Record<string, any>;
 }
 
 const BASE_URL = "https://conectadoemsergipe.lovable.app";
