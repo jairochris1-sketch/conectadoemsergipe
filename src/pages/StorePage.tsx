@@ -48,7 +48,9 @@ const StorePage = () => {
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [planType, setPlanType] = useState("free");
 
+  const { averageRating, totalReviews } = useSellerReviews(store?.user_id);
   const isOwner = user && store && user.id === store.user_id;
 
   useEffect(() => {
