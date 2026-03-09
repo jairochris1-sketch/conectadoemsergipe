@@ -2,25 +2,8 @@ import { useState, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useForbiddenWords } from "@/hooks/useForbiddenWords";
+import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import { toast } from "sonner";
-
-const CATEGORIES_NO_ALL = [
-  "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
-  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
-  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
-];
-
-const CATEGORY_KEYS: Record<string, string> = {
-  "Móveis": "marketplace.moveis", "Imóveis": "marketplace.imoveis",
-  "Celulares": "marketplace.celulares", "Carros": "marketplace.carros",
-  "Motos": "marketplace.motos", "Bicicletas": "marketplace.bicicletas",
-  "Som": "marketplace.som", "Roupas": "marketplace.clothing",
-  "Bolos/Doces": "marketplace.bolos_doces", "Mudas Frutíferas": "marketplace.mudas",
-  "Sofá/Mesa/Cadeiras": "marketplace.sofa_mesa", "Fogão": "marketplace.fogao",
-  "Geladeira": "marketplace.geladeira", "Guarda-Roupa": "marketplace.guarda_roupa",
-  "Eletrônicos": "marketplace.electronics", "Livros": "marketplace.books",
-  "Outros": "marketplace.other",
-};
 
 const MAX_IMAGES = 5;
 
