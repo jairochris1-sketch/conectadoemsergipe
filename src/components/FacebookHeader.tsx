@@ -324,7 +324,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
                       <button className="bg-transparent border-none cursor-pointer p-1.5">
-                        <Menu className="w-[18px] h-[18px] text-primary-foreground" />
+                        <Menu className="w-[18px] h-[18px] text-white" />
                       </button>
                     </SheetTrigger>
                     <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
