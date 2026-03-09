@@ -174,8 +174,8 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
         <div className="flex-1">
           <label className="block font-bold mb-1">{t("marketplace.category")}</label>
           <select value={newItem.category} onChange={(e) => setNewItem({ ...newItem, category: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
-            {CATEGORIES_NO_ALL.map((c) => (
-              <option key={c} value={c}>{t(CATEGORY_KEYS[c])}</option>
+            {categoryNames.map((c) => (
+              <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
