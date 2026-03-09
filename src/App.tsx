@@ -2,11 +2,12 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SocialProvider } from "@/context/SocialContext";
 import { PresenceProvider } from "@/components/PresenceProvider";
+import AppNavSidebar from "@/components/AppNavSidebar";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -26,6 +27,22 @@ import FriendsPage from "./pages/Friends";
 
 const queryClient = new QueryClient();
 
+// Layout wrapper that conditionally shows sidebar
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const { pathname } = useLocation();
+  const hideSidebarRoutes = ["/login", "/register", "/reset-password"];
+  const showSidebar = !hideSidebarRoutes.includes(pathname);
+
+  return (
+    <div className="flex min-h-screen w-full">
+      {showSidebar && <AppNavSidebar />}
+      <div className="flex-1 min-w-0">
+        {children}
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   return (
   <QueryClientProvider client={queryClient}>
@@ -37,24 +54,26 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/admin" element={<AdminPanel />} />
-                <Route path="/moderator" element={<ModeratorPanel />} />
-                <Route path="/user/:userId" element={<PublicProfile />} />
-                <Route path="/messages" element={<MessagesPage />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/seller-dashboard" element={<SellerDashboard />} />
-                <Route path="/sobre" element={<About />} />
-                <Route path="/amigos" element={<FriendsPage />} />
-                <Route path="/page/:slug" element={<SitePage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <AppLayout>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route path="/marketplace" element={<Marketplace />} />
+                  <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/moderator" element={<ModeratorPanel />} />
+                  <Route path="/user/:userId" element={<PublicProfile />} />
+                  <Route path="/messages" element={<MessagesPage />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+                  <Route path="/seller-dashboard" element={<SellerDashboard />} />
+                  <Route path="/sobre" element={<About />} />
+                  <Route path="/amigos" element={<FriendsPage />} />
+                  <Route path="/page/:slug" element={<SitePage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AppLayout>
             </BrowserRouter>
           </SocialProvider>
         </AuthProvider>
