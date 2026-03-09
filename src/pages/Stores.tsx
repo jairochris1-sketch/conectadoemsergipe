@@ -6,7 +6,7 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, MapPin, Store, Package, Heart } from "lucide-react";
+import { Search, Plus, MapPin, Store, Package, Heart, Crown } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
