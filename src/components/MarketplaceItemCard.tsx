@@ -81,8 +81,9 @@ const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: str
 const ShareButton = ({ item, t, size = "normal" }: { item: { title: string; price: string; id: string }; t: (k: string) => string; size?: "small" | "normal" }) => {
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const url = `${supabaseUrl}/functions/v1/og-marketplace?id=${item.id}`;
+    // Use the site domain + product path for sharing
+    const baseUrl = window.location.origin;
+    const url = `${baseUrl}/marketplace?item=${item.id}`;
     const text = `${item.title} - ${formatPriceDisplay(item.price)}`;
     if (navigator.share) {
       try {
