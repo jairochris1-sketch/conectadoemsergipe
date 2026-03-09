@@ -340,7 +340,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                       </div>
                       <div className="flex items-center gap-2 mb-4">
                         {(["pt", "es", "en"] as Language[]).map((lang) => (
-                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-white" : "text-white/70 hover:underline"}`}>
                             {LANG_LABELS[lang]}
                           </button>
                         ))}
