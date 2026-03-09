@@ -142,13 +142,13 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
 
     setUploading(true);
     try {
-      const compressed = await compressImage(file, 1200, 0.7);
-      const ext = file.name.split(".").pop() || "jpg";
+      const { blob } = await validateAndCompressImage(file);
+      const ext = "jpg";
       const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
 
       const { error } = await supabase.storage
         .from("chat-images")
-        .upload(fileName, compressed, { contentType: compressed.type });
+        .upload(fileName, blob, { contentType: "image/jpeg" });
 
       if (error) throw error;
 
