@@ -71,6 +71,7 @@ const App = () => {
                   <Route path="/seller-dashboard" element={<SellerDashboard />} />
                   <Route path="/sobre" element={<About />} />
                   <Route path="/amigos" element={<FriendsPage />} />
+                  <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
