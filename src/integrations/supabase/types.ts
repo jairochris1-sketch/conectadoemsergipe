@@ -420,6 +420,54 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          asaas_payment_id: string | null
+          boleto_url: string | null
+          created_at: string
+          credits: number
+          id: string
+          invoice_url: string | null
+          payment_method: string
+          pix_copy_paste: string | null
+          pix_qr_code: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          asaas_payment_id?: string | null
+          boleto_url?: string | null
+          created_at?: string
+          credits: number
+          id?: string
+          invoice_url?: string | null
+          payment_method?: string
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          asaas_payment_id?: string | null
+          boleto_url?: string | null
+          created_at?: string
+          credits?: number
+          id?: string
+          invoice_url?: string | null
+          payment_method?: string
+          pix_copy_paste?: string | null
+          pix_qr_code?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       post_reactions: {
         Row: {
           created_at: string
