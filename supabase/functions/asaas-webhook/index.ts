@@ -23,8 +23,6 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-
-    // Asaas sends webhook events with this structure
     const { event, payment } = body;
 
     if (!event || !payment) {
@@ -42,7 +40,70 @@ Deno.serve(async (req) => {
     const asaasPaymentId = payment.id;
     const status = payment.status;
 
-    // Update payment status in our DB
+    console.log(`Webhook event: ${event}, payment: ${asaasPaymentId}, status: ${status}`);
+
+    // Handle subscription events
+    if (event.startsWith("PAYMENT_") && payment.subscription) {
+      // This is a subscription payment - find by subscription ID
+      const subscriptionId = payment.subscription;
+      
+      const { data: paymentRecord } = await supabase
+        .from("payments")
+        .select("id, user_id, credits, status")
+        .eq("asaas_payment_id", subscriptionId)
+        .single();
+
+      if (paymentRecord) {
+        // Update subscription payment status
+        await supabase
+          .from("payments")
+          .update({ status, updated_at: new Date().toISOString() })
+          .eq("asaas_payment_id", subscriptionId);
+
+        // Handle subscription renewal confirmed
+        if (status === "CONFIRMED" || status === "RECEIVED") {
+          // Extend the store plan by 1 month
+          const { data: storePlan } = await supabase
+            .from("store_plans")
+            .select("id, store_id, ends_at")
+            .eq("store_id", (await supabase.from("stores").select("id").eq("user_id", paymentRecord.user_id).single()).data?.id)
+            .single();
+
+          if (storePlan) {
+            const newEndsAt = new Date(storePlan.ends_at || new Date());
+            if (newEndsAt < new Date()) newEndsAt.setTime(Date.now());
+            newEndsAt.setMonth(newEndsAt.getMonth() + 1);
+
+            await supabase.from("store_plans").update({
+              is_active: true,
+              ends_at: newEndsAt.toISOString(),
+            }).eq("id", storePlan.id);
+
+            console.log(`Subscription renewed for store ${storePlan.store_id} until ${newEndsAt.toISOString()}`);
+          }
+        }
+
+        // Handle subscription payment overdue/failed
+        if (status === "OVERDUE" || status === "REFUNDED") {
+          const { data: store } = await supabase
+            .from("stores")
+            .select("id")
+            .eq("user_id", paymentRecord.user_id)
+            .single();
+
+          if (store) {
+            await supabase.from("store_plans").update({
+              is_active: false,
+              plan_type: "free",
+            }).eq("store_id", store.id);
+
+            console.log(`Subscription deactivated for store ${store.id} due to ${status}`);
+          }
+        }
+      }
+    }
+
+    // Standard one-time payment handling
     const { data: paymentRecord } = await supabase
       .from("payments")
       .select("id, user_id, credits, status")
@@ -64,10 +125,9 @@ Deno.serve(async (req) => {
 
     // If payment confirmed/received and not already credited
     const confirmedStatuses = ["CONFIRMED", "RECEIVED", "RECEIVED_IN_CASH"];
-    const alreadyCredited = ["CONFIRMED", "RECEIVED", "RECEIVED_IN_CASH"].includes(paymentRecord.status);
+    const alreadyCredited = confirmedStatuses.includes(paymentRecord.status);
 
-    if (confirmedStatuses.includes(status) && !alreadyCredited) {
-      // Add credits to user
+    if (confirmedStatuses.includes(status) && !alreadyCredited && paymentRecord.credits > 0) {
       const { data: existingCredits } = await supabase
         .from("ad_credits")
         .select("balance")
@@ -94,18 +154,20 @@ Deno.serve(async (req) => {
 
     // Handle refund/chargeback - remove credits
     if (status === "REFUNDED" || status === "CHARGEBACK") {
-      const { data: existingCredits } = await supabase
-        .from("ad_credits")
-        .select("balance")
-        .eq("user_id", paymentRecord.user_id)
-        .single();
-
-      if (existingCredits) {
-        const newBalance = Math.max(0, existingCredits.balance - paymentRecord.credits);
-        await supabase
+      if (paymentRecord.credits > 0) {
+        const { data: existingCredits } = await supabase
           .from("ad_credits")
-          .update({ balance: newBalance, updated_at: new Date().toISOString() })
-          .eq("user_id", paymentRecord.user_id);
+          .select("balance")
+          .eq("user_id", paymentRecord.user_id)
+          .single();
+
+        if (existingCredits) {
+          const newBalance = Math.max(0, existingCredits.balance - paymentRecord.credits);
+          await supabase
+            .from("ad_credits")
+            .update({ balance: newBalance, updated_at: new Date().toISOString() })
+            .eq("user_id", paymentRecord.user_id);
+        }
       }
 
       console.log(`Credits removed (${status}): ${paymentRecord.credits} for user ${paymentRecord.user_id}`);
