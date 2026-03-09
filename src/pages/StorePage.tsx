@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, MapPin, MessageCircle, Plus, Trash2, Camera, Package } from "lucide-react";
+import { Store, MapPin, MessageCircle, Plus, Trash2, Package } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
-import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import StoreProductForm from "@/components/StoreProductForm";
 
 interface StoreRow {
   id: string;
@@ -35,16 +34,6 @@ interface ProductRow {
   created_at: string;
 }
 
-const formatBRL = (value: string): string => {
-  const digits = value.replace(/\D/g, "");
-  if (!digits) return "";
-  return (parseInt(digits, 10) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-};
-const parseBRL = (value: string): string => {
-  const digits = value.replace(/\D/g, "");
-  if (!digits) return "0";
-  return (parseInt(digits, 10) / 100).toFixed(2);
-};
 
 const StorePage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -54,16 +43,6 @@ const StorePage = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
-  // Product form state
-  const [pTitle, setPTitle] = useState("");
-  const [pPrice, setPPrice] = useState("");
-  const [pPriceDisplay, setPPriceDisplay] = useState("");
-  const [pDescription, setPDescription] = useState("");
-  const [pCity, setPCity] = useState("");
-  const [pPhotoFile, setPPhotoFile] = useState<File | null>(null);
-  const [pPhotoPreview, setPPhotoPreview] = useState("");
-  const [posting, setPosting] = useState(false);
-  const pFileRef = useRef<HTMLInputElement>(null);
 
   const isOwner = user && store && user.id === store.user_id;
 
@@ -95,55 +74,6 @@ const StorePage = () => {
     setLoading(false);
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setPPhotoFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => setPPhotoPreview(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleAddProduct = async () => {
-    if (!pTitle.trim() || !pPrice || !store || !user) {
-      toast.error("Preencha título e preço");
-      return;
-    }
-    setPosting(true);
-
-    let image_url = "";
-    if (pPhotoFile) {
-      const ext = pPhotoFile.name.split(".").pop();
-      const path = `${user.id}/store-products/${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("post-images").upload(path, pPhotoFile, { upsert: true });
-      if (!error) {
-        const { data: urlData } = supabase.storage.from("post-images").getPublicUrl(path);
-        image_url = urlData.publicUrl;
-      }
-    }
-
-    const { error } = await supabase.from("store_products").insert({
-      store_id: store.id,
-      user_id: user.id,
-      title: pTitle.trim(),
-      description: pDescription.trim(),
-      price: pPrice,
-      image_url,
-      city: pCity || store.city,
-    } as any);
-
-    if (error) {
-      toast.error("Erro ao adicionar produto");
-      setPosting(false);
-      return;
-    }
-
-    toast.success("Produto adicionado!");
-    setPTitle(""); setPPrice(""); setPPriceDisplay(""); setPDescription(""); setPCity(""); setPPhotoFile(null); setPPhotoPreview("");
-    setShowForm(false);
-    setPosting(false);
-    fetchStore();
-  };
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm("Excluir este produto?")) return;
@@ -231,51 +161,14 @@ const StorePage = () => {
         </div>
 
         {/* Add Product Form */}
-        {showForm && isOwner && (
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-6 space-y-3">
-            <h3 className="font-semibold text-foreground text-sm">Novo Produto</h3>
-            <div className="flex flex-col items-center">
-              <button onClick={() => pFileRef.current?.click()} className="w-24 h-24 rounded-lg bg-muted border-2 border-dashed border-border flex items-center justify-center overflow-hidden hover:border-primary transition-colors">
-                {pPhotoPreview ? (
-                  <img src={pPhotoPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <Camera className="w-6 h-6 text-muted-foreground" />
-                )}
-              </button>
-              <input ref={pFileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-            </div>
-            <Input value={pTitle} onChange={(e) => setPTitle(e.target.value)} placeholder="Nome do produto *" />
-            <Input
-              value={pPriceDisplay}
-              onChange={(e) => {
-                setPPriceDisplay(formatBRL(e.target.value));
-                setPPrice(parseBRL(e.target.value));
-              }}
-              placeholder="Preço (R$) *"
-            />
-            <select
-              value={pCity}
-              onChange={(e) => setPCity(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-10"
-            >
-              <option value="">Cidade (usa da loja)</option>
-              {SERGIPE_CITIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <textarea
-              value={pDescription}
-              onChange={(e) => setPDescription(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[60px] resize-none"
-              placeholder="Descrição do produto"
-            />
-            <div className="flex gap-2">
-              <Button onClick={handleAddProduct} disabled={posting} size="sm">
-                {posting ? "Salvando..." : "Adicionar"}
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowForm(false)}>Cancelar</Button>
-            </div>
-          </div>
+        {showForm && isOwner && store && user && (
+          <StoreProductForm
+            storeId={store.id}
+            userId={user.id}
+            storeCity={store.city}
+            onClose={() => setShowForm(false)}
+            onProductAdded={fetchStore}
+          />
         )}
 
         {/* Products */}
@@ -292,7 +185,7 @@ const StorePage = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {products.map((product) => (
-              <div key={product.id} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200">
+              <Link key={product.id} to={`/produto/${product.id}`} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200 no-underline">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -303,7 +196,7 @@ const StorePage = () => {
                   )}
                   {isOwner && (
                     <button
-                      onClick={() => handleDeleteProduct(product.id)}
+                      onClick={(e) => { e.preventDefault(); handleDeleteProduct(product.id); }}
                       className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -320,11 +213,8 @@ const StorePage = () => {
                       <MapPin className="w-3 h-3" /> {product.city}
                     </p>
                   )}
-                  {product.description && (
-                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{product.description}</p>
-                  )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}

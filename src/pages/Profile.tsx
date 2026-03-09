@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Navigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Navigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
@@ -26,12 +26,24 @@ const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
   const { getFriends } = useSocial();
+  const [hasStore, setHasStore] = useState<boolean | null>(null);
+  const [storeSlug, setStoreSlug] = useState("");
 
-  if (!user) return <Navigate to="/login" />;
-
-  const friends = getFriends();
+  const friends = user ? getFriends() : [];
   const { followerCount } = useFollowers(user?.id);
   const badge = useVerificationBadge(user?.id);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("stores").select("slug").eq("user_id", user.id).eq("is_active", true).maybeSingle()
+        .then(({ data }) => {
+          setHasStore(!!data);
+          if (data) setStoreSlug((data as any).slug);
+        });
+    }
+  }, [user]);
+
+  if (!user) return <Navigate to="/login" />;
 
   const startEditing = () => {
     setEditName(user.name);
@@ -164,9 +176,25 @@ const Profile = () => {
                 )}
               </div>
               {!editing ? (
-                <button onClick={startEditing} className="mt-4 bg-primary text-primary-foreground border-none px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
-                  {t("edit_profile")}
-                </button>
+                <div className="flex flex-wrap gap-3 mt-4">
+                  <button onClick={startEditing} className="bg-primary text-primary-foreground border-none px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
+                    {t("edit_profile")}
+                  </button>
+                  {hasStore === false && (
+                    <Link to="/stores/create" className="no-underline">
+                      <button className="bg-accent text-accent-foreground border border-border px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
+                        🏪 Criar Loja
+                      </button>
+                    </Link>
+                  )}
+                  {hasStore === true && (
+                    <Link to="/minha-loja" className="no-underline">
+                      <button className="bg-accent text-accent-foreground border border-border px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
+                        🏪 Minha Loja
+                      </button>
+                    </Link>
+                  )}
+                </div>
               ) : (
                 <div className="flex gap-3 mt-4">
                   <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">{t("save")}</button>
