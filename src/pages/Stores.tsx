@@ -22,6 +22,7 @@ interface StoreRow {
   created_at: string;
   product_count?: number;
   follower_count?: number;
+  plan_type?: string;
 }
 
 const Stores = () => {
