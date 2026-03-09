@@ -563,6 +563,22 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     </p>
                   </div>
                 )}
+                {/* Top reaction in lightbox */}
+                <div className="px-3 lg:px-4 py-2 border-b border-border shrink-0">
+                  {user ? (
+                    <button
+                      onClick={() => toggleReaction(post.id)}
+                      className={`text-sm bg-transparent border-none cursor-pointer hover:opacity-80 inline-flex items-center gap-1 font-medium transition-colors ${hasReacted(post.id) ? 'text-primary' : 'text-muted-foreground'}`}
+                    >
+                      <ArrowBigUp className={`w-5 h-5 ${hasReacted(post.id) ? 'fill-primary' : ''}`} />
+                      Top {getReactionCount(post.id) > 0 && `(${getReactionCount(post.id)})`}
+                    </button>
+                  ) : getReactionCount(post.id) > 0 ? (
+                    <span className="text-sm text-muted-foreground inline-flex items-center gap-1">
+                      <ArrowBigUp className="w-5 h-5" /> Top ({getReactionCount(post.id)})
+                    </span>
+                  ) : null}
+                </div>
                 {/* Comments list */}
                 <div className="flex-1 overflow-y-auto px-3 lg:px-4 py-2 lg:py-3 space-y-2 lg:space-y-3 min-h-0">
                   <p className="text-xs font-bold text-muted-foreground">{t("comments.show")}</p>
@@ -583,6 +599,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                         </p>
                         <p className="text-[10px] lg:text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>
+                      {(user && (c.authorId === user.id || isAdmin)) && (
+                        <button
+                          onClick={async () => {
+                            await deleteComment(c.id, post.id);
+                            const data = await getComments(post.id);
+                            setComments((prev) => ({ ...prev, [post.id]: data }));
+                          }}
+                          className="shrink-0 text-destructive bg-transparent border-none cursor-pointer hover:opacity-70 p-1"
+                          title="Excluir comentário"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
