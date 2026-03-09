@@ -10,6 +10,10 @@ import { useMarketplaceRecommendations } from "@/hooks/useMarketplaceRecommendat
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import MarketplaceForm from "@/components/MarketplaceForm";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import { MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import MarketplaceForm from "@/components/MarketplaceForm";
 
 export interface MarketItem {
   id: string;
