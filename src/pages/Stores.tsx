@@ -24,8 +24,7 @@ interface StoreRow {
 }
 
 const Stores = () => {
-  const { user } = useAuth();
-  const { t } = useLanguage();
+  const { user, logout } = useAuth();
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
