@@ -39,9 +39,14 @@ const BuyCredits = () => {
   };
 
   const handlePayment = async () => {
-    if (!user || !profile) return;
+    if (!user) return;
     if (!cpf || cpf.replace(/\D/g, "").length < 11) {
       toast.error("Informe um CPF/CNPJ válido.");
+      return;
+    }
+
+    // Fetch user profile
+    const { data: profileData } = await supabase.from("profiles").select("name, email").eq("user_id", user.id).single();
       return;
     }
 
