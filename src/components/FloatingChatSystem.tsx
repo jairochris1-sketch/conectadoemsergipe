@@ -120,6 +120,13 @@ const FloatingChatSystem = () => {
                   </span>
                 )}
               </h3>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer p-0.5"
+                title="Fechar chat"
+              >
+                ✕
+              </button>
             </div>
             <input
               type="text"
