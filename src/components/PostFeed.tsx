@@ -511,12 +511,6 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2 sm:p-4"
             onClick={() => setLightboxPost(null)}
           >
-            <button
-              onClick={() => setLightboxPost(null)}
-              className="absolute top-3 right-3 text-white/80 hover:text-white text-3xl bg-transparent border-none cursor-pointer z-10"
-            >
-              ✕
-            </button>
             <div
               className="flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
               onClick={(e) => e.stopPropagation()}
