@@ -234,16 +234,21 @@ const Marketplace = () => {
 
           <div className="space-y-3">
             {filtered.map((item) => (
-              <MarketplaceItemCard
+              <div
                 key={item.id}
-                item={item}
-                variant="list"
-                currentUserId={user?.id}
-                onTrackClick={trackClick}
-                onDelete={handleDelete}
-                onMarkSold={handleMarkSold}
-                onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
-              />
+                id={`item-${item.id}`}
+                className={`transition-all duration-500 ${selectedItemId === item.id ? "ring-2 ring-primary rounded-lg" : ""}`}
+              >
+                <MarketplaceItemCard
+                  item={item}
+                  variant="list"
+                  currentUserId={user?.id}
+                  onTrackClick={trackClick}
+                  onDelete={handleDelete}
+                  onMarkSold={handleMarkSold}
+                  onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+                />
+              </div>
             ))}
             {filtered.length === 0 && (
               <p className="text-sm text-muted-foreground">{t("marketplace.no_items")}</p>
