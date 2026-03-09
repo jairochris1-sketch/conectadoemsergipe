@@ -49,7 +49,25 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const [posting, setPosting] = useState(false);
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [deliveryCost, setDeliveryCost] = useState("");
+  const [productCount, setProductCount] = useState(0);
+  const [productLimit, setProductLimit] = useState(10);
+  const [planType, setPlanType] = useState("free");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Fetch current product count and plan
+    const fetchLimits = async () => {
+      const [{ count }, { data: plan }] = await Promise.all([
+        supabase.from("store_products").select("id", { count: "exact", head: true }).eq("store_id", storeId).eq("is_active", true),
+        supabase.from("store_plans").select("plan_type").eq("store_id", storeId).eq("is_active", true).maybeSingle(),
+      ]);
+      const pt = (plan as any)?.plan_type || "free";
+      setPlanType(pt);
+      setProductCount(count || 0);
+      setProductLimit(PLAN_PRODUCT_LIMITS[pt] || 10);
+    };
+    fetchLimits();
+  }, [storeId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
