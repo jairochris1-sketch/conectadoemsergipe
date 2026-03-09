@@ -94,6 +94,10 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
       toast.error("Preencha título e preço");
       return;
     }
+    if (productCount >= productLimit) {
+      toast.error(`Limite de ${productLimit} produtos atingido. Faça upgrade do seu plano para adicionar mais.`);
+      return;
+    }
     setPosting(true);
 
     const uploadedUrls: string[] = [];
