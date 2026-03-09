@@ -11,9 +11,11 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
+import { useFollowedStores } from "@/hooks/useStoreFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
+import { Store, MapPin } from "lucide-react";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
