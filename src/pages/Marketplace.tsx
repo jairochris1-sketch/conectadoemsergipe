@@ -10,6 +10,9 @@ import { useMarketplaceRecommendations } from "@/hooks/useMarketplaceRecommendat
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import MarketplaceForm from "@/components/MarketplaceForm";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import { MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export interface MarketItem {
   id: string;
@@ -46,6 +49,17 @@ const Marketplace = () => {
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const { categoryNamesWithAll } = useMarketplaceCategories();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
+  const [cityFilter, setCityFilter] = useState("");
+  const [nearMe, setNearMe] = useState(false);
+  const [userCity, setUserCity] = useState("");
+
+  // Get user city
+  useEffect(() => {
+    if (user) {
+      supabase.from("profiles").select("city").eq("user_id", user.id).maybeSingle()
+        .then(({ data }) => { if (data?.city) setUserCity(data.city); });
+    }
+  }, [user]);
 
   const loadItems = useCallback(async () => {
     const { data: campaigns } = await supabase
@@ -119,7 +133,20 @@ const Marketplace = () => {
     }
   }, [searchParams, items]);
 
-  const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+  const filtered = items.filter((i) => {
+    const matchCategory = category === "All" || i.category === category;
+    const matchCity = !cityFilter || i.city === cityFilter;
+    return matchCategory && matchCity;
+  });
+
+  const handleNearMe = () => {
+    if (!nearMe && userCity) {
+      setCityFilter(userCity);
+    } else {
+      setCityFilter("");
+    }
+    setNearMe(!nearMe);
+  };
 
   useEffect(() => {
     filtered.slice(0, 10).forEach((item) => {
@@ -187,6 +214,28 @@ const Marketplace = () => {
               onItemPosted={loadItems}
             />
           )}
+
+          {/* City Filter */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {user && userCity && (
+              <Button
+                size="sm"
+                variant={nearMe ? "default" : "outline"}
+                onClick={handleNearMe}
+                className="gap-1.5 text-xs h-8"
+              >
+                <MapPin className="w-3 h-3" /> Perto de mim
+              </Button>
+            )}
+            <select
+              value={cityFilter}
+              onChange={(e) => { setCityFilter(e.target.value); setNearMe(false); }}
+              className="rounded-md border border-input bg-background px-3 py-1 text-xs h-8"
+            >
+              <option value="">Todas as cidades</option>
+              {SERGIPE_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
 
           <div className="flex flex-wrap gap-1.5 mb-4 text-sm">
             {categoryNamesWithAll.map((c) => (

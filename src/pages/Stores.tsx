@@ -6,8 +6,9 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, MapPin, Store } from "lucide-react";
+import { Search, Plus, MapPin, Store, Package, Heart } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
 interface StoreRow {
   id: string;
@@ -19,6 +20,8 @@ interface StoreRow {
   city: string;
   category: string;
   created_at: string;
+  product_count?: number;
+  follower_count?: number;
 }
 
 const Stores = () => {
@@ -27,6 +30,9 @@ const Stores = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [myStore, setMyStore] = useState<StoreRow | null>(null);
+  const [cityFilter, setCityFilter] = useState("");
+  const [nearMe, setNearMe] = useState(false);
+  const [userCity, setUserCity] = useState("");
 
   useEffect(() => {
     fetchStores();
@@ -41,6 +47,16 @@ const Stores = () => {
         .eq("is_active", true)
         .maybeSingle()
         .then(({ data }) => setMyStore(data as StoreRow | null));
+
+      // Get user city
+      supabase
+        .from("profiles")
+        .select("city")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data?.city) setUserCity(data.city);
+        });
     }
   }, [user]);
 
@@ -50,16 +66,53 @@ const Stores = () => {
       .select("*")
       .eq("is_active", true)
       .order("created_at", { ascending: false });
-    setStores((data as StoreRow[]) || []);
+
+    if (!data) { setLoading(false); return; }
+
+    // Fetch product counts and follower counts
+    const storeIds = data.map((s: any) => s.id);
+    const [{ data: productCounts }, { data: followerCounts }] = await Promise.all([
+      supabase.from("store_products").select("store_id").eq("is_active", true).in("store_id", storeIds),
+      supabase.from("store_followers").select("store_id").in("store_id", storeIds),
+    ]);
+
+    const pCountMap = new Map<string, number>();
+    (productCounts || []).forEach((p: any) => {
+      pCountMap.set(p.store_id, (pCountMap.get(p.store_id) || 0) + 1);
+    });
+
+    const fCountMap = new Map<string, number>();
+    (followerCounts || []).forEach((f: any) => {
+      fCountMap.set(f.store_id, (fCountMap.get(f.store_id) || 0) + 1);
+    });
+
+    const enriched = data.map((s: any) => ({
+      ...s,
+      product_count: pCountMap.get(s.id) || 0,
+      follower_count: fCountMap.get(s.id) || 0,
+    }));
+
+    setStores(enriched as StoreRow[]);
     setLoading(false);
   };
 
-  const filtered = stores.filter(
-    (s) =>
+  const handleNearMe = () => {
+    if (!nearMe && userCity) {
+      setCityFilter(userCity);
+    } else {
+      setCityFilter("");
+    }
+    setNearMe(!nearMe);
+  };
+
+  const filtered = stores.filter((s) => {
+    const matchSearch =
       s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.city.toLowerCase().includes(search.toLowerCase()) ||
-      s.category.toLowerCase().includes(search.toLowerCase())
-  );
+      s.city?.toLowerCase().includes(search.toLowerCase()) ||
+      s.category?.toLowerCase().includes(search.toLowerCase());
+    const matchCity = !cityFilter || s.city === cityFilter;
+    return matchSearch && matchCity;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,22 +146,44 @@ const Stores = () => {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar lojas por nome, cidade ou categoria..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
+        {/* Search + Filters */}
+        <div className="space-y-3 mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar lojas por nome, cidade ou categoria..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {user && userCity && (
+              <Button
+                size="sm"
+                variant={nearMe ? "default" : "outline"}
+                onClick={handleNearMe}
+                className="gap-1.5 text-xs"
+              >
+                <MapPin className="w-3 h-3" /> Perto de mim
+              </Button>
+            )}
+            <select
+              value={cityFilter}
+              onChange={(e) => { setCityFilter(e.target.value); setNearMe(false); }}
+              className="rounded-md border border-input bg-background px-3 py-1.5 text-xs h-9"
+            >
+              <option value="">Todas as cidades</option>
+              {SERGIPE_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
         </div>
 
         {/* Grid */}
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-card rounded-xl border border-border animate-pulse h-52" />
+              <div key={i} className="bg-card rounded-xl border border-border animate-pulse h-64" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
@@ -150,6 +225,14 @@ const Stores = () => {
                       <MapPin className="w-3 h-3" /> {store.city}
                     </p>
                   )}
+                  <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                    <span className="flex items-center gap-0.5">
+                      <Package className="w-3 h-3" /> {store.product_count || 0} produtos
+                    </span>
+                    <span className="flex items-center gap-0.5">
+                      <Heart className="w-3 h-3" /> {store.follower_count || 0}
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}

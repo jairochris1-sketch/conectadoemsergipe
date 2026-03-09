@@ -7,7 +7,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check } from "lucide-react";
+import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check, Sparkles } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import StoreProductForm from "@/components/StoreProductForm";
@@ -34,6 +34,7 @@ interface ProductRow {
   category: string;
   is_active: boolean;
   created_at: string;
+  is_boosted?: boolean;
 }
 
 const STORE_CATEGORIES = [
@@ -83,6 +84,9 @@ const MyStore = () => {
   const [epCity, setEpCity] = useState("");
   const [epCategory, setEpCategory] = useState("Geral");
   const [epSaving, setEpSaving] = useState(false);
+  const [boostingProduct, setBoostingProduct] = useState<string | null>(null);
+  const [boostDays, setBoostDays] = useState("7");
+  const [boostedIds, setBoostedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (user) fetchMyStore();
@@ -99,14 +103,30 @@ const MyStore = () => {
       .eq("is_active", true)
       .maybeSingle();
 
-    if (data) {
+  if (data) {
       setStore(data as unknown as StoreRow);
       const { data: prods } = await supabase
         .from("store_products")
         .select("*")
         .eq("store_id", data.id)
         .order("created_at", { ascending: false });
-      setProducts((prods as unknown as ProductRow[]) || []);
+      
+      const prodList = (prods as unknown as ProductRow[]) || [];
+      
+      // Check boosted status
+      const prodIds = prodList.map(p => p.id);
+      if (prodIds.length > 0) {
+        const { data: campaigns } = await supabase
+          .from("sponsored_campaigns")
+          .select("item_id")
+          .eq("status", "active")
+          .in("item_id", prodIds);
+        const boostedSet = new Set((campaigns || []).map((c: any) => c.item_id));
+        setBoostedIds(boostedSet);
+        prodList.forEach(p => { p.is_boosted = boostedSet.has(p.id); });
+      }
+      
+      setProducts(prodList);
     }
     setLoading(false);
   };
@@ -173,6 +193,48 @@ const MyStore = () => {
   const toggleProduct = async (productId: string, currentActive: boolean) => {
     await supabase.from("store_products").update({ is_active: !currentActive } as any).eq("id", productId);
     toast.success(currentActive ? "Produto desativado" : "Produto ativado");
+    fetchMyStore();
+  };
+
+  const boostProduct = async (productId: string) => {
+    if (!user) return;
+    // Check ad credits balance
+    const { data: credits } = await supabase
+      .from("ad_credits")
+      .select("balance")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    
+    const balance = credits?.balance || 0;
+    const cost = parseInt(boostDays) === 3 ? 5 : parseInt(boostDays) === 7 ? 10 : 20;
+    
+    if (balance < cost) {
+      toast.error(`Créditos insuficientes. Necessário: ${cost}, Disponível: ${balance}`);
+      setBoostingProduct(null);
+      return;
+    }
+    
+    const endsAt = new Date();
+    endsAt.setDate(endsAt.getDate() + parseInt(boostDays));
+    
+    const { error: campaignError } = await supabase.from("sponsored_campaigns").insert({
+      user_id: user.id,
+      item_id: productId,
+      budget: cost,
+      ends_at: endsAt.toISOString(),
+      status: "active",
+    } as any);
+    
+    if (campaignError) {
+      toast.error("Erro ao impulsionar produto");
+      return;
+    }
+    
+    // Deduct credits
+    await supabase.from("ad_credits").update({ balance: balance - cost } as any).eq("user_id", user.id);
+    
+    toast.success(`Produto impulsionado por ${boostDays} dias!`);
+    setBoostingProduct(null);
     fetchMyStore();
   };
 
@@ -420,10 +482,64 @@ const MyStore = () => {
                         <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => toggleProduct(p.id, p.is_active)}>
                           {p.is_active ? "Desativar" : "Ativar"}
                         </Button>
+                        {!boostedIds.has(p.id) && p.is_active && (
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="text-xs h-7 gap-1 text-amber-600 hover:text-amber-700" 
+                            onClick={() => setBoostingProduct(p.id)}
+                          >
+                            <Sparkles className="w-3 h-3" /> Impulsionar
+                          </Button>
+                        )}
+                        {boostedIds.has(p.id) && (
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded-full flex items-center gap-1 font-medium">
+                            <Sparkles className="w-3 h-3" /> Impulsionado
+                          </span>
+                        )}
                         <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive gap-1" onClick={() => deleteProduct(p.id)}>
                           <Trash2 className="w-3 h-3" /> Excluir
                         </Button>
                       </div>
+                      
+                      {/* Boost modal */}
+                      {boostingProduct === p.id && (
+                        <div className="mt-3 p-3 bg-accent/50 rounded-lg border border-border">
+                          <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
+                            <Sparkles className="w-4 h-4 text-amber-500" /> Impulsionar Produto
+                          </h4>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Produtos impulsionados aparecem em destaque no marketplace e no feed.
+                          </p>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {[
+                              { days: "3", cost: 5, label: "3 dias" },
+                              { days: "7", cost: 10, label: "7 dias" },
+                              { days: "15", cost: 20, label: "15 dias" },
+                            ].map(opt => (
+                              <button
+                                key={opt.days}
+                                onClick={() => setBoostDays(opt.days)}
+                                className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+                                  boostDays === opt.days 
+                                    ? "bg-amber-500 text-white border-amber-500" 
+                                    : "border-border hover:bg-accent"
+                                }`}
+                              >
+                                {opt.label} ({opt.cost} créditos)
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => boostProduct(p.id)} className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white">
+                              <Sparkles className="w-3 h-3" /> Confirmar
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setBoostingProduct(null)}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
