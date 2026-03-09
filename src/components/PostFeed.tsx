@@ -512,9 +512,16 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             onClick={() => setLightboxPost(null)}
           >
             <div
-              className="flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
+              className="relative flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Close button inside modal */}
+              <button
+                onClick={() => setLightboxPost(null)}
+                className="absolute top-2 right-2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 text-2xl border-none cursor-pointer transition-colors"
+              >
+                ✕
+              </button>
               {/* Image - top on mobile, left on desktop */}
               <div className="h-[40vh] lg:h-full lg:flex-1 bg-black flex items-center justify-center min-w-0 shrink-0">
                 <img
