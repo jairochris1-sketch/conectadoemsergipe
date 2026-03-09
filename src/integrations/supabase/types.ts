@@ -635,6 +635,66 @@ export type Database = {
         }
         Relationships: []
       }
+      user_settings: {
+        Row: {
+          allow_messages_from: string
+          compact_mode: boolean
+          created_at: string
+          email_notifications: boolean
+          friend_request_notifications: boolean
+          id: string
+          language: string
+          marketplace_notifications: boolean
+          message_notifications: boolean
+          profile_visibility: string
+          push_notifications: boolean
+          show_last_seen: boolean
+          show_online_status: boolean
+          sound_enabled: boolean
+          theme: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allow_messages_from?: string
+          compact_mode?: boolean
+          created_at?: string
+          email_notifications?: boolean
+          friend_request_notifications?: boolean
+          id?: string
+          language?: string
+          marketplace_notifications?: boolean
+          message_notifications?: boolean
+          profile_visibility?: string
+          push_notifications?: boolean
+          show_last_seen?: boolean
+          show_online_status?: boolean
+          sound_enabled?: boolean
+          theme?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allow_messages_from?: string
+          compact_mode?: boolean
+          created_at?: string
+          email_notifications?: boolean
+          friend_request_notifications?: boolean
+          id?: string
+          language?: string
+          marketplace_notifications?: boolean
+          message_notifications?: boolean
+          profile_visibility?: string
+          push_notifications?: boolean
+          show_last_seen?: boolean
+          show_online_status?: boolean
+          sound_enabled?: boolean
+          theme?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
