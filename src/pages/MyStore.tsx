@@ -84,6 +84,9 @@ const MyStore = () => {
   const [epCity, setEpCity] = useState("");
   const [epCategory, setEpCategory] = useState("Geral");
   const [epSaving, setEpSaving] = useState(false);
+  const [boostingProduct, setBoostingProduct] = useState<string | null>(null);
+  const [boostDays, setBoostDays] = useState("7");
+  const [boostedIds, setBoostedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (user) fetchMyStore();
