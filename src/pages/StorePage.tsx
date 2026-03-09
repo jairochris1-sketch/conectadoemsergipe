@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Store, MapPin, MessageCircle, Plus, Trash2, Package } from "lucide-react";
+import { Store, MapPin, MessageCircle, Plus, Trash2, Package, Sparkles } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import StoreProductForm from "@/components/StoreProductForm";
+import FollowStoreButton from "@/components/FollowStoreButton";
 
 interface StoreRow {
   id: string;
@@ -32,17 +33,17 @@ interface ProductRow {
   city: string;
   is_active: boolean;
   created_at: string;
+  is_boosted?: boolean;
 }
-
 
 const StorePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [store, setStore] = useState<StoreRow | null>(null);
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-
 
   const isOwner = user && store && user.id === store.user_id;
 
@@ -64,16 +65,41 @@ const StorePage = () => {
     }
     setStore(storeData as unknown as StoreRow);
 
+    // Fetch products + check boosted status
     const { data: prods } = await supabase
       .from("store_products")
       .select("*")
       .eq("store_id", storeData.id)
       .eq("is_active", true)
       .order("created_at", { ascending: false });
-    setProducts((prods as unknown as ProductRow[]) || []);
+
+    const prodList = (prods as unknown as ProductRow[]) || [];
+
+    // Check sponsored campaigns for these products
+    const prodIds = prodList.map((p) => p.id);
+    if (prodIds.length > 0) {
+      const { data: campaigns } = await supabase
+        .from("sponsored_campaigns")
+        .select("item_id")
+        .eq("status", "active")
+        .in("item_id", prodIds);
+
+      const boostedSet = new Set((campaigns || []).map((c: any) => c.item_id));
+      prodList.forEach((p) => {
+        p.is_boosted = boostedSet.has(p.id);
+      });
+
+      // Sort boosted first
+      prodList.sort((a, b) => {
+        if (a.is_boosted && !b.is_boosted) return -1;
+        if (!a.is_boosted && b.is_boosted) return 1;
+        return 0;
+      });
+    }
+
+    setProducts(prodList);
     setLoading(false);
   };
-
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm("Excluir este produto?")) return;
@@ -142,6 +168,12 @@ const StorePage = () => {
               {store.description && (
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{store.description}</p>
               )}
+              {/* Follow button */}
+              {!isOwner && (
+                <div className="mt-3">
+                  <FollowStoreButton storeId={store.id} />
+                </div>
+              )}
             </div>
             <div className="flex gap-2 shrink-0">
               {!isOwner && (
@@ -185,8 +217,13 @@ const StorePage = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {products.map((product) => (
-              <Link key={product.id} to={`/produto/${product.id}`} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200 no-underline">
-                <div className="aspect-square bg-muted relative overflow-hidden">
+              <Link key={product.id} to={`/produto/${product.id}`} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200 no-underline relative">
+                {product.is_boosted && (
+                  <div className="absolute top-2 right-2 z-10 bg-amber-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                    <Sparkles className="w-2.5 h-2.5" /> Impulsionado
+                  </div>
+                )}
+                <div className={`aspect-square bg-muted relative overflow-hidden ${product.is_boosted ? "ring-2 ring-amber-400/50" : ""}`}>
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   ) : (
@@ -197,7 +234,7 @@ const StorePage = () => {
                   {isOwner && (
                     <button
                       onClick={(e) => { e.preventDefault(); handleDeleteProduct(product.id); }}
-                      className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 left-2 bg-destructive text-destructive-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
