@@ -234,7 +234,16 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
             onClick={(e) => { e.stopPropagation(); setPreviewImage(msg.image_url!); }}
           />
         )}
-        {msg.content && msg.content !== "📷 Imagem" && (
+        {msg.audio_url && (
+          <audio
+            controls
+            src={msg.audio_url}
+            className="max-w-full h-8 mb-1"
+            style={{ minWidth: "180px" }}
+            preload="metadata"
+          />
+        )}
+        {msg.content && msg.content !== "📷 Imagem" && msg.content !== "🎤 Áudio" && (
           <p className="break-words">{msg.content}</p>
         )}
         <p className={`text-[9px] mt-0.5 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
