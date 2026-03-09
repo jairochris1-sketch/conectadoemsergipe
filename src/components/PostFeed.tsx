@@ -43,7 +43,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const { language, t } = useLanguage();
-  const { posts, createPost, deleteOwnPost, updatePost, getComments, addComment, refreshPosts } = useSocial();
+  const { posts, createPost, deleteOwnPost, updatePost, getComments, addComment, deleteComment, toggleReaction, getReactionCount, hasReacted, refreshPosts } = useSocial();
   const { user } = useAuth();
   const { isAdmin, deletePost } = useAdmin();
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
