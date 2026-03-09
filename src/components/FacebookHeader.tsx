@@ -243,7 +243,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                 {isMobile && location.pathname !== "/" && (
                   <button
                     onClick={() => navigate(-1)}
-                    className="bg-transparent border-none cursor-pointer text-primary-foreground p-0.5 flex items-center shrink-0"
+                    className="bg-transparent border-none cursor-pointer text-white p-0.5 flex items-center shrink-0"
                     aria-label="Voltar"
                   >
                     <ArrowLeft className="w-5 h-5" />
