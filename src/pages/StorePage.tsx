@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, MapPin, MessageCircle, Plus, Trash2, Camera, Package } from "lucide-react";
+import { Store, MapPin, MessageCircle, Plus, Trash2, Package } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
-import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import StoreProductForm from "@/components/StoreProductForm";
 
 interface StoreRow {
   id: string;
