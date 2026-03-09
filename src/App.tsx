@@ -85,6 +85,8 @@ const App = () => {
                   <Route path="/stores" element={<Stores />} />
                   <Route path="/stores/create" element={<CreateStore />} />
                   <Route path="/store/:slug" element={<StorePage />} />
+                  <Route path="/produto/:id" element={<ProductPage />} />
+                  <Route path="/minha-loja" element={<MyStore />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
