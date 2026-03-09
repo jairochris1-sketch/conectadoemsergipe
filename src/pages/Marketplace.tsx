@@ -134,7 +134,20 @@ const Marketplace = () => {
     }
   }, [searchParams, items]);
 
-  const filtered = category === "All" ? items : items.filter((i) => i.category === category);
+  const filtered = items.filter((i) => {
+    const matchCategory = category === "All" || i.category === category;
+    const matchCity = !cityFilter || i.city === cityFilter;
+    return matchCategory && matchCity;
+  });
+
+  const handleNearMe = () => {
+    if (!nearMe && userCity) {
+      setCityFilter(userCity);
+    } else {
+      setCityFilter("");
+    }
+    setNearMe(!nearMe);
+  };
 
   useEffect(() => {
     filtered.slice(0, 10).forEach((item) => {
