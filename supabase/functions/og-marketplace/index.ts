@@ -12,11 +12,15 @@ const DEFAULT_IMAGE = "https://storage.googleapis.com/gpt-engineer-file-uploads/
 const formatPrice = (price: string): string => {
   const num = parseFloat(price);
   if (isNaN(num)) return price;
-  return num.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  return `R$ ${num.toFixed(2).replace(".", ",")}`;
 };
 
 const escapeHtml = (str: string): string =>
-  str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
