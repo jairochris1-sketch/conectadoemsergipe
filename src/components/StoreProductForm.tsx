@@ -98,6 +98,8 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
       images: uploadedUrls,
       city: city || storeCity,
       category,
+      delivery_options: deliveryOptions,
+      delivery_cost: deliveryCost,
     } as any);
 
     if (error) {
