@@ -215,7 +215,12 @@ const Stores = () => {
               <Link
                 key={store.id}
                 to={`/store/${store.slug}`}
-                className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-all duration-200 no-underline"
+                className={`group bg-card rounded-xl border overflow-hidden hover:shadow-lg transition-all duration-200 no-underline ${
+                  store.plan_type === "ouro" ? "border-yellow-400 ring-1 ring-yellow-400/30" :
+                  store.plan_type === "prata" ? "border-slate-400 ring-1 ring-slate-400/20" :
+                  store.plan_type === "bronze" ? "border-amber-600/40" :
+                  "border-border"
+                }`}
               >
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {store.photo_url ? (
