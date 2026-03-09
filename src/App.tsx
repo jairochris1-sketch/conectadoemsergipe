@@ -24,6 +24,7 @@ import SitePage from "./pages/SitePage";
 import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
 import FriendsPage from "./pages/Friends";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
