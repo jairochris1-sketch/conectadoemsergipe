@@ -28,30 +28,9 @@ export interface MarketItem {
   condition?: string;
 }
 
-const CATEGORIES = [
-  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
-  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
-  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
-];
-
+// Legacy CATEGORY_KEYS kept for backward compat with MarketplaceItemCard display
 export const CATEGORY_KEYS: Record<string, string> = {
   "All": "marketplace.all",
-  "Móveis": "marketplace.moveis",
-  "Imóveis": "marketplace.imoveis",
-  "Celulares": "marketplace.celulares",
-  "Carros": "marketplace.carros",
-  "Motos": "marketplace.motos",
-  "Bicicletas": "marketplace.bicicletas",
-  "Som": "marketplace.som",
-  "Roupas": "marketplace.clothing",
-  "Bolos/Doces": "marketplace.bolos_doces",
-  "Mudas Frutíferas": "marketplace.mudas",
-  "Sofá/Mesa/Cadeiras": "marketplace.sofa_mesa",
-  "Fogão": "marketplace.fogao",
-  "Geladeira": "marketplace.geladeira",
-  "Guarda-Roupa": "marketplace.guarda_roupa",
-  "Eletrônicos": "marketplace.electronics",
-  "Livros": "marketplace.books",
   "Outros": "marketplace.other",
 };
 
