@@ -6,15 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import MarketplaceForm from "@/components/MarketplaceForm";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import type { MarketItem } from "@/pages/Marketplace";
-import { CATEGORY_KEYS } from "@/pages/Marketplace";
+import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 
 const ITEMS_TO_SHOW = 8;
-
-const CATEGORIES = [
-  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
-  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
-  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
-];
 
 const HomepageMarketplace = () => {
   const { user } = useAuth();
