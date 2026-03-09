@@ -155,7 +155,7 @@ const StorePage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <FacebookHeader />
+        <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
         <div className="max-w-6xl mx-auto px-4 py-6 pt-20">
           <div className="animate-pulse space-y-4">
             <div className="h-48 bg-muted rounded-xl" />
