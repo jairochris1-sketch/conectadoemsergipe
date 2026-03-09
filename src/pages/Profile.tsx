@@ -26,12 +26,24 @@ const Profile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
   const { getFriends } = useSocial();
+  const [hasStore, setHasStore] = useState<boolean | null>(null);
+  const [storeSlug, setStoreSlug] = useState("");
 
-  if (!user) return <Navigate to="/login" />;
-
-  const friends = getFriends();
+  const friends = user ? getFriends() : [];
   const { followerCount } = useFollowers(user?.id);
   const badge = useVerificationBadge(user?.id);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from("stores").select("slug").eq("user_id", user.id).eq("is_active", true).maybeSingle()
+        .then(({ data }) => {
+          setHasStore(!!data);
+          if (data) setStoreSlug((data as any).slug);
+        });
+    }
+  }, [user]);
+
+  if (!user) return <Navigate to="/login" />;
 
   const startEditing = () => {
     setEditName(user.name);
