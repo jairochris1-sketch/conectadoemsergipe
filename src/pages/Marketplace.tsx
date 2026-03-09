@@ -118,6 +118,17 @@ const Marketplace = () => {
 
   useEffect(() => { loadItems(); }, [loadItems]);
 
+  // Check for item parameter in URL to auto-open product modal
+  useEffect(() => {
+    const itemId = searchParams.get("item");
+    if (itemId && items.length > 0) {
+      const exists = items.find(i => i.id === itemId);
+      if (exists) {
+        setSelectedItemId(itemId);
+      }
+    }
+  }, [searchParams, items]);
+
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
   useEffect(() => {
