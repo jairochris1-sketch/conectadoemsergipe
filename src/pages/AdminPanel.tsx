@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
 import AdminCategoryManager from "@/components/AdminCategoryManager";
+import AdminServiceManager from "@/components/AdminServiceManager";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
 import AdminBadgeManager from "@/components/AdminBadgeManager";
 import AdminModeratorManager from "@/components/AdminModeratorManager";
