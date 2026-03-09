@@ -52,6 +52,11 @@ interface SocialContextType {
   searchProfiles: (query: string) => Promise<{ id: string; name: string; school: string; photo: string }[]>;
   getComments: (postId: string) => Promise<Comment[]>;
   addComment: (postId: string, content: string) => Promise<void>;
+  deleteComment: (commentId: string, postId: string) => Promise<void>;
+  toggleReaction: (postId: string) => Promise<void>;
+  getReactionCount: (postId: string) => number;
+  hasReacted: (postId: string) => boolean;
+  refreshReactions: () => Promise<void>;
 }
 
 const SocialContext = createContext<SocialContextType | null>(null);
