@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Crown, Star, Shield, Check, Loader2 } from "lucide-react";
+import { validateCPFOrCNPJ } from "@/lib/cpfCnpjValidator";
 
 const PLANS = [
   {
