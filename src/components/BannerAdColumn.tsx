@@ -26,6 +26,7 @@ const BannerAdColumn = ({ position }: BannerAdColumnProps) => {
       .lte("starts_at", now)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
+        // Client-side filter for ends_at (nullable = no expiry)
         const active = (data || []).filter(
           (b: any) => !b.ends_at || new Date(b.ends_at) > new Date()
         );
@@ -48,45 +49,44 @@ const BannerAdColumn = ({ position }: BannerAdColumnProps) => {
 
   if (banners.length === 0) {
     return (
-      <div className="fb-box">
-        <div className="fb-box-header">Sponsored</div>
-        <div className="p-2 text-center text-[10px] text-muted-foreground" style={{ minHeight: '200px' }}>
-          <p className="mt-10">Anúncio</p>
-        </div>
+      <div className="ad-column space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="ad-block bg-card border border-border p-2 text-center text-[10px] text-muted-foreground h-[250px] flex items-center justify-center"
+          >
+            Anúncio
+          </div>
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-0">
-      <div className="fb-box">
-        <div className="fb-box-header">Sponsored</div>
-        <div className="p-1.5 space-y-1.5">
-          {banners.map((banner) => (
-            <div key={banner.id}>
-              <a
-                href={banner.link_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => handleClick(banner.id)}
-                className="block border border-border overflow-hidden hover:opacity-90 transition-opacity"
-              >
-                <img
-                  src={banner.image_url}
-                  alt={banner.title || "Anúncio"}
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-              </a>
-              {banner.title && (
-                <p className="text-[9px] text-muted-foreground mt-[2px] truncate">
-                  {banner.title}
-                </p>
-              )}
-            </div>
-          ))}
+    <div className="ad-column space-y-3">
+      {banners.map((banner) => (
+        <div key={banner.id} className="ad-block">
+          <a
+            href={banner.link_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => handleClick(banner.id)}
+            className="ad-link block border border-border overflow-hidden hover:opacity-90 transition-opacity"
+          >
+            <img
+              src={banner.image_url}
+              alt={banner.title || "Anúncio"}
+              className="ad-image w-full h-auto object-cover"
+              loading="lazy"
+            />
+          </a>
+          {banner.title && (
+            <p className="text-[9px] text-muted-foreground mt-[2px] text-center truncate">
+              {banner.title}
+            </p>
+          )}
         </div>
-      </div>
+      ))}
     </div>
   );
 };

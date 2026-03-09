@@ -26,21 +26,21 @@ const FacebookFooter = () => {
   }, []);
 
   return (
-    <div className="max-w-[980px] mx-auto text-center text-[10px] text-muted-foreground py-3 border-t border-border mt-2">
+    <div className="text-center text-xs text-muted-foreground py-6 border-t border-border mt-4">
       {onlineCount !== null && (
-        <p className="mb-1 flex items-center justify-center gap-1">
-          <span className="inline-block w-[6px] h-[6px] rounded-full bg-green-500" />
+        <p className="mb-1.5 flex items-center justify-center gap-1.5">
+          <span className="inline-block w-[8px] h-[8px] rounded-full bg-green-500" style={{ boxShadow: "0 0 3px rgba(34,197,94,0.6)" }} />
           {onlineCount} {onlineCount === 1 ? "usuário online" : "usuários online"}
         </p>
       )}
-      <p>
-        <Link to="/sobre" className="hover:underline">{t("footer.about")}</Link> ·{" "}
-        <Link to="/page/contact" className="hover:underline">{t("footer.contact")}</Link> ·{" "}
-        <Link to="/page/privacy" className="hover:underline">{t("footer.privacy")}</Link> ·{" "}
-        <Link to="/page/terms" className="hover:underline">{t("footer.terms")}</Link>
+      <p>{t("footer.production")}</p>
+      <p className="mt-1.5">
+        <Link to="/sobre" className="text-primary hover:underline">{t("footer.about")}</Link> ·{" "}
+        <Link to="/page/contact" className="text-primary hover:underline">{t("footer.contact")}</Link> ·{" "}
+        <Link to="/page/privacy" className="text-primary hover:underline">{t("footer.privacy")}</Link> ·{" "}
+        <Link to="/page/terms" className="text-primary hover:underline">{t("footer.terms")}</Link>
       </p>
-      <p className="mt-1">{t("footer.production")}</p>
-      <p>conectadoemsergipe © 2026</p>
+      <p className="mt-1.5">conectadoemsergipe © 2026</p>
     </div>
   );
 };

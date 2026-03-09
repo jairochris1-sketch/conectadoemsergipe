@@ -143,42 +143,40 @@ const SellerDashboard = () => {
       <SEOHead title="Painel do Vendedor" description="Gerencie suas campanhas e anúncios no marketplace do Conectados em Sergipe." path="/seller-dashboard" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
       <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="fb-box">
+        <div className="bg-card border border-border p-3">
           {/* Header */}
-          <div className="fb-box-header flex items-center justify-between">
-            <span style={{ fontFamily: 'Georgia, serif', fontSize: '13px', fontWeight: 'bold' }}>
+          <div className="flex items-center justify-between border-b border-border pb-2 mb-3">
+            <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
               📢 {t("ads.title")}
-            </span>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] bg-[#fff9d7] border border-[#e2c822] px-2 py-[2px] text-black">
+            </h2>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] bg-accent border border-border px-2 py-[2px]">
                 💰 {t("ads.credits")}: <b>{credits}</b>
               </span>
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="bg-[#3b5998] text-white border border-[#29447e] px-2 py-[2px] text-[11px] font-bold cursor-pointer hover:bg-[#2d4373]"
+                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
               >
-                {showForm ? t("marketplace.cancel") : "+ " + t("ads.new_campaign")}
+                {showForm ? t("marketplace.cancel") : t("ads.new_campaign")}
               </button>
             </div>
           </div>
 
-          <div className="p-2">
-
           {/* Create campaign form */}
           {showForm && (
-            <div className="border border-[#d8dfea] p-2 bg-[#f2f2f2] mb-3 text-[11px] space-y-2">
-              <h3 className="font-bold text-[#3b5998] text-[12px] pb-1 border-b border-[#d8dfea] mb-2">{t("ads.create_campaign")}</h3>
+            <div className="border border-border p-3 bg-accent mb-3 text-[11px] space-y-2">
+              <h3 className="font-bold text-[12px]">{t("ads.create_campaign")}</h3>
 
               {myItems.length === 0 ? (
-                <p className="text-[#808080]">{t("ads.no_items")}</p>
+                <p className="text-muted-foreground">{t("ads.no_items")}</p>
               ) : (
                 <>
                   <div>
-                    <label className="block font-bold mb-1 text-[#333]">{t("ads.select_product")}</label>
+                    <label className="block font-bold mb-1">{t("ads.select_product")}</label>
                     <select
                       value={newCampaign.item_id}
                       onChange={(e) => setNewCampaign({ ...newCampaign, item_id: e.target.value })}
-                      className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
+                      className="w-full border border-border p-1 text-[11px] bg-card"
                     >
                       <option value="">{t("ads.choose_item")}</option>
                       {myItems.map((item) => (
@@ -189,16 +187,16 @@ const SellerDashboard = () => {
 
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block font-bold mb-1 text-[#333]">{t("ads.budget")} ({t("ads.credits")})</label>
+                      <label className="block font-bold mb-1">{t("ads.budget")} ({t("ads.credits")})</label>
                       <input
                         type="number"
                         min={1}
                         max={credits}
                         value={newCampaign.budget}
                         onChange={(e) => setNewCampaign({ ...newCampaign, budget: parseInt(e.target.value) || 0 })}
-                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
+                        className="w-full border border-border p-1 text-[11px] bg-card"
                       />
-                      <p className="text-[9px] text-[#808080] mt-1">
+                      <p className="text-[9px] text-muted-foreground mt-1">
                         {t("ads.available")}: {credits} {t("ads.credits")}
                       </p>
                     </div>
@@ -206,21 +204,21 @@ const SellerDashboard = () => {
 
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block font-bold mb-1 text-[#333]">{t("ads.target_city")}</label>
+                      <label className="block font-bold mb-1">{t("ads.target_city")}</label>
                       <input
                         type="text"
                         value={newCampaign.target_city}
                         onChange={(e) => setNewCampaign({ ...newCampaign, target_city: e.target.value })}
-                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
+                        className="w-full border border-border p-1 text-[11px] bg-card"
                         placeholder={t("ads.all_cities")}
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block font-bold mb-1 text-[#333]">{t("ads.target_category")}</label>
+                      <label className="block font-bold mb-1">{t("ads.target_category")}</label>
                       <select
                         value={newCampaign.target_category}
                         onChange={(e) => setNewCampaign({ ...newCampaign, target_category: e.target.value })}
-                        className="w-full border border-[#bdc7d8] p-1 text-[11px] bg-white text-black focus:border-[#3b5998] outline-none"
+                        className="w-full border border-border p-1 text-[11px] bg-card"
                       >
                         <option value="">{t("ads.all_categories")}</option>
                         {CATEGORIES.map((c) => (
@@ -230,15 +228,13 @@ const SellerDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="pt-2">
-                    <button
-                      onClick={handleCreate}
-                      disabled={creating || !newCampaign.item_id || newCampaign.budget < 1 || newCampaign.budget > credits}
-                      className="bg-[#3b5998] text-white border border-[#29447e] px-3 py-1 text-[11px] font-bold cursor-pointer hover:bg-[#2d4373] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {creating ? "..." : t("ads.launch")}
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleCreate}
+                    disabled={creating || !newCampaign.item_id || newCampaign.budget < 1 || newCampaign.budget > credits}
+                    className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 disabled:opacity-50"
+                  >
+                    {creating ? "..." : t("ads.launch")}
+                  </button>
                 </>
               )}
             </div>
@@ -250,52 +246,52 @@ const SellerDashboard = () => {
               <p className="text-[11px] text-muted-foreground">{t("ads.no_campaigns")}</p>
             ) : (
               campaigns.map((camp) => (
-                <div key={camp.id} className="border-b border-[#d8dfea] pb-2 mb-2 text-[11px] last:border-0 last:pb-0 last:mb-0">
+                <div key={camp.id} className="border border-border p-2 text-[11px]">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-[#3b5998]">{camp.item_title}</span>
-                    <span className={`text-[9px] px-2 py-[1px] border font-bold ${
+                    <span className="font-bold">{camp.item_title}</span>
+                    <span className={`text-[9px] px-2 py-[1px] border ${
                       camp.status === "active"
-                        ? "border-[#20b2aa] text-[#127a75] bg-[#e6f7f6]"
+                        ? "border-green-500 text-green-700 bg-green-50"
                         : camp.status === "paused"
-                        ? "border-[#e2c822] text-[#8a7a15] bg-[#fff9d7]"
-                        : "border-[#ccc] text-[#808080] bg-[#f2f2f2]"
+                        ? "border-yellow-500 text-yellow-700 bg-yellow-50"
+                        : "border-border text-muted-foreground"
                     }`}>
                       {camp.status === "active" ? t("ads.active") : camp.status === "paused" ? t("ads.paused") : t("ads.ended")}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-4 gap-2 my-2 text-center">
-                    <div className="bg-[#f9f9f9] border border-[#e5e5e5] p-1">
-                      <p className="text-[9px] text-[#808080]">{t("ads.impressions")}</p>
-                      <p className="font-bold text-[12px]">{camp.impressions}</p>
+                    <div className="bg-accent border border-border p-1">
+                      <p className="text-[9px] text-muted-foreground">{t("ads.impressions")}</p>
+                      <p className="font-bold text-[13px]">{camp.impressions}</p>
                     </div>
-                    <div className="bg-[#f9f9f9] border border-[#e5e5e5] p-1">
-                      <p className="text-[9px] text-[#808080]">{t("ads.clicks")}</p>
-                      <p className="font-bold text-[12px]">{camp.clicks}</p>
+                    <div className="bg-accent border border-border p-1">
+                      <p className="text-[9px] text-muted-foreground">{t("ads.clicks")}</p>
+                      <p className="font-bold text-[13px]">{camp.clicks}</p>
                     </div>
-                    <div className="bg-[#f9f9f9] border border-[#e5e5e5] p-1">
-                      <p className="text-[9px] text-[#808080]">CTR</p>
-                      <p className="font-bold text-[12px]">{ctr(camp)}%</p>
+                    <div className="bg-accent border border-border p-1">
+                      <p className="text-[9px] text-muted-foreground">CTR</p>
+                      <p className="font-bold text-[13px]">{ctr(camp)}%</p>
                     </div>
-                    <div className="bg-[#f9f9f9] border border-[#e5e5e5] p-1">
-                      <p className="text-[9px] text-[#808080]">{t("ads.spent_budget")}</p>
-                      <p className="font-bold text-[12px] text-[#3b5998]">{camp.spent}/{camp.budget}</p>
+                    <div className="bg-accent border border-border p-1">
+                      <p className="text-[9px] text-muted-foreground">{t("ads.spent_budget")}</p>
+                      <p className="font-bold text-[13px]">{camp.spent}/{camp.budget}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-[10px] text-[#808080]">
+                  <div className="flex items-center justify-between text-[9px] text-muted-foreground">
                     <span>
                       {camp.target_city ? `📍 ${camp.target_city}` : t("ads.all_cities")}
                       {camp.target_category ? ` · ${camp.target_category}` : ""}
                     </span>
                     <div className="flex gap-1">
                       {camp.status === "active" && (
-                        <button onClick={() => pauseCampaign(camp.id)} className="border border-[#ccc] px-2 py-[2px] bg-[#f2f2f2] cursor-pointer text-[10px] text-black hover:bg-[#e6e6e6]">
+                        <button onClick={() => pauseCampaign(camp.id)} className="border border-border px-2 py-[1px] bg-muted cursor-pointer text-[9px] hover:bg-accent">
                           ⏸ {t("ads.pause")}
                         </button>
                       )}
                       {camp.status === "paused" && (
-                        <button onClick={() => resumeCampaign(camp.id)} className="border border-[#ccc] px-2 py-[2px] bg-[#f2f2f2] cursor-pointer text-[10px] text-black hover:bg-[#e6e6e6]">
+                        <button onClick={() => resumeCampaign(camp.id)} className="border border-border px-2 py-[1px] bg-muted cursor-pointer text-[9px] hover:bg-accent">
                           ▶ {t("ads.resume")}
                         </button>
                       )}
@@ -304,7 +300,6 @@ const SellerDashboard = () => {
                 </div>
               ))
             )}
-            </div>
           </div>
         </div>
       </div>

@@ -20,10 +20,10 @@ const Index = () => {
       <SEOHead title="Conectados em Sergipe" description="Rede social que conecta pessoas em Sergipe. Faça amigos, compartilhe momentos e descubra o marketplace local." path="/" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
-      <div className="max-w-[980px] mx-auto flex gap-0 px-0 py-2">
-        {/* Left column — Profile + Nav */}
-        <div className="hidden md:block w-[180px] shrink-0 px-1">
-          <div className="sticky top-[55px]">
+      <div className="w-full flex justify-center gap-3 px-2 py-3">
+        {/* Left column: Profile + Ads */}
+        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
+          <div className="sticky top-3 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -33,28 +33,29 @@ const Index = () => {
               birthdate={user?.birthdate}
               createdAt={user?.createdAt}
             />
+            <BannerAdColumn position="left" />
             <MarketplaceHighlights />
           </div>
         </div>
 
         {/* Center: Feed */}
-        <div className="flex-1 min-w-0 px-1">
+        <div className="flex-1 min-w-0 max-w-[600px]">
           {!user && (
-            <div className="fb-box p-3 text-center">
-              <h2 className="text-[14px] font-bold text-primary mb-1">
+            <div className="bg-accent border border-border p-4 mb-3 text-center">
+              <h2 className="text-xl font-bold text-primary mb-2" style={{ fontFamily: 'Georgia, serif' }}>
                 Conectadoemsergipe
               </h2>
-              <p className="text-[11px] text-foreground mb-2">
+              <p className="text-sm text-foreground mb-2">
                 {t("index.description")}
               </p>
-              <p className="text-[11px]">
+              <p className="text-sm">
                 <a href="/register">{t("index.register")}</a> {t("index.or")} <a href="/login">{t("index.login")}</a> {t("index.cta")}
               </p>
             </div>
           )}
 
           {/* Mobile-only: Profile first */}
-          <div className="md:hidden mb-2">
+          <div className="md:hidden mb-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -66,22 +67,25 @@ const Index = () => {
             />
           </div>
 
-          <div className="md:hidden mb-2">
+          {/* Mobile-only: Marketplace highlights */}
+          <div className="md:hidden mb-3">
             <MarketplaceHighlights />
           </div>
 
           <HomepageMarketplace />
+
           <PostFeed userName={user?.name} />
 
-          <div className="md:hidden mt-2 space-y-2">
+          {/* Mobile-only: Friends below feed */}
+          <div className="md:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
         </div>
 
-        {/* Right column: Friends + Sponsored */}
-        <div className="hidden md:block w-[220px] shrink-0 px-1">
-          <div className="sticky top-[55px]">
+        {/* Right column: Friends + Ads */}
+        <div className="hidden md:block w-[220px] shrink-0">
+          <div className="sticky top-3 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
             <BannerAdColumn position="right" />

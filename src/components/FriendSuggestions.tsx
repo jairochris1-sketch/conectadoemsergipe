@@ -67,64 +67,67 @@ const FriendSuggestions = () => {
   if (!user || suggestions.length === 0) return null;
 
   return (
-    <div className="fb-box">
-      <div className="fb-box-header flex items-center justify-between">
-        <span>👥 Pessoas que você talvez conheça</span>
+    <div className="bg-card border border-border p-3 w-full mt-3">
+      <div className="border-b border-border pb-2 mb-3 flex items-center justify-between">
+        <h3 className="text-base font-bold text-primary">
+          👥 Pessoas que você talvez conheça
+        </h3>
         <button
           onClick={fetchSuggestions}
           disabled={loading}
           className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer p-0"
-          title="Atualizar"
+          title="Atualizar sugestões"
         >
-          <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
-      <div className="p-2 space-y-1.5">
+      <div className="space-y-2">
         {suggestions.map((suggestion) => {
           const alreadySent = sentRequests.has(suggestion.user_id) || hasPendingRequest(suggestion.user_id);
           const alreadyFriend = isFriend(suggestion.user_id);
           if (alreadyFriend) return null;
 
           return (
-            <div key={suggestion.user_id} className="flex items-center gap-2 border border-border p-1.5 bg-accent">
+            <div key={suggestion.user_id} className="flex items-center gap-3 border border-border p-2 bg-accent">
               <Link
                 to={`/user/${suggestion.user_id}`}
-                className="w-[30px] h-[30px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0"
+                className="w-[42px] h-[42px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-sm"
               >
                 {suggestion.photo_url ? (
                   <img src={suggestion.photo_url} alt={suggestion.name} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[8px] text-muted-foreground">👤</span>
+                  <span className="text-xs text-muted-foreground">👤</span>
                 )}
               </Link>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-0.5">
-                  <Link to={`/user/${suggestion.user_id}`} className="text-[11px] font-bold truncate hover:underline">
+                  <Link to={`/user/${suggestion.user_id}`} className="text-sm font-bold truncate hover:underline">
                     {suggestion.name}
                   </Link>
                   <VerificationBadge {...(badges.get(suggestion.user_id) || {})} />
                 </div>
                 {suggestion.mutual_count > 0 && (
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {suggestion.mutual_count} amigo{suggestion.mutual_count > 1 ? "s" : ""} em comum
                   </p>
                 )}
                 {suggestion.mutual_count === 0 && suggestion.city && (
-                  <p className="text-[10px] text-muted-foreground truncate">
+                  <p className="text-xs text-muted-foreground truncate">
                     📍 {suggestion.city}
                   </p>
                 )}
               </div>
               {alreadySent ? (
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  ✓
+                <span className="text-xs text-muted-foreground shrink-0 px-1">
+                  Enviado ✓
                 </span>
               ) : (
                 <button
                   onClick={() => handleAddFriend(suggestion.user_id)}
-                  className="bg-primary text-primary-foreground border-none px-2 py-[3px] text-[10px] cursor-pointer hover:opacity-90 flex items-center gap-0.5 shrink-0"
+                  className="bg-primary text-primary-foreground border-none px-3 py-1.5 text-xs cursor-pointer hover:opacity-90 flex items-center gap-1 shrink-0 rounded-sm"
                 >
-                  <UserPlus className="w-3 h-3" />
+                  <UserPlus className="w-4 h-4" />
+                  Adicionar
                 </button>
               )}
             </div>

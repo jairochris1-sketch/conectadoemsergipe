@@ -13,7 +13,6 @@ import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
-import ProfileMarketplaceStrip from "@/components/ProfileMarketplaceStrip";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
@@ -76,43 +75,32 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <SEOHead title="Meu Perfil" description="Gerencie seu perfil no Conectados em Sergipe." path="/profile" />
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
-      <div className="max-w-[980px] mx-auto px-2 py-2">
-        <div className="flex flex-col md:flex-row gap-0">
-          {/* Left column — photo + nav */}
-          <div className="w-full md:w-[180px] shrink-0 md:pr-2">
-            <div className="fb-box">
-              <div className="p-2">
-                <img
-                  src={user.photoUrl || "/placeholder.svg"}
-                  alt={user.name}
-                  className="w-full border border-border object-cover cursor-pointer"
-                  style={{ maxWidth: '160px' }}
-                  onClick={() => fileInputRef.current?.click()}
-                  title={t("click_to_change")}
-                />
-                <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
-                <button onClick={() => fileInputRef.current?.click()} className="mt-1 text-[10px] text-primary cursor-pointer bg-transparent border-none hover:underline w-full text-center block">
-                  {t("change_photo")}
-                </button>
-              </div>
-              <div className="border-t border-border">
-                <a href="#" className="block px-2 py-[5px] text-[11px] font-bold hover:bg-accent border-b border-border">📝 Wall</a>
-                <a href="#" className="block px-2 py-[5px] text-[11px] font-bold hover:bg-accent border-b border-border">ℹ️ Info</a>
-                <a href="#" className="block px-2 py-[5px] text-[11px] font-bold hover:bg-accent">👥 {t("friends")}</a>
-              </div>
-            </div>
-          </div>
-
-          {/* Center column — profile info */}
+      <div className="max-w-[980px] mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 min-w-0">
-            <div className="fb-box">
-              <div className="fb-box-header flex items-center gap-1">
-                {t("profile_of")} {user.name}
-                <VerificationBadge {...badge} size="md" />
+            <div className="bg-card border border-border p-5">
+              <div className="border-b border-border pb-3 mb-4">
+                <h2 className="text-xl font-bold text-primary flex items-center gap-2" style={{ fontFamily: 'Georgia, serif' }}>
+                  {t("profile_of")} {user.name}
+                  <VerificationBadge {...badge} size="md" />
+                </h2>
               </div>
-              <div className="p-3">
+              <div className="flex flex-col sm:flex-row gap-5">
+                <div className="shrink-0">
+                  <img
+                    src={user.photoUrl || "/placeholder.svg"}
+                    alt={user.name}
+                    className="w-[180px] h-[180px] border border-border object-cover cursor-pointer rounded-sm"
+                    onClick={() => fileInputRef.current?.click()}
+                    title={t("click_to_change")}
+                  />
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                  <button onClick={() => fileInputRef.current?.click()} className="mt-2 text-sm text-primary cursor-pointer bg-transparent border-none hover:underline w-full text-center">
+                    {t("change_photo")}
+                  </button>
+                </div>
                 {!editing ? (
-                  <div className="text-[11px] space-y-1">
+                  <div className="text-base space-y-2">
                     <p><b>{t("name")}:</b> {user.name}</p>
                     <p><b>{t("school")}:</b> {user.school || "-"}</p>
                     <p><b>{t("city")}:</b> {user.city || "-"}</p>
@@ -122,18 +110,30 @@ const Profile = () => {
                     <p><b>{t("admin.followers")}:</b> {followerCount}</p>
                   </div>
                 ) : (
-                  <div className="text-[11px] space-y-2">
+                  <div className="space-y-3 flex-1">
                     <div>
-                      <label className="block font-bold mb-0.5">{t("name")}:</label>
-                      <input value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full border border-border p-[3px] text-[11px] bg-card" />
+                      <label className="block font-bold text-sm mb-1">{t("name")}:</label>
+                      <input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm"
+                      />
                     </div>
                     <div>
-                      <label className="block font-bold mb-0.5">{t("school")}:</label>
-                      <input value={editSchool} onChange={(e) => setEditSchool(e.target.value)} className="w-full border border-border p-[3px] text-[11px] bg-card" />
+                      <label className="block font-bold text-sm mb-1">{t("school")}:</label>
+                      <input
+                        value={editSchool}
+                        onChange={(e) => setEditSchool(e.target.value)}
+                        className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm"
+                      />
                     </div>
                     <div>
-                      <label className="block font-bold mb-0.5">{t("city")}:</label>
-                      <select value={editCity} onChange={(e) => setEditCity(e.target.value)} className="w-full border border-border p-[3px] text-[11px] bg-card">
+                      <label className="block font-bold text-sm mb-1">{t("city")}:</label>
+                      <select
+                        value={editCity}
+                        onChange={(e) => setEditCity(e.target.value)}
+                        className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm"
+                      >
                         <option value="">Selecione...</option>
                         {SERGIPE_CITIES.map((c) => (
                           <option key={c} value={c}>{c}</option>
@@ -141,53 +141,59 @@ const Profile = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block font-bold mb-0.5">{t("birthdate")}:</label>
-                      <input type="date" value={editBirthdate} onChange={(e) => setEditBirthdate(e.target.value)} className="w-full border border-border p-[3px] text-[11px] bg-card" />
+                      <label className="block font-bold text-sm mb-1">{t("birthdate")}:</label>
+                      <input
+                        type="date"
+                        value={editBirthdate}
+                        onChange={(e) => setEditBirthdate(e.target.value)}
+                        className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm"
+                      />
                     </div>
                     <div>
-                      <label className="block font-bold mb-0.5">{t("bio")}:</label>
-                      <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} className="w-full border border-border p-[3px] text-[11px] resize-none bg-card" rows={3} />
+                      <label className="block font-bold text-sm mb-1">{t("bio")}:</label>
+                      <textarea
+                        value={editBio}
+                        onChange={(e) => setEditBio(e.target.value)}
+                        className="w-full border border-border px-3 py-2 text-base resize-none bg-card rounded-sm"
+                        rows={3}
+                      />
                     </div>
                   </div>
                 )}
-                {!editing ? (
-                  <button onClick={startEditing} className="mt-2 bg-primary text-primary-foreground border-none px-3 py-[4px] text-[11px] cursor-pointer font-bold hover:opacity-90">
-                    {t("edit_profile")}
-                  </button>
-                ) : (
-                  <div className="flex gap-1.5 mt-2">
-                    <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-3 py-[4px] text-[11px] cursor-pointer font-bold hover:opacity-90">{t("save")}</button>
-                    <button onClick={() => setEditing(false)} className="bg-muted text-foreground border border-border px-3 py-[4px] text-[11px] cursor-pointer font-bold hover:opacity-90">{t("cancel")}</button>
-                  </div>
-                )}
               </div>
+              {!editing ? (
+                <button onClick={startEditing} className="mt-4 bg-primary text-primary-foreground border-none px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
+                  {t("edit_profile")}
+                </button>
+              ) : (
+                <div className="flex gap-3 mt-4">
+                  <button onClick={handleSave} className="bg-primary text-primary-foreground border-none px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">{t("save")}</button>
+                  <button onClick={() => setEditing(false)} className="bg-muted text-foreground border border-border px-5 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">{t("cancel")}</button>
+                </div>
+              )}
             </div>
 
-            <ProfileMarketplaceStrip />
-
-            <div className="fb-box">
-              <div className="fb-box-header">
-                {t("friends")} ({friends.length})
+            <div className="bg-card border border-border p-5 mt-4">
+              <div className="border-b border-border pb-3 mb-4">
+                <h3 className="text-lg font-bold text-primary" style={{ fontFamily: 'Georgia, serif' }}>
+                  {t("friends")} ({friends.length})
+                </h3>
               </div>
-              <div className="p-2">
-                <div className="grid grid-cols-3 gap-1.5">
-                  {friends.length > 0 ? friends.map((friend) => (
-                    <div key={friend.id} className="flex items-center gap-1.5 text-[11px] border border-border p-1">
-                      <div className="w-[28px] h-[28px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0">
-                        {friend.photo ? <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" /> : <span className="text-[8px] text-muted-foreground">{t("photo")}</span>}
-                      </div>
-                      <a href="#" className="font-bold truncate text-[11px]">{friend.name}</a>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {friends.length > 0 ? friends.map((friend) => (
+                  <div key={friend.id} className="flex items-center gap-3 text-sm border border-border p-2 rounded-sm">
+                    <div className="w-[40px] h-[40px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-sm">
+                      {friend.photo ? <img src={friend.photo} alt={friend.name} className="w-full h-full object-cover" /> : <span className="text-xs text-muted-foreground">{t("photo")}</span>}
                     </div>
-                  )) : (
-                    <p className="text-[11px] text-muted-foreground col-span-3">{t("friends.none")}</p>
-                  )}
-                </div>
+                    <a href="#" className="font-bold truncate">{friend.name}</a>
+                  </div>
+                )) : (
+                  <p className="text-sm text-muted-foreground col-span-3">{t("friends.none")}</p>
+                )}
               </div>
             </div>
           </div>
-
-          {/* Right column */}
-          <div className="w-full md:w-[180px] md:shrink-0 md:pl-2">
+          <div className="w-full md:w-[220px] md:shrink-0">
             <FriendsSidebar />
           </div>
         </div>
