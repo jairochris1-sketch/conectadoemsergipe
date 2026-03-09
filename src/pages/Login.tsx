@@ -27,11 +27,13 @@ const Login = () => {
     supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", ["login_banner", "header_overlay_opacity"])
+      .in("key", ["login_banner", "header_overlay_opacity", "login_welcome_title", "login_welcome_text"])
       .then(({ data }) => {
         data?.forEach((row: any) => {
           if (row.key === "login_banner" && row.value) setBannerImage(row.value);
           if (row.key === "header_overlay_opacity" && row.value) setOverlayOpacity(Number(row.value) / 100);
+          if (row.key === "login_welcome_title" && row.value) setCustomTitle(row.value);
+          if (row.key === "login_welcome_text" && row.value) setCustomText(row.value);
         });
       });
   }, []);
