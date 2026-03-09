@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import SEOHead from "@/components/SEOHead";
@@ -59,7 +59,9 @@ const Marketplace = () => {
   const [items, setItems] = useState<MarketItem[]>([]);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useLanguage();
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
@@ -115,6 +117,26 @@ const Marketplace = () => {
   }, []);
 
   useEffect(() => { loadItems(); }, [loadItems]);
+
+  // Check for item parameter in URL to scroll to and highlight product
+  useEffect(() => {
+    const itemId = searchParams.get("item");
+    if (itemId && items.length > 0) {
+      const exists = items.find(i => i.id === itemId);
+      if (exists) {
+        setSelectedItemId(itemId);
+        // Scroll to the item after render
+        setTimeout(() => {
+          const el = document.getElementById(`item-${itemId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          // Remove highlight after 3 seconds
+          setTimeout(() => setSelectedItemId(null), 3000);
+        }, 300);
+      }
+    }
+  }, [searchParams, items]);
 
   const filtered = category === "All" ? items : items.filter((i) => i.category === category);
 
@@ -221,16 +243,21 @@ const Marketplace = () => {
 
           <div className="space-y-3">
             {filtered.map((item) => (
-              <MarketplaceItemCard
+              <div
                 key={item.id}
-                item={item}
-                variant="list"
-                currentUserId={user?.id}
-                onTrackClick={trackClick}
-                onDelete={handleDelete}
-                onMarkSold={handleMarkSold}
-                onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
-              />
+                id={`item-${item.id}`}
+                className={`transition-all duration-500 ${selectedItemId === item.id ? "ring-2 ring-primary rounded-lg" : ""}`}
+              >
+                <MarketplaceItemCard
+                  item={item}
+                  variant="list"
+                  currentUserId={user?.id}
+                  onTrackClick={trackClick}
+                  onDelete={handleDelete}
+                  onMarkSold={handleMarkSold}
+                  onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+                />
+              </div>
             ))}
             {filtered.length === 0 && (
               <p className="text-sm text-muted-foreground">{t("marketplace.no_items")}</p>
