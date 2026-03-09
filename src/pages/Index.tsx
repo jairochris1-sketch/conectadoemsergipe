@@ -7,6 +7,8 @@ import FacebookFooter from "@/components/FacebookFooter";
 import BannerAdColumn from "@/components/BannerAdColumn";
 import MarketplaceHighlights from "@/components/MarketplaceHighlights";
 import HomepageMarketplace from "@/components/HomepageMarketplace";
+import FollowedStoresNewProducts from "@/components/FollowedStoresNewProducts";
+import MobileQuickNav from "@/components/MobileQuickNav";
 import SEOHead from "@/components/SEOHead";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -22,7 +24,7 @@ const Index = () => {
 
       <main className="w-full max-w-[1240px] mx-auto flex justify-center gap-4 px-3 md:px-5 py-4 md:py-6">
         {/* Left column: Profile + Ads */}
-        <aside className="hidden md:flex flex-col gap-3 w-[250px] shrink-0">
+        <aside className="hidden lg:flex flex-col gap-3 w-[250px] shrink-0">
           <div className="sticky top-24 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
@@ -54,8 +56,11 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only: Profile first */}
-          <div className="md:hidden mb-3">
+          {/* Mobile-only: Quick nav */}
+          <MobileQuickNav />
+
+          {/* Mobile/Tablet: Profile first */}
+          <div className="lg:hidden mb-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -67,24 +72,26 @@ const Index = () => {
             />
           </div>
 
-          {/* Mobile-only: Marketplace highlights */}
-          <div className="md:hidden mb-3">
+          {/* Mobile/Tablet: Marketplace highlights */}
+          <div className="lg:hidden mb-3">
             <MarketplaceHighlights />
           </div>
+
+          <FollowedStoresNewProducts />
 
           <HomepageMarketplace />
 
           <PostFeed userName={user?.name} />
 
-          {/* Mobile-only: Friends below feed */}
-          <div className="md:hidden mt-3 space-y-3">
+          {/* Mobile/Tablet: Friends below feed */}
+          <div className="lg:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
         </section>
 
         {/* Right column: Friends + Ads */}
-        <aside className="hidden md:block w-[250px] shrink-0">
+        <aside className="hidden lg:block w-[250px] shrink-0">
           <div className="sticky top-24 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}

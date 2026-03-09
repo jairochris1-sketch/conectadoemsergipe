@@ -95,6 +95,16 @@
     font-size: 16px;
     background-image: radial-gradient(circle at top, hsl(var(--accent) / 0.75), hsl(var(--background)) 40%);
   }
+
+  /* Ensure all text inherits foreground in dark mode */
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
+  .dark p, .dark span, .dark label, .dark li {
+    color: inherit;
+  }
+
+  .dark input, .dark textarea, .dark select {
+    color: hsl(var(--foreground));
+  }
 }
 
 a {
@@ -105,4 +115,20 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Scrollbar utility for horizontal scroll areas */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  height: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
 }
