@@ -34,6 +34,7 @@ interface ProductRow {
   category: string;
   is_active: boolean;
   created_at: string;
+  is_boosted?: boolean;
 }
 
 const STORE_CATEGORIES = [
