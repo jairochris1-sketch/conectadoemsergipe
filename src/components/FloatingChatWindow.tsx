@@ -484,7 +484,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                   <div className="flex gap-1.5 items-center">
                     <span className="w-2.5 h-2.5 rounded-full bg-destructive animate-pulse shrink-0" />
                     <span className="text-xs text-destructive font-mono flex-1">
-                      {formatRecordingTime(recordingTime)}
+                      {formatRecordingTime(recordingTime)} / {formatRecordingTime(maxTime)}
                     </span>
                     <button
                       onClick={cancelRecording}
