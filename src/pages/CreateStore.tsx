@@ -92,8 +92,8 @@ const CreateStore = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="Criar Loja - Conectadoemsergipe" />
-      <FacebookHeader />
+      <SEOHead title="Criar Loja - Conectadoemsergipe" description="Crie sua loja no Conectadoemsergipe" />
+      <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={async () => {}} />
       <div className="max-w-lg mx-auto px-4 py-6 pt-20">
         <h1 className="text-xl font-bold text-foreground flex items-center gap-2 mb-6">
           <Store className="w-5 h-5 text-primary" /> Criar Loja

@@ -48,7 +48,7 @@ const parseBRL = (value: string): string => {
 
 const StorePage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [store, setStore] = useState<StoreRow | null>(null);
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
