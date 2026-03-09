@@ -318,7 +318,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   >
                     <span className="text-base">🔔</span>
                   </button>
-                  <Link to="/profile" className="p-1.5 text-primary-foreground">
+                  <Link to="/profile" className="p-1.5 text-white">
                     <span className="text-base">👤</span>
                   </Link>
                   <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
