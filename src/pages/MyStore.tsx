@@ -482,10 +482,64 @@ const MyStore = () => {
                         <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => toggleProduct(p.id, p.is_active)}>
                           {p.is_active ? "Desativar" : "Ativar"}
                         </Button>
+                        {!boostedIds.has(p.id) && p.is_active && (
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            className="text-xs h-7 gap-1 text-amber-600 hover:text-amber-700" 
+                            onClick={() => setBoostingProduct(p.id)}
+                          >
+                            <Sparkles className="w-3 h-3" /> Impulsionar
+                          </Button>
+                        )}
+                        {boostedIds.has(p.id) && (
+                          <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded-full flex items-center gap-1 font-medium">
+                            <Sparkles className="w-3 h-3" /> Impulsionado
+                          </span>
+                        )}
                         <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive gap-1" onClick={() => deleteProduct(p.id)}>
                           <Trash2 className="w-3 h-3" /> Excluir
                         </Button>
                       </div>
+                      
+                      {/* Boost modal */}
+                      {boostingProduct === p.id && (
+                        <div className="mt-3 p-3 bg-accent/50 rounded-lg border border-border">
+                          <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
+                            <Sparkles className="w-4 h-4 text-amber-500" /> Impulsionar Produto
+                          </h4>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Produtos impulsionados aparecem em destaque no marketplace e no feed.
+                          </p>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {[
+                              { days: "3", cost: 5, label: "3 dias" },
+                              { days: "7", cost: 10, label: "7 dias" },
+                              { days: "15", cost: 20, label: "15 dias" },
+                            ].map(opt => (
+                              <button
+                                key={opt.days}
+                                onClick={() => setBoostDays(opt.days)}
+                                className={`px-3 py-1.5 text-xs rounded-lg border transition-colors ${
+                                  boostDays === opt.days 
+                                    ? "bg-amber-500 text-white border-amber-500" 
+                                    : "border-border hover:bg-accent"
+                                }`}
+                              >
+                                {opt.label} ({opt.cost} créditos)
+                              </button>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => boostProduct(p.id)} className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white">
+                              <Sparkles className="w-3 h-3" /> Confirmar
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setBoostingProduct(null)}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
