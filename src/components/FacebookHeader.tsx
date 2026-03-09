@@ -249,7 +249,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                 )}
-                <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+                <Link to="/" className="text-white no-underline hover:no-underline shrink-0">
                   <h1 className="text-[1.1rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                     Conectadoemsergipe
                   </h1>
