@@ -8,9 +8,21 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2, ArrowLeft, Loader2 } from "lucide-react";
+import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2, ArrowLeft, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 interface UserSettings {
   // Privacy
@@ -56,6 +68,8 @@ const Settings = () => {
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -143,6 +157,39 @@ const Settings = () => {
   const handleLogout = async () => {
     await logout();
     navigate("/login");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== "DELETAR") return;
+    
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Erro", description: "Você precisa estar logado.", variant: "destructive" });
+        return;
+      }
+
+      const response = await supabase.functions.invoke("delete-account", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      toast({ title: "Conta excluída", description: "Sua conta foi excluída permanentemente." });
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast({ title: "Erro", description: "Não foi possível excluir a conta. Tente novamente.", variant: "destructive" });
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmation("");
+    }
   };
 
   if (!user) return null;
@@ -458,6 +505,92 @@ const Settings = () => {
                   <LogOut className="w-4 h-4 mr-2" />
                   Sair da minha conta
                 </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-destructive bg-destructive/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg text-destructive">
+                  <Trash2 className="w-5 h-5" />
+                  Excluir conta permanentemente
+                </CardTitle>
+                <CardDescription>
+                  Esta ação é irreversível. Todos os seus dados serão excluídos permanentemente.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start gap-3 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                  <AlertTriangle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                  <div className="text-sm text-destructive">
+                    <p className="font-medium">Atenção!</p>
+                    <p className="mt-1 opacity-90">
+                      Ao excluir sua conta, você perderá permanentemente:
+                    </p>
+                    <ul className="list-disc list-inside mt-2 space-y-1 opacity-80">
+                      <li>Todas as suas publicações e comentários</li>
+                      <li>Suas mensagens e conversas</li>
+                      <li>Seus anúncios no marketplace</li>
+                      <li>Suas amizades e seguidores</li>
+                      <li>Todas as suas configurações</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="w-full sm:w-auto">
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Excluir minha conta
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+                        <AlertTriangle className="w-5 h-5" />
+                        Confirmar exclusão de conta
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="space-y-4">
+                        <p>
+                          Esta ação não pode ser desfeita. Sua conta e todos os dados associados serão excluídos permanentemente.
+                        </p>
+                        <div className="space-y-2">
+                          <Label htmlFor="delete-confirm" className="text-foreground font-medium">
+                            Digite <span className="font-bold text-destructive">DELETAR</span> para confirmar:
+                          </Label>
+                          <Input
+                            id="delete-confirm"
+                            value={deleteConfirmation}
+                            onChange={(e) => setDeleteConfirmation(e.target.value)}
+                            placeholder="DELETAR"
+                            className="border-destructive/50 focus-visible:ring-destructive"
+                          />
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel onClick={() => setDeleteConfirmation("")}>
+                        Cancelar
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        disabled={deleteConfirmation !== "DELETAR" || deleting}
+                        className="bg-destructive hover:bg-destructive/90"
+                      >
+                        {deleting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Excluindo...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Excluir permanentemente
+                          </>
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardContent>
             </Card>
           </TabsContent>
