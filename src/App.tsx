@@ -33,6 +33,7 @@ import StorePage from "./pages/StorePage";
 import ProductPage from "./pages/ProductPage";
 import MyStore from "./pages/MyStore";
 import TopSellers from "./pages/TopSellers";
+import BuyCredits from "./pages/BuyCredits";
 
 const queryClient = new QueryClient();
 
