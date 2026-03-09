@@ -171,51 +171,14 @@ const StorePage = () => {
         </div>
 
         {/* Add Product Form */}
-        {showForm && isOwner && (
-          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-6 space-y-3">
-            <h3 className="font-semibold text-foreground text-sm">Novo Produto</h3>
-            <div className="flex flex-col items-center">
-              <button onClick={() => pFileRef.current?.click()} className="w-24 h-24 rounded-lg bg-muted border-2 border-dashed border-border flex items-center justify-center overflow-hidden hover:border-primary transition-colors">
-                {pPhotoPreview ? (
-                  <img src={pPhotoPreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <Camera className="w-6 h-6 text-muted-foreground" />
-                )}
-              </button>
-              <input ref={pFileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-            </div>
-            <Input value={pTitle} onChange={(e) => setPTitle(e.target.value)} placeholder="Nome do produto *" />
-            <Input
-              value={pPriceDisplay}
-              onChange={(e) => {
-                setPPriceDisplay(formatBRL(e.target.value));
-                setPPrice(parseBRL(e.target.value));
-              }}
-              placeholder="Preço (R$) *"
-            />
-            <select
-              value={pCity}
-              onChange={(e) => setPCity(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-10"
-            >
-              <option value="">Cidade (usa da loja)</option>
-              {SERGIPE_CITIES.map((c) => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-            </select>
-            <textarea
-              value={pDescription}
-              onChange={(e) => setPDescription(e.target.value)}
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[60px] resize-none"
-              placeholder="Descrição do produto"
-            />
-            <div className="flex gap-2">
-              <Button onClick={handleAddProduct} disabled={posting} size="sm">
-                {posting ? "Salvando..." : "Adicionar"}
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowForm(false)}>Cancelar</Button>
-            </div>
-          </div>
+        {showForm && isOwner && store && user && (
+          <StoreProductForm
+            storeId={store.id}
+            userId={user.id}
+            storeCity={store.city}
+            onClose={() => setShowForm(false)}
+            onProductAdded={fetchStore}
+          />
         )}
 
         {/* Products */}
