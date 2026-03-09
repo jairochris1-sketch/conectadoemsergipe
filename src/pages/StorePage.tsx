@@ -182,7 +182,7 @@ const StorePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead title={`${store.name} - Conectadoemsergipe`} description={store.description || `Loja ${store.name}`} />
-      <FacebookHeader />
+      <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 pt-20">
         {/* Store Header */}
         <div className="bg-card border border-border rounded-xl overflow-hidden mb-6">
