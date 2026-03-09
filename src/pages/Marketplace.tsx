@@ -118,13 +118,22 @@ const Marketplace = () => {
 
   useEffect(() => { loadItems(); }, [loadItems]);
 
-  // Check for item parameter in URL to auto-open product modal
+  // Check for item parameter in URL to scroll to and highlight product
   useEffect(() => {
     const itemId = searchParams.get("item");
     if (itemId && items.length > 0) {
       const exists = items.find(i => i.id === itemId);
       if (exists) {
         setSelectedItemId(itemId);
+        // Scroll to the item after render
+        setTimeout(() => {
+          const el = document.getElementById(`item-${itemId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          // Remove highlight after 3 seconds
+          setTimeout(() => setSelectedItemId(null), 3000);
+        }, 300);
       }
     }
   }, [searchParams, items]);
