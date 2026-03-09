@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { icon: Wrench, label: "Serviços", to: "/servicos", exact: false },
   { icon: Store, label: "Lojas", to: "/stores", exact: false },
   { icon: Trophy, label: "Top", to: "/top-vendedores", exact: false },
+  { icon: Coins, label: "Créditos", to: "/comprar-creditos", exact: false },
   { icon: MessageCircle, label: "Chat", to: "/messages", exact: false, showBadge: true },
   { icon: Users, label: "Amigos", to: "/amigos", exact: false },
   { icon: Settings, label: "Config.", to: "/configuracoes", exact: false },

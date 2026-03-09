@@ -153,7 +153,19 @@ const SellerDashboard = () => {
               <span className="text-[11px] bg-accent border border-border px-2 py-[2px]">
                 💰 {t("ads.credits")}: <b>{credits}</b>
               </span>
+              <Link
+                to="/comprar-creditos"
+                className="bg-green-600 text-white border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90 no-underline rounded-sm"
+              >
+                💰 Comprar Créditos
+              </Link>
               <button
+                onClick={() => setShowForm(!showForm)}
+                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
+              >
+                {showForm ? t("marketplace.cancel") : t("ads.new_campaign")}
+              </button>
+            </div>
                 onClick={() => setShowForm(!showForm)}
                 className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
               >
