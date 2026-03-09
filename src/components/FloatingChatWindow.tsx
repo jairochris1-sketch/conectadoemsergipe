@@ -17,6 +17,9 @@ interface Message {
   content: string;
   image_url?: string | null;
   audio_url?: string | null;
+  edited_at?: string | null;
+  expires_at?: string | null;
+  is_deleted?: boolean;
   read: boolean;
   created_at: string;
 }
@@ -47,6 +50,9 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   const [showEmojis, setShowEmojis] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [editingMsg, setEditingMsg] = useState<Message | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ msgId: string; x: number; y: number } | null>(null);
+  const [disappearingEnabled, setDisappearingEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const badge = useVerificationBadge(partnerId);
@@ -55,6 +61,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   const canMessage = isFriend(partnerId);
   const inputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
+  const contextMenuRef = useRef<HTMLDivElement>(null);
   const { isRecording, recordingTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
 
   const scrollToBottom = () => {
@@ -85,16 +92,30 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   useEffect(() => { loadMessages(); }, [loadMessages]);
   useEffect(() => { scrollToBottom(); }, [messages, minimized]);
 
-  // Close emoji picker on outside click
+  // Close emoji picker & context menu on outside click
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (emojiRef.current && !emojiRef.current.contains(e.target as Node)) {
         setShowEmojis(false);
       }
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+        setContextMenu(null);
+      }
     };
-    if (showEmojis) document.addEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [showEmojis]);
+  }, []);
+
+  // Filter expired messages client-side
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessages(prev => prev.filter(m => {
+        if (!m.expires_at) return true;
+        return new Date(m.expires_at) > new Date();
+      }));
+    }, 30000); // check every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   // Realtime
   useEffect(() => {
@@ -117,7 +138,11 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
       })
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages" }, (payload) => {
         const updated = payload.new as Message;
-        setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, read: updated.read } : m));
+        setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, ...updated } : m));
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "messages" }, (payload) => {
+        const deleted = payload.old as { id: string };
+        setMessages(prev => prev.filter(m => m.id !== deleted.id));
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -128,15 +153,49 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
     const content = newMessage.trim();
     if (!content && !imageUrl && !audioUrl) return;
 
-    await supabase.from("messages").insert({
+    const insertData: any = {
       sender_id: user.id,
       receiver_id: partnerId,
       content: content || (imageUrl ? "📷 Imagem" : audioUrl ? "🎤 Áudio" : ""),
       image_url: imageUrl || null,
       audio_url: audioUrl || null,
-    } as any);
+    };
+
+    if (disappearingEnabled) {
+      insertData.expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    await supabase.from("messages").insert(insertData);
     setNewMessage("");
     inputRef.current?.focus();
+  };
+
+  const handleEditMessage = async () => {
+    if (!editingMsg || !newMessage.trim()) return;
+    await supabase
+      .from("messages")
+      .update({ content: newMessage.trim(), edited_at: new Date().toISOString() } as any)
+      .eq("id", editingMsg.id);
+    setEditingMsg(null);
+    setNewMessage("");
+    inputRef.current?.focus();
+  };
+
+  const handleDeleteMessage = async (msgId: string) => {
+    await supabase.from("messages").delete().eq("id", msgId);
+    setContextMenu(null);
+  };
+
+  const startEdit = (msg: Message) => {
+    setEditingMsg(msg);
+    setNewMessage(msg.content === "📷 Imagem" || msg.content === "🎤 Áudio" ? "" : msg.content);
+    setContextMenu(null);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  const cancelEdit = () => {
+    setEditingMsg(null);
+    setNewMessage("");
   };
 
   const handleSendAudio = async () => {
@@ -175,17 +234,11 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
       const { blob } = await validateAndCompressImage(file);
       const ext = "jpg";
       const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
       const { error } = await supabase.storage
         .from("chat-images")
         .upload(fileName, blob, { contentType: "image/jpeg" });
-
       if (error) throw error;
-
-      const { data: urlData } = supabase.storage
-        .from("chat-images")
-        .getPublicUrl(fileName);
-
+      const { data: urlData } = supabase.storage.from("chat-images").getPublicUrl(fileName);
       await sendMessage(urlData.publicUrl);
     } catch (err) {
       console.error("Upload failed:", err);
@@ -219,10 +272,23 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
     setMinimized(!minimized);
   };
 
+  const handleContextMenu = (e: React.MouseEvent, msg: Message) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ msgId: msg.id, x: e.clientX, y: e.clientY });
+  };
+
   const rightOffset = 280 + index * 328;
 
   const renderMessageContent = (msg: Message) => {
     const isMine = msg.sender_id === user?.id;
+    if (msg.is_deleted) {
+      return (
+        <p className="break-words italic opacity-60 text-[10px]">
+          🚫 Mensagem apagada
+        </p>
+      );
+    }
     return (
       <>
         {msg.image_url && (
@@ -246,10 +312,12 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
         {msg.content && msg.content !== "📷 Imagem" && msg.content !== "🎤 Áudio" && (
           <p className="break-words">{msg.content}</p>
         )}
-        <p className={`text-[9px] mt-0.5 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+        <div className={`flex items-center gap-1 text-[9px] mt-0.5 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
           {formatTime(msg.created_at)}
-          {isMine && <span className="ml-1">{msg.read ? "✓✓" : "✓"}</span>}
-        </p>
+          {msg.edited_at && <span className="italic">· editada</span>}
+          {msg.expires_at && <span title="Mensagem temporária">⏳</span>}
+          {isMine && <span>{msg.read ? "✓✓" : "✓"}</span>}
+        </div>
       </>
     );
   };
@@ -287,6 +355,14 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
               {unreadCount}
             </span>
           )}
+          {/* Disappearing messages toggle */}
+          <button
+            onClick={(e) => { e.stopPropagation(); setDisappearingEnabled(!disappearingEnabled); }}
+            className={`text-sm leading-none transition-opacity ${disappearingEnabled ? "opacity-100" : "opacity-40"}`}
+            title={disappearingEnabled ? "Mensagens temporárias: ON (24h)" : "Mensagens temporárias: OFF"}
+          >
+            ⏳
+          </button>
           <div className="flex gap-1">
             <button
               onClick={(e) => { e.stopPropagation(); handleToggleMinimize(); }}
@@ -306,6 +382,13 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
         {/* Chat body */}
         {!minimized && (
           <div className="bg-card border border-t-0 border-border shadow-2xl flex flex-col rounded-b-none" style={{ height: "350px" }}>
+            {/* Disappearing indicator */}
+            {disappearingEnabled && (
+              <div className="px-3 py-1 bg-accent/50 text-[10px] text-center text-muted-foreground flex items-center justify-center gap-1">
+                ⏳ Mensagens temporárias ativadas (24h)
+              </div>
+            )}
+
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-3 space-y-2">
               {messages.length === 0 && (
@@ -313,33 +396,56 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                   {t("messages.no_conversations") || "Nenhuma mensagem ainda..."}
                 </p>
               )}
-              {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`flex items-end gap-1.5 animate-fade-in ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
-                >
-                  {msg.sender_id !== user?.id && (
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-muted shrink-0">
-                      {partnerPhoto ? (
-                        <img src={partnerPhoto} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="flex items-center justify-center w-full h-full text-[8px]">👤</span>
-                      )}
-                    </div>
-                  )}
+              {messages.map((msg) => {
+                const isMine = msg.sender_id === user?.id;
+                return (
                   <div
-                    className={`max-w-[75%] px-3 py-1.5 text-xs rounded-2xl ${
-                      msg.sender_id === user?.id
-                        ? "bg-primary text-primary-foreground rounded-br-sm"
-                        : "bg-accent text-foreground rounded-bl-sm"
-                    }`}
+                    key={msg.id}
+                    className={`group flex items-end gap-1.5 animate-fade-in ${isMine ? "justify-end" : "justify-start"}`}
+                    onContextMenu={(e) => handleContextMenu(e, msg)}
                   >
-                    {renderMessageContent(msg)}
+                    {!isMine && (
+                      <div className="w-6 h-6 rounded-full overflow-hidden bg-muted shrink-0">
+                        {partnerPhoto ? (
+                          <img src={partnerPhoto} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="flex items-center justify-center w-full h-full text-[8px]">👤</span>
+                        )}
+                      </div>
+                    )}
+                    <div className="relative">
+                      <div
+                        className={`max-w-[75%] px-3 py-1.5 text-xs rounded-2xl ${
+                          isMine
+                            ? "bg-primary text-primary-foreground rounded-br-sm"
+                            : "bg-accent text-foreground rounded-bl-sm"
+                        }`}
+                      >
+                        {renderMessageContent(msg)}
+                      </div>
+                      {/* Hover actions (small dots) */}
+                      <button
+                        onClick={(e) => handleContextMenu(e, msg)}
+                        className={`absolute top-0 ${isMine ? "-left-5" : "-right-5"} opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-foreground text-xs transition-opacity`}
+                      >
+                        ⋯
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <div ref={messagesEndRef} />
             </div>
+
+            {/* Edit bar */}
+            {editingMsg && (
+              <div className="px-3 py-1.5 bg-accent/60 border-t border-border flex items-center gap-2 text-[10px]">
+                <span className="text-muted-foreground flex-1 truncate">
+                  ✏️ Editando: <span className="text-foreground">{editingMsg.content}</span>
+                </span>
+                <button onClick={cancelEdit} className="text-destructive hover:underline text-[10px]">Cancelar</button>
+              </div>
+            )}
 
             {/* Input area */}
             {canMessage ? (
@@ -406,22 +512,26 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                       😊
                     </button>
 
-                    {/* Image upload button */}
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0 disabled:opacity-40"
-                      title="Enviar imagem"
-                    >
-                      📷
-                    </button>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                    />
+                    {!editingMsg && (
+                      <>
+                        {/* Image upload button */}
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0 disabled:opacity-40"
+                          title="Enviar imagem"
+                        >
+                          📷
+                        </button>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                        />
+                      </>
+                    )}
 
                     {/* Text input */}
                     <input
@@ -432,16 +542,27 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
-                          sendMessage();
+                          editingMsg ? handleEditMessage() : sendMessage();
+                        }
+                        if (e.key === "Escape" && editingMsg) {
+                          cancelEdit();
                         }
                       }}
-                      placeholder={t("messages.placeholder") || "Digite..."}
+                      placeholder={editingMsg ? "Editar mensagem..." : (t("messages.placeholder") || "Digite...")}
                       className="flex-1 border border-border px-3 py-2 text-xs bg-background rounded-full focus:outline-none focus:ring-1 focus:ring-primary"
                       autoFocus
                     />
 
                     {/* Send or Record button */}
-                    {newMessage.trim() ? (
+                    {editingMsg ? (
+                      <button
+                        onClick={handleEditMessage}
+                        disabled={!newMessage.trim()}
+                        className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm cursor-pointer hover:brightness-110 disabled:opacity-40 transition-all shrink-0"
+                      >
+                        ✓
+                      </button>
+                    ) : newMessage.trim() ? (
                       <button
                         onClick={() => sendMessage()}
                         className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm cursor-pointer hover:brightness-110 transition-all shrink-0"
@@ -471,6 +592,41 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
           </div>
         )}
       </div>
+
+      {/* Context menu */}
+      {contextMenu && (() => {
+        const msg = messages.find(m => m.id === contextMenu.msgId);
+        if (!msg) return null;
+        const isMine = msg.sender_id === user?.id;
+        return (
+          <div
+            ref={contextMenuRef}
+            className="fixed z-[100] bg-card border border-border rounded-lg shadow-xl py-1 min-w-[140px] animate-fade-in"
+            style={{ top: contextMenu.y, left: contextMenu.x }}
+          >
+            {isMine && !msg.is_deleted && !msg.image_url && !msg.audio_url && (
+              <button
+                onClick={() => startEdit(msg)}
+                className="w-full text-left px-3 py-1.5 text-xs hover:bg-accent transition-colors flex items-center gap-2"
+              >
+                ✏️ Editar
+              </button>
+            )}
+            <button
+              onClick={() => handleDeleteMessage(msg.id)}
+              className="w-full text-left px-3 py-1.5 text-xs hover:bg-destructive/10 text-destructive transition-colors flex items-center gap-2"
+            >
+              🗑️ Apagar
+            </button>
+            <button
+              onClick={() => setContextMenu(null)}
+              className="w-full text-left px-3 py-1.5 text-xs hover:bg-accent transition-colors text-muted-foreground"
+            >
+              Cancelar
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Image preview modal */}
       <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
