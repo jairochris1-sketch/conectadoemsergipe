@@ -34,6 +34,7 @@ const Profile = () => {
   const friends = user ? getFriends() : [];
   const { followerCount } = useFollowers(user?.id);
   const badge = useVerificationBadge(user?.id);
+  const { stores: followedStores } = useFollowedStores();
 
   useEffect(() => {
     if (user) {
