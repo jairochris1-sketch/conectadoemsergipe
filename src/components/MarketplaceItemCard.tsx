@@ -3,7 +3,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import ReportButton from "@/components/ReportButton";
-import { CATEGORY_KEYS } from "@/pages/Marketplace";
 import {
   AlertDialog,
   AlertDialogAction,
