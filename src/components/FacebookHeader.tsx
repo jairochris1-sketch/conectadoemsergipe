@@ -299,7 +299,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                 <div className="flex items-center gap-0.5 shrink-0">
                   <button
                     onClick={() => setMobileSearchOpen(true)}
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
                     aria-label="Buscar"
                   >
                     <Search className="w-[18px] h-[18px]" />
