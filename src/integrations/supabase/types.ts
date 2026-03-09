@@ -455,6 +455,7 @@ export type Database = {
           id: string
           name: string
           photo_url: string | null
+          profile_links: Json | null
           school: string | null
           updated_at: string
           user_id: string
@@ -470,6 +471,7 @@ export type Database = {
           id?: string
           name: string
           photo_url?: string | null
+          profile_links?: Json | null
           school?: string | null
           updated_at?: string
           user_id: string
@@ -485,6 +487,7 @@ export type Database = {
           id?: string
           name?: string
           photo_url?: string | null
+          profile_links?: Json | null
           school?: string | null
           updated_at?: string
           user_id?: string
