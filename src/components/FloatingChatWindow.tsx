@@ -325,8 +325,8 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   return (
     <>
       <div
-        className="fixed bottom-0 z-50 animate-scale-in"
-        style={{ right: `${rightOffset}px`, width: "320px" }}
+        className="fixed bottom-0 z-50 animate-scale-in max-lg:left-1/2 max-lg:-translate-x-1/2 max-lg:w-[95vw] max-lg:max-w-[360px]"
+        style={{ right: window.innerWidth >= 1024 ? `${rightOffset}px` : undefined, width: window.innerWidth >= 1024 ? "320px" : undefined }}
       >
         {/* Header */}
         <div
