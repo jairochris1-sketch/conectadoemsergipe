@@ -292,7 +292,7 @@ const StorePage = () => {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {products.map((product) => (
-              <div key={product.id} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200">
+              <Link key={product.id} to={`/produto/${product.id}`} className="bg-card border border-border rounded-xl overflow-hidden group hover:shadow-lg transition-all duration-200 no-underline">
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -303,7 +303,7 @@ const StorePage = () => {
                   )}
                   {isOwner && (
                     <button
-                      onClick={() => handleDeleteProduct(product.id)}
+                      onClick={(e) => { e.preventDefault(); handleDeleteProduct(product.id); }}
                       className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full w-7 h-7 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -320,11 +320,8 @@ const StorePage = () => {
                       <MapPin className="w-3 h-3" /> {product.city}
                     </p>
                   )}
-                  {product.description && (
-                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{product.description}</p>
-                  )}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
