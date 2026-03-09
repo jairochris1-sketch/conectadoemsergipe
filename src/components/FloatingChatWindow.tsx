@@ -7,7 +7,7 @@ import VerificationBadge from "@/components/VerificationBadge";
 import { useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useOnlineStatus } from "@/hooks/usePresence";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { compressImage } from "@/lib/imageCompression";
+import { validateAndCompressImage } from "@/lib/imageCompression";
 
 interface Message {
   id: string;
