@@ -51,7 +51,7 @@ const ModeratorPanel = () => {
   const { t } = useLanguage();
   const [isModerator, setIsModerator] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"reports" | "posts" | "marketplace">("reports");
+  const [tab, setTab] = useState<"reports" | "posts" | "marketplace" | "pages">("reports");
   const [reports, setReports] = useState<Report[]>([]);
   const [reportedPosts, setReportedPosts] = useState<ReportedPost[]>([]);
   const [marketplaceItems, setMarketplaceItems] = useState<MarketplaceItem[]>([]);
