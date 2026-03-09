@@ -3,7 +3,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import ReportButton from "@/components/ReportButton";
-import { CATEGORY_KEYS } from "@/pages/Marketplace";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -318,7 +317,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
         <p className="mt-1 flex items-center gap-1 flex-wrap">
           {t("marketplace.seller")}: <a href="#">{item.seller}</a>
           {item.city && <> · 📍 {item.city}</>}
-          {" · "}<span className="text-muted-foreground">{t(CATEGORY_KEYS[item.category] || "marketplace.other")}</span>
+          {" · "}<span className="text-muted-foreground">{item.category}</span>
         </p>
         <div className="flex gap-2 mt-2 flex-wrap items-center">
           {item.whatsapp && (

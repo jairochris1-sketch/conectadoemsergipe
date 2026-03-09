@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useMarketplaceRecommendations } from "@/hooks/useMarketplaceRecommendations";
+import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import MarketplaceForm from "@/components/MarketplaceForm";
 
@@ -27,30 +28,9 @@ export interface MarketItem {
   condition?: string;
 }
 
-const CATEGORIES = [
-  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
-  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
-  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
-];
-
+// Legacy CATEGORY_KEYS kept for backward compat with MarketplaceItemCard display
 export const CATEGORY_KEYS: Record<string, string> = {
   "All": "marketplace.all",
-  "Móveis": "marketplace.moveis",
-  "Imóveis": "marketplace.imoveis",
-  "Celulares": "marketplace.celulares",
-  "Carros": "marketplace.carros",
-  "Motos": "marketplace.motos",
-  "Bicicletas": "marketplace.bicicletas",
-  "Som": "marketplace.som",
-  "Roupas": "marketplace.clothing",
-  "Bolos/Doces": "marketplace.bolos_doces",
-  "Mudas Frutíferas": "marketplace.mudas",
-  "Sofá/Mesa/Cadeiras": "marketplace.sofa_mesa",
-  "Fogão": "marketplace.fogao",
-  "Geladeira": "marketplace.geladeira",
-  "Guarda-Roupa": "marketplace.guarda_roupa",
-  "Eletrônicos": "marketplace.electronics",
-  "Livros": "marketplace.books",
   "Outros": "marketplace.other",
 };
 
@@ -64,6 +44,7 @@ const Marketplace = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useLanguage();
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
+  const { categoryNamesWithAll } = useMarketplaceCategories();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
 
   const loadItems = useCallback(async () => {
@@ -208,13 +189,13 @@ const Marketplace = () => {
           )}
 
           <div className="flex flex-wrap gap-1.5 mb-4 text-sm">
-            {CATEGORIES.map((c) => (
+            {categoryNamesWithAll.map((c) => (
               <button
                 key={c}
                 onClick={() => { setCategory(c); trackCategoryFilter(c); }}
                 className={`px-3 py-1 border border-border cursor-pointer text-xs rounded-sm ${category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`}
               >
-                {t(CATEGORY_KEYS[c])}
+                {c === "All" ? t("marketplace.all") : c}
               </button>
             ))}
           </div>

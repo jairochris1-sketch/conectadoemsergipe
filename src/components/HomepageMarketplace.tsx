@@ -6,20 +6,15 @@ import { supabase } from "@/integrations/supabase/client";
 import MarketplaceForm from "@/components/MarketplaceForm";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import type { MarketItem } from "@/pages/Marketplace";
-import { CATEGORY_KEYS } from "@/pages/Marketplace";
+import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 
 const ITEMS_TO_SHOW = 8;
-
-const CATEGORIES = [
-  "All", "Móveis", "Imóveis", "Celulares", "Carros", "Motos", "Bicicletas",
-  "Som", "Roupas", "Bolos/Doces", "Mudas Frutíferas", "Sofá/Mesa/Cadeiras",
-  "Fogão", "Geladeira", "Guarda-Roupa", "Eletrônicos", "Livros", "Outros"
-];
 
 const HomepageMarketplace = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { categoryNamesWithAll } = useMarketplaceCategories();
   const [items, setItems] = useState<MarketItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -117,7 +112,7 @@ const HomepageMarketplace = () => {
 
       {/* Category filters */}
       <div className="flex flex-wrap gap-1.5 mb-3">
-        {CATEGORIES.map((c) => (
+        {categoryNamesWithAll.map((c) => (
           <button
             key={c}
             onClick={() => setCategory(c)}
@@ -125,7 +120,7 @@ const HomepageMarketplace = () => {
               category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
             }`}
           >
-            {t(CATEGORY_KEYS[c])}
+            {c === "All" ? t("marketplace.all") : c}
           </button>
         ))}
       </div>

@@ -4,6 +4,7 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
+import AdminCategoryManager from "@/components/AdminCategoryManager";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
 import AdminBadgeManager from "@/components/AdminBadgeManager";
 import AdminModeratorManager from "@/components/AdminModeratorManager";
@@ -47,7 +48,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "categories">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -177,6 +178,10 @@ const AdminPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "forbidden" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🚫 Filtro
             </button>
+            <button onClick={() => setTab("categories")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "categories" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              📂 Categorias
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -192,8 +197,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "categories" ? (
+            <AdminCategoryManager />
           ) : tab === "forbidden" ? (
             <AdminForbiddenWords />
           ) : tab === "banners" ? (
