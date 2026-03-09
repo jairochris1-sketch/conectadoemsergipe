@@ -274,7 +274,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     </form>
                     <SuggestionsDropdown />
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-xl bg-primary-foreground/10 px-2 py-1">
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-2 py-1">
                     {(["pt", "es", "en"] as Language[]).map((lang) => (
                       <button
                         key={lang}
