@@ -304,7 +304,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   >
                     <Search className="w-[18px] h-[18px]" />
                   </button>
-                  <Link to="/messages" className="relative p-1.5 text-primary-foreground">
+                  <Link to="/messages" className="relative p-1.5 text-white">
                     <Mail className="w-[18px] h-[18px]" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
