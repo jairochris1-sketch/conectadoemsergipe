@@ -90,6 +90,7 @@ const App = () => {
                   <Route path="/produto/:id" element={<ProductPage />} />
                   <Route path="/minha-loja" element={<MyStore />} />
                   <Route path="/top-vendedores" element={<TopSellers />} />
+                  <Route path="/comprar-creditos" element={<BuyCredits />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
