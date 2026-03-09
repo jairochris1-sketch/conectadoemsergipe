@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, MapPin, Store, Package, Heart, Crown } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
+import StorePlanBadge from "@/components/StorePlanBadge";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
 interface StoreRow {
