@@ -72,9 +72,10 @@ const Stores = () => {
 
     // Fetch product counts and follower counts
     const storeIds = data.map((s: any) => s.id);
-    const [{ data: productCounts }, { data: followerCounts }] = await Promise.all([
+    const [{ data: productCounts }, { data: followerCounts }, { data: storePlans }] = await Promise.all([
       supabase.from("store_products").select("store_id").eq("is_active", true).in("store_id", storeIds),
       supabase.from("store_followers").select("store_id").in("store_id", storeIds),
+      supabase.from("store_plans").select("store_id, plan_type").eq("is_active", true).in("store_id", storeIds),
     ]);
 
     const pCountMap = new Map<string, number>();
@@ -87,11 +88,21 @@ const Stores = () => {
       fCountMap.set(f.store_id, (fCountMap.get(f.store_id) || 0) + 1);
     });
 
+    const planMap = new Map<string, string>();
+    (storePlans || []).forEach((p: any) => {
+      planMap.set(p.store_id, p.plan_type);
+    });
+
     const enriched = data.map((s: any) => ({
       ...s,
       product_count: pCountMap.get(s.id) || 0,
       follower_count: fCountMap.get(s.id) || 0,
+      plan_type: planMap.get(s.id) || "free",
     }));
+
+    // Sort: premium stores first (ouro > prata > bronze > free)
+    const planPriority: Record<string, number> = { ouro: 3, premium: 3, prata: 2, professional: 2, bronze: 1, basic: 1, free: 0 };
+    enriched.sort((a: any, b: any) => (planPriority[b.plan_type] || 0) - (planPriority[a.plan_type] || 0));
 
     setStores(enriched as StoreRow[]);
     setLoading(false);
