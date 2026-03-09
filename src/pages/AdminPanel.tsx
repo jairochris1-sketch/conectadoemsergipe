@@ -129,8 +129,8 @@ const AdminPanel = () => {
   return (
     <div className="min-h-screen bg-background">
       <FacebookHeader isLoggedIn={true} userName={user.name} onLogout={logout} />
-      <div className="max-w-[760px] mx-auto px-2 py-3">
-        <div className="bg-card border border-border p-3">
+      <div className="max-w-[760px] mx-auto px-2 py-3 overflow-x-hidden">
+        <div className="bg-card border border-border p-3 overflow-hidden">
           <div className="border-b border-border pb-2 mb-3">
             <h2 className="text-[16px] font-bold text-primary" style={{ fontFamily: "Georgia, serif" }}>
               {t("admin.panel_title")}
