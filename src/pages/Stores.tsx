@@ -235,8 +235,9 @@ const Stores = () => {
                   </span>
                 </div>
                 <div className="p-3">
-                  <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+                  <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
                     {store.name}
+                    <StorePlanBadge planType={store.plan_type || "free"} />
                   </h3>
                   {store.city && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
