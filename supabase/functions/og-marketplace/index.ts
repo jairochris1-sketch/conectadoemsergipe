@@ -79,6 +79,13 @@ Deno.serve(async (req) => {
   const ogImage = escapeHtml(images[0] || item.image_url || DEFAULT_IMAGE);
   const redirectUrl = `${SITE_URL}/marketplace?item=${itemId}`;
 
+  // For crawlers: serve OG tags WITHOUT redirect so they can parse them
+  // For humans: redirect immediately to the actual page
+  const shouldRedirect = !isCrawler(userAgent);
+  const redirectMeta = shouldRedirect 
+    ? `<meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}"/>` 
+    : '';
+
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -95,7 +102,7 @@ Deno.serve(async (req) => {
   <meta name="twitter:title" content="${title}"/>
   <meta name="twitter:description" content="${description}"/>
   <meta name="twitter:image" content="${ogImage}"/>
-  <meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}"/>
+  ${redirectMeta}
 </head>
 <body>
   <p>Redirecionando para <a href="${escapeHtml(redirectUrl)}">${title}</a>...</p>
