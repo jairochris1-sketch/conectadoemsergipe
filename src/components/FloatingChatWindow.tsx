@@ -16,6 +16,7 @@ interface Message {
   receiver_id: string;
   content: string;
   image_url?: string | null;
+  audio_url?: string | null;
   read: boolean;
   created_at: string;
 }
