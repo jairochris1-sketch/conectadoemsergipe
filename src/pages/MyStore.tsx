@@ -54,11 +54,11 @@ const MyStore = () => {
   const [editCategory, setEditCategory] = useState("");
   const [saving, setSaving] = useState(false);
 
-  if (!user) return <Navigate to="/login" />;
-
   useEffect(() => {
-    fetchMyStore();
+    if (user) fetchMyStore();
   }, [user]);
+
+  if (!user) return <Navigate to="/login" />;
 
   const fetchMyStore = async () => {
     if (!user) return;

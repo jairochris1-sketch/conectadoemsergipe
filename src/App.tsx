@@ -30,6 +30,8 @@ import Services from "./pages/Services";
 import Stores from "./pages/Stores";
 import CreateStore from "./pages/CreateStore";
 import StorePage from "./pages/StorePage";
+import ProductPage from "./pages/ProductPage";
+import MyStore from "./pages/MyStore";
 
 const queryClient = new QueryClient();
 
