@@ -87,10 +87,10 @@ const ShareButton = ({ item, t, size = "normal" }: { item: { title: string; pric
     const text = `${item.title} - ${formatPriceDisplay(item.price)}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: item.title, text, url });
+        await navigator.share({ title: item.title, text, url: ogUrl });
       } catch { /* user cancelled */ }
     } else {
-      await navigator.clipboard.writeText(`${text}\n${url}`);
+      await navigator.clipboard.writeText(`${text}\n${ogUrl}`);
       const { toast } = await import("sonner");
       toast.success(t("marketplace.link_copied"));
     }
