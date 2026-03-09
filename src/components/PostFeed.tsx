@@ -402,7 +402,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                         <span className="text-[10px] text-muted-foreground flex items-center justify-center h-full">👤</span>
                       )}
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm">
                         <Link to={`/user/${c.authorId}`} className="font-bold">{c.authorName}</Link>
                         <VerificationBadge {...(badges.get(c.authorId) || {})} />
@@ -410,6 +410,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </p>
                       <p className="text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                     </div>
+                    {(user && (c.authorId === user.id || isAdmin)) && (
+                      <button
+                        onClick={async () => {
+                          await deleteComment(c.id, post.id);
+                          const data = await getComments(post.id);
+                          setComments((prev) => ({ ...prev, [post.id]: data }));
+                        }}
+                        className="shrink-0 text-destructive bg-transparent border-none cursor-pointer hover:opacity-70 p-1"
+                        title="Excluir comentário"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 ))}
                 {user && (
