@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SocialProvider } from "@/context/SocialContext";
 import { PresenceProvider } from "@/components/PresenceProvider";
+import FloatingChatSystem from "@/components/FloatingChatSystem";
 import AppNavSidebar from "@/components/AppNavSidebar";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
@@ -33,13 +34,15 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation();
   const hideSidebarRoutes = ["/login", "/register", "/reset-password"];
   const showSidebar = !hideSidebarRoutes.includes(pathname);
+  const showFloatingChat = !hideSidebarRoutes.includes(pathname);
 
   return (
     <div className="flex min-h-screen w-full">
       {showSidebar && <AppNavSidebar />}
-      <div className="flex-1 min-w-0">
+      <div className={`flex-1 min-w-0 ${showFloatingChat ? 'lg:mr-[260px]' : ''}`}>
         {children}
       </div>
+      {showFloatingChat && <FloatingChatSystem />}
     </div>
   );
 };
