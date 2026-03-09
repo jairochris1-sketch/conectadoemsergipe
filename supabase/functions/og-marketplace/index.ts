@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const SITE_URL = "https://conectadoemsergipe.lovable.app";
+const SITE_URL = "https://conectadoemsergipe-com.lovable.app";
 const DEFAULT_IMAGE = "https://storage.googleapis.com/gpt-engineer-file-uploads/7QRlYRXn6KMdpPSlH1neUmMRWDh1/social-images/social-1772944286796-fgfgfgfgfgfgfgfg.webp";
 
 const formatPrice = (price: string): string => {
