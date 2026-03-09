@@ -284,7 +284,10 @@ const Messages = () => {
                         : "bg-accent text-foreground border border-border"
                     }`}
                   >
-                    <p className="break-words">{msg.content}</p>
+                    {(msg as any).image_url && (
+                      <img src={(msg as any).image_url} alt="Imagem" className="max-w-full rounded mb-1 cursor-pointer" style={{ maxHeight: "200px" }} />
+                    )}
+                    {msg.content && msg.content !== "📷 Imagem" && <p className="break-words">{msg.content}</p>}
                     <p className={`text-[8px] mt-1 ${msg.sender_id === user.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                       {formatTime(msg.created_at)}
                       {msg.sender_id === user.id && (
@@ -421,7 +424,10 @@ const Messages = () => {
                               : "bg-accent text-foreground border border-border"
                           }`}
                         >
-                          <p className="break-words">{msg.content}</p>
+                          {(msg as any).image_url && (
+                            <img src={(msg as any).image_url} alt="Imagem" className="max-w-full rounded mb-1 cursor-pointer" style={{ maxHeight: "180px" }} />
+                          )}
+                          {msg.content && msg.content !== "📷 Imagem" && <p className="break-words">{msg.content}</p>}
                           <p className={`text-[8px] mt-1 ${msg.sender_id === user.id ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                             {formatTime(msg.created_at)}
                             {msg.sender_id === user.id && (
