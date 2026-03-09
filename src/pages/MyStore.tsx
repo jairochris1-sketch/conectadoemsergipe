@@ -196,6 +196,48 @@ const MyStore = () => {
     fetchMyStore();
   };
 
+  const boostProduct = async (productId: string) => {
+    if (!user) return;
+    // Check ad credits balance
+    const { data: credits } = await supabase
+      .from("ad_credits")
+      .select("balance")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    
+    const balance = credits?.balance || 0;
+    const cost = parseInt(boostDays) === 3 ? 5 : parseInt(boostDays) === 7 ? 10 : 20;
+    
+    if (balance < cost) {
+      toast.error(`Créditos insuficientes. Necessário: ${cost}, Disponível: ${balance}`);
+      setBoostingProduct(null);
+      return;
+    }
+    
+    const endsAt = new Date();
+    endsAt.setDate(endsAt.getDate() + parseInt(boostDays));
+    
+    const { error: campaignError } = await supabase.from("sponsored_campaigns").insert({
+      user_id: user.id,
+      item_id: productId,
+      budget: cost,
+      ends_at: endsAt.toISOString(),
+      status: "active",
+    } as any);
+    
+    if (campaignError) {
+      toast.error("Erro ao impulsionar produto");
+      return;
+    }
+    
+    // Deduct credits
+    await supabase.from("ad_credits").update({ balance: balance - cost } as any).eq("user_id", user.id);
+    
+    toast.success(`Produto impulsionado por ${boostDays} dias!`);
+    setBoostingProduct(null);
+    fetchMyStore();
+  };
+
   const startEditProduct = (p: ProductRow) => {
     setEditingProductId(p.id);
     setEpTitle(p.title);
