@@ -14,6 +14,7 @@ const HomepageMarketplace = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { categoryNamesWithAll } = useMarketplaceCategories();
   const [items, setItems] = useState<MarketItem[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
