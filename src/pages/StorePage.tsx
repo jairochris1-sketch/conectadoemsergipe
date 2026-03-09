@@ -71,6 +71,15 @@ const StorePage = () => {
     }
     setStore(storeData as unknown as StoreRow);
 
+    // Fetch store plan
+    const { data: planData } = await supabase
+      .from("store_plans")
+      .select("plan_type")
+      .eq("store_id", storeData.id)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (planData) setPlanType((planData as any).plan_type);
+
     // Fetch products + check boosted status
     const { data: prods } = await supabase
       .from("store_products")
