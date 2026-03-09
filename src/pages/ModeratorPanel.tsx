@@ -220,6 +220,7 @@ const ModeratorPanel = () => {
             <button onClick={() => setTab("pages")}
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📄 Páginas
+            </button>
           </div>
 
           {tab === "reports" && (
