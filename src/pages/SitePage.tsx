@@ -45,9 +45,14 @@ const SitePage = () => {
               <h1 className="text-[18px] font-bold text-primary mb-3" style={{ fontFamily: "Georgia, serif" }}>
                 {title}
               </h1>
-              <div className="text-[12px] text-foreground whitespace-pre-wrap leading-relaxed">
-                {content || "Conteúdo em breve."}
-              </div>
+              {content ? (
+                <div
+                  className="text-[12px] text-foreground leading-relaxed prose prose-sm max-w-none [&_a]:text-primary [&_a]:underline [&_h2]:text-[16px] [&_h2]:font-bold [&_h2]:mt-4 [&_h2]:mb-2 [&_h3]:text-[14px] [&_h3]:font-bold [&_h3]:mt-3 [&_h3]:mb-1"
+                  dangerouslySetInnerHTML={{ __html: content }}
+                />
+              ) : (
+                <p className="text-[12px] text-muted-foreground">Conteúdo em breve.</p>
+              )}
             </>
           )}
         </div>
