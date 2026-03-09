@@ -24,7 +24,7 @@ const Index = () => {
 
       <main className="w-full max-w-[1240px] mx-auto flex justify-center gap-4 px-3 md:px-5 py-4 md:py-6">
         {/* Left column: Profile + Ads */}
-        <aside className="hidden md:flex flex-col gap-3 w-[250px] shrink-0">
+        <aside className="hidden lg:flex flex-col gap-3 w-[250px] shrink-0">
           <div className="sticky top-24 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
