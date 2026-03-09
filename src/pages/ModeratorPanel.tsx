@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import AdminPageEditor from "@/components/AdminPageEditor";
 
 interface Report {
   id: string;
@@ -44,7 +45,7 @@ const ModeratorPanel = () => {
   const { t } = useLanguage();
   const [isModerator, setIsModerator] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"reports" | "posts" | "marketplace">("reports");
+  const [tab, setTab] = useState<"reports" | "posts" | "marketplace" | "pages">("reports");
   const [reports, setReports] = useState<Report[]>([]);
   const [reportedPosts, setReportedPosts] = useState<ReportedPost[]>([]);
   const [marketplaceItems, setMarketplaceItems] = useState<MarketplaceItem[]>([]);
@@ -216,6 +217,10 @@ const ModeratorPanel = () => {
               className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "marketplace" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🛒 Marketplace
             </button>
+            <button onClick={() => setTab("pages")}
+              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              📄 Páginas
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -290,7 +295,7 @@ const ModeratorPanel = () => {
                 ))}
               </div>
             )
-          ) : (
+          ) : tab === "marketplace" ? (
             marketplaceItems.length === 0 ? (
               <p className="text-[11px] text-muted-foreground">Nenhum anúncio encontrado.</p>
             ) : (
@@ -318,7 +323,12 @@ const ModeratorPanel = () => {
                 ))}
               </div>
             )
-          )}
+          ) : tab === "pages" ? (
+            <div>
+              <p className="text-[11px] text-muted-foreground mb-3">Edite os Termos de Uso, Política de Privacidade e outras páginas do site.</p>
+              <AdminPageEditor />
+            </div>
+          ) : null}
         </div>
       </div>
       <FacebookFooter />

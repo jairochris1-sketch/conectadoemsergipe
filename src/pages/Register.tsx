@@ -86,7 +86,7 @@ const Register = () => {
             </div>
             <div>
               <label className="block font-bold text-sm mb-1">{t("register.school")}</label>
-              <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm" required placeholder={t("register.school_placeholder")} />
+              <input type="text" value={school} onChange={(e) => setSchool(e.target.value)} className="w-full border border-border px-3 py-2 text-base bg-card rounded-sm" placeholder={t("register.school_placeholder")} />
             </div>
             <button type="submit" className="bg-primary text-primary-foreground border-none px-6 py-2.5 text-base cursor-pointer hover:opacity-90 rounded-sm font-medium">
               {t("register.submit")}
