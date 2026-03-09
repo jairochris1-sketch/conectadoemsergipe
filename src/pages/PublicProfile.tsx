@@ -12,6 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
+import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
 
 interface PublicProfile {
   user_id: string;
