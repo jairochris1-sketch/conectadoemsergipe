@@ -259,19 +259,35 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
           )}
 
           {isMobile && (
-            <div className="flex items-center gap-3">
-              {unreadCount > 0 && (
-                <Link to="/messages" className="relative">
-                  <Mail className="w-6 h-6 text-primary-foreground" />
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => { setMenuOpen(false); navigate("/search"); }}
+                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground"
+                aria-label="Buscar"
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <Link to="/messages" className="relative p-1 text-primary-foreground">
+                <Mail className="w-5 h-5" />
+                {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {unreadCount}
                   </span>
-                </Link>
-              )}
+                )}
+              </Link>
+              <button
+                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground"
+                aria-label="Notificações"
+              >
+                <span className="text-lg">🔔</span>
+              </button>
+              <Link to="/profile" className="p-1 text-primary-foreground">
+                <span className="text-lg">👤</span>
+              </Link>
               <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                 <SheetTrigger asChild>
                   <button className="bg-transparent border-none cursor-pointer p-1">
-                    <Menu className="w-6 h-6 text-primary-foreground" />
+                    <Menu className="w-5 h-5 text-primary-foreground" />
                   </button>
                 </SheetTrigger>
                 <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
