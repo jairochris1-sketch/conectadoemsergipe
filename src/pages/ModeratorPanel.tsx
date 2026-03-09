@@ -328,7 +328,7 @@ const ModeratorPanel = () => {
               <p className="text-[11px] text-muted-foreground mb-3">Edite os Termos de Uso, Política de Privacidade e outras páginas do site.</p>
               <AdminPageEditor />
             </div>
-          )}
+          ) : null}
         </div>
       </div>
       <FacebookFooter />
