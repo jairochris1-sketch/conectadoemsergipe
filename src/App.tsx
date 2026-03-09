@@ -24,6 +24,7 @@ import SitePage from "./pages/SitePage";
 import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
 import FriendsPage from "./pages/Friends";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => {
                   <Route path="/seller-dashboard" element={<SellerDashboard />} />
                   <Route path="/sobre" element={<About />} />
                   <Route path="/amigos" element={<FriendsPage />} />
+                  <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

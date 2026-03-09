@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { icon: ShoppingCart, label: "Mercado", to: "/marketplace", exact: false },
   { icon: MessageCircle, label: "Chat", to: "/messages", exact: false, showBadge: true },
   { icon: Users, label: "Amigos", to: "/amigos", exact: false },
-  { icon: Settings, label: "Config.", to: "/profile", exact: false },
+  { icon: Settings, label: "Config.", to: "/configuracoes", exact: false },
 ];
 
 const AppNavSidebar = () => {
