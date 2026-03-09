@@ -159,6 +159,39 @@ const Settings = () => {
     navigate("/login");
   };
 
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== "DELETAR") return;
+    
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Erro", description: "Você precisa estar logado.", variant: "destructive" });
+        return;
+      }
+
+      const response = await supabase.functions.invoke("delete-account", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      toast({ title: "Conta excluída", description: "Sua conta foi excluída permanentemente." });
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast({ title: "Erro", description: "Não foi possível excluir a conta. Tente novamente.", variant: "destructive" });
+    } finally {
+      setDeleting(false);
+      setDeleteConfirmation("");
+    }
+  };
+
   if (!user) return null;
   
   if (loading) {
