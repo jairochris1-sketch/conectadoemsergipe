@@ -32,6 +32,7 @@ import CreateStore from "./pages/CreateStore";
 import StorePage from "./pages/StorePage";
 import ProductPage from "./pages/ProductPage";
 import MyStore from "./pages/MyStore";
+import TopSellers from "./pages/TopSellers";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => {
                   <Route path="/store/:slug" element={<StorePage />} />
                   <Route path="/produto/:id" element={<ProductPage />} />
                   <Route path="/minha-loja" element={<MyStore />} />
+                  <Route path="/top-vendedores" element={<TopSellers />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

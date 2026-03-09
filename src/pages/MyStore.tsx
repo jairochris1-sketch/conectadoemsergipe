@@ -7,7 +7,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check, Sparkles } from "lucide-react";
+import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check, Sparkles, BarChart3, MessageSquare } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import StoreProductForm from "@/components/StoreProductForm";
@@ -472,6 +472,18 @@ const MyStore = () => {
                           {p.city && <span className="flex items-center gap-0.5"><MapPin className="w-3 h-3" /> {p.city}</span>}
                           {p.category && p.category !== "Geral" && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{p.category}</span>}
                           {!p.is_active && <span className="text-destructive font-medium">Desativado</span>}
+                        </div>
+                        {/* Product Stats */}
+                        <div className="flex flex-wrap gap-3 mt-2 text-[10px] text-muted-foreground">
+                          <span className="flex items-center gap-0.5">
+                            <Eye className="w-3 h-3" /> {(p as any).view_count || 0} visualizações
+                          </span>
+                          <span className="flex items-center gap-0.5">
+                            <MessageSquare className="w-3 h-3" /> {(p as any).contact_count || 0} contatos
+                          </span>
+                          <span className="flex items-center gap-0.5">
+                            <BarChart3 className="w-3 h-3" /> {new Date(p.created_at).toLocaleDateString("pt-BR")}
+                          </span>
                         </div>
                         {p.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>}
                       </div>

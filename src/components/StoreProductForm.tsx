@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Camera, X } from "lucide-react";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
+import DeliveryOptionsSelect from "@/components/DeliveryOptionsSelect";
+import type { DeliveryOption } from "@/components/DeliveryOptionsSelect";
 
 const MAX_IMAGES = 5;
 
@@ -44,6 +46,8 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [posting, setPosting] = useState(false);
+  const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
+  const [deliveryCost, setDeliveryCost] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +98,8 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
       images: uploadedUrls,
       city: city || storeCity,
       category,
+      delivery_options: deliveryOptions,
+      delivery_cost: deliveryCost,
     } as any);
 
     if (error) {
@@ -183,6 +189,13 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         onChange={(e) => setDescription(e.target.value)}
         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px] resize-none"
         placeholder="Descrição do produto"
+      />
+
+      <DeliveryOptionsSelect
+        value={deliveryOptions}
+        onChange={setDeliveryOptions}
+        deliveryCost={deliveryCost}
+        onDeliveryCostChange={setDeliveryCost}
       />
 
       <div className="flex gap-2">

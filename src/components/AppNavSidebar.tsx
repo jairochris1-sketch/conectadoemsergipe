@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, User, ShoppingCart, MessageCircle, Users, Settings, Wrench, Store } from "lucide-react";
+import { Home, User, ShoppingCart, MessageCircle, Users, Settings, Wrench, Store, Trophy } from "lucide-react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { useAuth } from "@/context/AuthContext";
 
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { icon: ShoppingCart, label: "Mercado", to: "/marketplace", exact: false },
   { icon: Wrench, label: "Serviços", to: "/servicos", exact: false },
   { icon: Store, label: "Lojas", to: "/stores", exact: false },
+  { icon: Trophy, label: "Top", to: "/top-vendedores", exact: false },
   { icon: MessageCircle, label: "Chat", to: "/messages", exact: false, showBadge: true },
   { icon: Users, label: "Amigos", to: "/amigos", exact: false },
   { icon: Settings, label: "Config.", to: "/configuracoes", exact: false },

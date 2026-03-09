@@ -6,10 +6,14 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Store, MapPin, MessageCircle, Plus, Trash2, Package, Sparkles } from "lucide-react";
+import { Store, MapPin, MessageCircle, Plus, Trash2, Package, Sparkles, Star } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import StoreProductForm from "@/components/StoreProductForm";
 import FollowStoreButton from "@/components/FollowStoreButton";
+import SellerReviewsList from "@/components/SellerReviewsList";
+import SellerRating from "@/components/SellerRating";
+import StorePlanBadge from "@/components/StorePlanBadge";
+import { useSellerReviews } from "@/hooks/useSellerReviews";
 
 interface StoreRow {
   id: string;
@@ -44,7 +48,9 @@ const StorePage = () => {
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [planType, setPlanType] = useState("free");
 
+  const { averageRating, totalReviews } = useSellerReviews(store?.user_id);
   const isOwner = user && store && user.id === store.user_id;
 
   useEffect(() => {
@@ -64,6 +70,15 @@ const StorePage = () => {
       return;
     }
     setStore(storeData as unknown as StoreRow);
+
+    // Fetch store plan
+    const { data: planData } = await supabase
+      .from("store_plans")
+      .select("plan_type")
+      .eq("store_id", storeData.id)
+      .eq("is_active", true)
+      .maybeSingle();
+    if (planData) setPlanType((planData as any).plan_type);
 
     // Fetch products + check boosted status
     const { data: prods } = await supabase
@@ -158,12 +173,19 @@ const StorePage = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold text-foreground">{store.name}</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
+                {store.name}
+                <StorePlanBadge planType={planType} />
+              </h1>
               <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
                 {store.city && (
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {store.city}</span>
                 )}
                 <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{store.category}</span>
+              </div>
+              {/* Seller Rating */}
+              <div className="mt-1">
+                <SellerRating rating={averageRating} totalReviews={totalReviews} />
               </div>
               {store.description && (
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{store.description}</p>
@@ -253,6 +275,16 @@ const StorePage = () => {
                 </div>
               </Link>
             ))}
+          </div>
+        )}
+
+        {/* Seller Reviews Section */}
+        {store && (
+          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mt-6">
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Star className="w-5 h-5 text-primary" /> Avaliações do vendedor
+            </h3>
+            <SellerReviewsList sellerId={store.user_id} />
           </div>
         )}
       </div>
