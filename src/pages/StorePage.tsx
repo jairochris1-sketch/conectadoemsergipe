@@ -277,6 +277,16 @@ const StorePage = () => {
             ))}
           </div>
         )}
+
+        {/* Seller Reviews Section */}
+        {store && (
+          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mt-6">
+            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Star className="w-5 h-5 text-primary" /> Avaliações do vendedor
+            </h3>
+            <SellerReviewsList sellerId={store.user_id} />
+          </div>
+        )}
       </div>
       <FacebookFooter />
     </div>
