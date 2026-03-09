@@ -58,8 +58,8 @@ const BuyCredits = () => {
           amount: selectedPkg.price,
           credits: selectedPkg.credits,
           payment_method: paymentMethod,
-          customer_name: profile.name,
-          customer_email: profile.email,
+          customer_name: profileData?.name || "Usuário",
+          customer_email: profileData?.email || user.email || "",
           customer_cpf: cpf.replace(/\D/g, ""),
         },
       });
