@@ -103,14 +103,30 @@ const MyStore = () => {
       .eq("is_active", true)
       .maybeSingle();
 
-    if (data) {
+  if (data) {
       setStore(data as unknown as StoreRow);
       const { data: prods } = await supabase
         .from("store_products")
         .select("*")
         .eq("store_id", data.id)
         .order("created_at", { ascending: false });
-      setProducts((prods as unknown as ProductRow[]) || []);
+      
+      const prodList = (prods as unknown as ProductRow[]) || [];
+      
+      // Check boosted status
+      const prodIds = prodList.map(p => p.id);
+      if (prodIds.length > 0) {
+        const { data: campaigns } = await supabase
+          .from("sponsored_campaigns")
+          .select("item_id")
+          .eq("status", "active")
+          .in("item_id", prodIds);
+        const boostedSet = new Set((campaigns || []).map((c: any) => c.item_id));
+        setBoostedIds(boostedSet);
+        prodList.forEach(p => { p.is_boosted = boostedSet.has(p.id); });
+      }
+      
+      setProducts(prodList);
     }
     setLoading(false);
   };
