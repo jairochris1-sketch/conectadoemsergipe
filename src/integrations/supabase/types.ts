@@ -350,8 +350,11 @@ export type Database = {
           audio_url: string | null
           content: string
           created_at: string
+          edited_at: string | null
+          expires_at: string | null
           id: string
           image_url: string | null
+          is_deleted: boolean | null
           read: boolean
           receiver_id: string
           sender_id: string
@@ -360,8 +363,11 @@ export type Database = {
           audio_url?: string | null
           content: string
           created_at?: string
+          edited_at?: string | null
+          expires_at?: string | null
           id?: string
           image_url?: string | null
+          is_deleted?: boolean | null
           read?: boolean
           receiver_id: string
           sender_id: string
@@ -370,8 +376,11 @@ export type Database = {
           audio_url?: string | null
           content?: string
           created_at?: string
+          edited_at?: string | null
+          expires_at?: string | null
           id?: string
           image_url?: string | null
+          is_deleted?: boolean | null
           read?: boolean
           receiver_id?: string
           sender_id?: string
