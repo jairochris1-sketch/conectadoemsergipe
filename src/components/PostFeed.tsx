@@ -424,7 +424,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
         if (!post || !post.imageUrl) return null;
         return (
           <div
-            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2 sm:p-4"
             onClick={() => setLightboxPost(null)}
           >
             <button
@@ -434,31 +434,31 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               ✕
             </button>
             <div
-              className="flex w-[95vw] max-w-[1100px] h-[90vh] max-h-[700px] bg-card rounded-md overflow-hidden shadow-lg"
+              className="flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Left: Image */}
-              <div className="flex-1 bg-black flex items-center justify-center min-w-0">
+              {/* Image - top on mobile, left on desktop */}
+              <div className="h-[40vh] lg:h-full lg:flex-1 bg-black flex items-center justify-center min-w-0 shrink-0">
                 <img
                   src={post.imageUrl}
                   alt="Ampliada"
                   className="max-w-full max-h-full object-contain"
                 />
               </div>
-              {/* Right: Post info + Comments */}
-              <div className="w-[340px] shrink-0 flex flex-col border-l border-border bg-card">
+              {/* Post info + Comments - bottom on mobile, right on desktop */}
+              <div className="flex-1 lg:w-[340px] lg:flex-initial lg:shrink-0 flex flex-col border-t lg:border-t-0 lg:border-l border-border bg-card min-h-0">
                 {/* Author header */}
-                <div className="flex items-center gap-3 p-4 border-b border-border">
-                  <div className="w-[40px] h-[40px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
+                <div className="flex items-center gap-3 p-3 lg:p-4 border-b border-border shrink-0">
+                  <div className="w-[36px] h-[36px] lg:w-[40px] lg:h-[40px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
                     {post.authorPhoto ? (
                       <img src={post.authorPhoto} alt={post.authorName} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-xs text-muted-foreground flex items-center justify-center h-full">{t("photo")}</span>
                     )}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-0">
-                      <Link to={`/user/${post.authorId}`} className="text-sm font-bold hover:underline" onClick={() => setLightboxPost(null)}>
+                      <Link to={`/user/${post.authorId}`} className="text-sm font-bold hover:underline truncate" onClick={() => setLightboxPost(null)}>
                         {post.authorName}
                       </Link>
                       <VerificationBadge {...(badges.get(post.authorId) || {})} />
@@ -468,8 +468,8 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                 </div>
                 {/* Post content */}
                 {post.content && (
-                  <div className="px-4 py-3 border-b border-border">
-                    <p className="text-sm">
+                  <div className="px-3 lg:px-4 py-2 lg:py-3 border-b border-border shrink-0">
+                    <p className="text-sm line-clamp-3 lg:line-clamp-none">
                       {post.content.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
                         /^https?:\/\//.test(part) ? (
                           <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all hover:opacity-80">{part}</a>
@@ -479,38 +479,36 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                   </div>
                 )}
                 {/* Comments list */}
-                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-                  {(comments[post.id] || []).length === 0 && (
-                    <p className="text-sm text-muted-foreground">{t("comments.show")}</p>
-                  )}
+                <div className="flex-1 overflow-y-auto px-3 lg:px-4 py-2 lg:py-3 space-y-2 lg:space-y-3 min-h-0">
+                  <p className="text-xs font-bold text-muted-foreground">{t("comments.show")}</p>
                   {(comments[post.id] || []).map((c) => (
                     <div key={c.id} className="flex gap-2">
-                      <div className="shrink-0 w-[28px] h-[28px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
+                      <div className="shrink-0 w-[24px] h-[24px] lg:w-[28px] lg:h-[28px] bg-muted border border-border rounded-full overflow-hidden mt-[2px]">
                         {c.authorPhoto ? (
                           <img src={c.authorPhoto} alt={c.authorName} className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[10px] text-muted-foreground flex items-center justify-center h-full">👤</span>
                         )}
                       </div>
-                      <div className="bg-accent rounded px-3 py-1.5 min-w-0">
-                        <p className="text-sm">
+                      <div className="bg-accent rounded px-2 lg:px-3 py-1 lg:py-1.5 min-w-0 flex-1">
+                        <p className="text-xs lg:text-sm">
                           <span className="font-bold">{c.authorName}</span>
                           <VerificationBadge {...(badges.get(c.authorId) || {})} />
                           {" "}{c.content}
                         </p>
-                        <p className="text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
+                        <p className="text-[10px] lg:text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>
                     </div>
                   ))}
                 </div>
                 {/* Add comment */}
                 {user && (
-                  <div className="flex gap-2 p-3 border-t border-border">
+                  <div className="flex gap-2 p-2 lg:p-3 border-t border-border shrink-0">
                     <input
                       type="text"
                       value={commentTexts[post.id] || ""}
                       onChange={(e) => setCommentTexts((prev) => ({ ...prev, [post.id]: e.target.value }))}
-                      className="flex-1 border border-border p-2 text-sm bg-card rounded-sm"
+                      className="flex-1 border border-border p-2 text-sm bg-card rounded-sm min-w-0"
                       placeholder={t("comments.placeholder")}
                       onKeyDown={async (e) => {
                         if (e.key === "Enter") {
@@ -520,7 +518,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     />
                     <button
                       onClick={() => handleAddComment(post.id)}
-                      className="bg-primary text-primary-foreground border-none px-3 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm"
+                      className="bg-primary text-primary-foreground border-none px-3 py-2 text-sm cursor-pointer hover:opacity-90 rounded-sm shrink-0"
                     >
                       {t("comments.send")}
                     </button>
