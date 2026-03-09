@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { CreditCard, QrCode, FileText, Coins, Copy, Check, RefreshCw, History, Clock } from "lucide-react";
+import { validateCPFOrCNPJ } from "@/lib/cpfCnpjValidator";
 
 const CREDIT_PACKAGES = [
   { credits: 50, price: 5, label: "50 créditos" },
