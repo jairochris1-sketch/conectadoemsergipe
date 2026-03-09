@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
+import { Pencil, Trash2, Check, X, ImagePlus, ArrowBigUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
