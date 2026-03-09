@@ -22,10 +22,22 @@ const escapeHtml = (str: string): string =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+// Detect crawlers/bots that fetch OG previews
+const isCrawler = (userAgent: string): boolean => {
+  const crawlers = [
+    'facebookexternalhit', 'Facebot', 'WhatsApp', 'Twitterbot', 
+    'TelegramBot', 'LinkedInBot', 'Slackbot', 'Discordbot',
+    'Pinterest', 'Googlebot', 'bingbot', 'Embedly', 'Iframely'
+  ];
+  return crawlers.some(c => userAgent.toLowerCase().includes(c.toLowerCase()));
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const userAgent = req.headers.get("user-agent") || "";
 
   const url = new URL(req.url);
   const itemId = url.searchParams.get("id");
@@ -67,6 +79,13 @@ Deno.serve(async (req) => {
   const ogImage = escapeHtml(images[0] || item.image_url || DEFAULT_IMAGE);
   const redirectUrl = `${SITE_URL}/marketplace?item=${itemId}`;
 
+  // For crawlers: serve OG tags WITHOUT redirect so they can parse them
+  // For humans: redirect immediately to the actual page
+  const shouldRedirect = !isCrawler(userAgent);
+  const redirectMeta = shouldRedirect 
+    ? `<meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}"/>` 
+    : '';
+
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -83,7 +102,7 @@ Deno.serve(async (req) => {
   <meta name="twitter:title" content="${title}"/>
   <meta name="twitter:description" content="${description}"/>
   <meta name="twitter:image" content="${ogImage}"/>
-  <meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}"/>
+  ${redirectMeta}
 </head>
 <body>
   <p>Redirecionando para <a href="${escapeHtml(redirectUrl)}">${title}</a>...</p>
