@@ -72,10 +72,12 @@ const Index = () => {
             />
           </div>
 
-          {/* Mobile-only: Marketplace highlights */}
-          <div className="md:hidden mb-3">
+          {/* Mobile/Tablet: Marketplace highlights */}
+          <div className="lg:hidden mb-3">
             <MarketplaceHighlights />
           </div>
+
+          <FollowedStoresNewProducts />
 
           <HomepageMarketplace />
 
