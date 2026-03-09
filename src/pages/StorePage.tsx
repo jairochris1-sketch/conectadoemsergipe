@@ -6,10 +6,14 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Store, MapPin, MessageCircle, Plus, Trash2, Package, Sparkles } from "lucide-react";
+import { Store, MapPin, MessageCircle, Plus, Trash2, Package, Sparkles, Star } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import StoreProductForm from "@/components/StoreProductForm";
 import FollowStoreButton from "@/components/FollowStoreButton";
+import SellerReviewsList from "@/components/SellerReviewsList";
+import SellerRating from "@/components/SellerRating";
+import StorePlanBadge from "@/components/StorePlanBadge";
+import { useSellerReviews } from "@/hooks/useSellerReviews";
 
 interface StoreRow {
   id: string;
