@@ -328,7 +328,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                       </button>
                     </SheetTrigger>
                     <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
-                      <SheetTitle className="text-primary-foreground text-lg mb-4">Menu</SheetTitle>
+                      <SheetTitle className="text-white text-lg mb-4">Menu</SheetTitle>
                       <div className="relative mb-4">
                         <form onSubmit={handleSearch} className="flex items-center">
                           <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
