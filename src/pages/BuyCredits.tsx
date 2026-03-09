@@ -70,6 +70,11 @@ const BuyCredits = () => {
       toast.error("Informe um CPF/CNPJ válido.");
       return;
     }
+    const { valid, type } = validateCPFOrCNPJ(cpf);
+    if (!valid) {
+      toast.error(type === "unknown" ? "CPF deve ter 11 dígitos ou CNPJ 14 dígitos." : `${type.toUpperCase()} inválido. Verifique os dígitos.`);
+      return;
+    }
 
     const { data: profileData } = await supabase.from("profiles").select("name, email").eq("user_id", user.id).single();
 
