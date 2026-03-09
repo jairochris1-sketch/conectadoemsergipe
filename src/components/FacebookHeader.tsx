@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Mail, Menu, Sun, Moon, ArrowLeft } from "lucide-react";
+import { Search, Mail, Menu, Sun, Moon, ArrowLeft, X } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -26,7 +26,9 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [suggestions, setSuggestions] = useState<{ user_id: string; name: string; photo_url: string | null }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,6 +77,12 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  useEffect(() => {
+    if (mobileSearchOpen && mobileSearchRef.current) {
+      mobileSearchRef.current.focus();
+    }
+  }, [mobileSearchOpen]);
+
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
@@ -100,6 +108,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setMenuOpen(false);
+      setMobileSearchOpen(false);
     }
   };
 
@@ -107,6 +116,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     setShowSuggestions(false);
     setSearchQuery("");
     setMenuOpen(false);
+    setMobileSearchOpen(false);
     navigate(`/user/${userId}`);
   };
 
@@ -138,7 +148,6 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
       {isLoggedIn ? (
         <>
-          {/* Mobile-only links - desktop uses sidebar */}
           <Link to="/" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
           <Link to="/profile" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
           <Link to="/marketplace" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
@@ -200,128 +209,157 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
     >
-      <div className="max-w-[1240px] mx-auto px-4 py-2.5">
+      <div className="max-w-[1240px] mx-auto px-3 py-2">
         {/* Top row: logo + search */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            {isMobile && location.pathname !== "/" && (
-              <button
-                onClick={() => navigate(-1)}
-                className="bg-transparent border-none cursor-pointer text-primary-foreground p-1 flex items-center"
-                aria-label="Voltar"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-            )}
-            <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
-              <h1 className="text-[1.35rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
-                Conectadoemsergipe
-              </h1>
-            </Link>
-          </div>
-
-          {!isMobile && (
-            <div className="flex items-center gap-3">
-              <div className="relative" ref={suggestionsRef}>
-                <form onSubmit={handleSearch} className="flex items-center">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
-                    placeholder={t("search")}
-                    className="border border-border px-3 py-2 text-sm text-foreground bg-card w-[220px] rounded-l-xl"
-                  />
-                  <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
-                    <Search className="w-5 h-5 text-foreground" />
-                  </button>
-                </form>
-                <SuggestionsDropdown />
-              </div>
-              <div className="flex items-center gap-1.5 rounded-xl bg-primary-foreground/10 px-2 py-1">
-                {(["pt", "es", "en"] as Language[]).map((lang) => (
-                  <button
-                    key={lang}
-                    onClick={() => setLanguage(lang)}
-                    className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-primary-foreground/20 text-primary-foreground" : "text-primary-foreground/75 hover:text-primary-foreground"}`}
-                  >
-                    {LANG_LABELS[lang]}
-                  </button>
-                ))}
-                <button
-                  onClick={toggleDarkMode}
-                  className="bg-transparent border-none cursor-pointer text-primary-foreground/85 hover:text-primary-foreground ml-1 p-1"
-                  title={darkMode ? "Modo claro" : "Modo noturno"}
-                >
-                  {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        <div className="flex items-center justify-between gap-2">
+          {/* Left: back + logo OR mobile search */}
+          {isMobile && mobileSearchOpen ? (
+            <div className="flex-1 flex items-center gap-2 relative" ref={suggestionsRef}>
+              <form onSubmit={handleSearch} className="flex-1 flex items-center">
+                <input
+                  ref={mobileSearchRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                  placeholder={t("search") || "Buscar..."}
+                  className="flex-1 border border-border px-3 py-1.5 text-sm text-foreground bg-card rounded-l-xl"
+                />
+                <button type="submit" className="bg-secondary border border-border border-l-0 px-2.5 py-1.5 cursor-pointer flex items-center rounded-r-xl">
+                  <Search className="w-4 h-4 text-foreground" />
                 </button>
-              </div>
+              </form>
+              <button
+                onClick={() => { setMobileSearchOpen(false); setSearchQuery(""); setShowSuggestions(false); }}
+                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <SuggestionsDropdown />
             </div>
-          )}
-
-          {isMobile && (
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => { setMenuOpen(false); navigate("/search"); }}
-                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground"
-                aria-label="Buscar"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-              <Link to="/messages" className="relative p-1 text-primary-foreground">
-                <Mail className="w-5 h-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {unreadCount}
-                  </span>
-                )}
-              </Link>
-              <button
-                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground"
-                aria-label="Notificações"
-              >
-                <span className="text-lg">🔔</span>
-              </button>
-              <Link to="/profile" className="p-1 text-primary-foreground">
-                <span className="text-lg">👤</span>
-              </Link>
-              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-                <SheetTrigger asChild>
-                  <button className="bg-transparent border-none cursor-pointer p-1">
-                    <Menu className="w-5 h-5 text-primary-foreground" />
+          ) : (
+            <>
+              <div className="flex items-center gap-1 min-w-0">
+                {isMobile && location.pathname !== "/" && (
+                  <button
+                    onClick={() => navigate(-1)}
+                    className="bg-transparent border-none cursor-pointer text-primary-foreground p-0.5 flex items-center shrink-0"
+                    aria-label="Voltar"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
                   </button>
-                </SheetTrigger>
-                <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
-                  <SheetTitle className="text-primary-foreground text-lg mb-4">Menu</SheetTitle>
-                  <div className="relative mb-4">
+                )}
+                <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+                  <h1 className="text-[1.1rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
+                    Conectadoemsergipe
+                  </h1>
+                </Link>
+              </div>
+
+              {!isMobile && (
+                <div className="flex items-center gap-3">
+                  <div className="relative" ref={suggestionsRef}>
                     <form onSubmit={handleSearch} className="flex items-center">
-                      <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                        placeholder={t("search")}
+                        className="border border-border px-3 py-2 text-sm text-foreground bg-card w-[220px] rounded-l-xl"
+                      />
                       <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
                         <Search className="w-5 h-5 text-foreground" />
                       </button>
                     </form>
                     <SuggestionsDropdown />
                   </div>
-                  <div className="flex items-center gap-2 mb-4">
+                  <div className="flex items-center gap-1.5 rounded-xl bg-primary-foreground/10 px-2 py-1">
                     {(["pt", "es", "en"] as Language[]).map((lang) => (
-                      <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                      <button
+                        key={lang}
+                        onClick={() => setLanguage(lang)}
+                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-primary-foreground/20 text-primary-foreground" : "text-primary-foreground/75 hover:text-primary-foreground"}`}
+                      >
                         {LANG_LABELS[lang]}
                       </button>
                     ))}
                     <button
                       onClick={toggleDarkMode}
-                      className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-1"
+                      className="bg-transparent border-none cursor-pointer text-primary-foreground/85 hover:text-primary-foreground ml-1 p-1"
                       title={darkMode ? "Modo claro" : "Modo noturno"}
                     >
                       {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                     </button>
                   </div>
-                  <div className="flex flex-col gap-4">
-                    {navLinks(() => setMenuOpen(false))}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
+                </div>
+              )}
+
+              {isMobile && (
+                <div className="flex items-center gap-0.5 shrink-0">
+                  <button
+                    onClick={() => setMobileSearchOpen(true)}
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    aria-label="Buscar"
+                  >
+                    <Search className="w-[18px] h-[18px]" />
+                  </button>
+                  <Link to="/messages" className="relative p-1.5 text-primary-foreground">
+                    <Mail className="w-[18px] h-[18px]" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                  <button
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    aria-label="Notificações"
+                  >
+                    <span className="text-base">🔔</span>
+                  </button>
+                  <Link to="/profile" className="p-1.5 text-primary-foreground">
+                    <span className="text-base">👤</span>
+                  </Link>
+                  <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                    <SheetTrigger asChild>
+                      <button className="bg-transparent border-none cursor-pointer p-1.5">
+                        <Menu className="w-[18px] h-[18px] text-primary-foreground" />
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
+                      <SheetTitle className="text-primary-foreground text-lg mb-4">Menu</SheetTitle>
+                      <div className="relative mb-4">
+                        <form onSubmit={handleSearch} className="flex items-center">
+                          <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
+                          <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
+                            <Search className="w-5 h-5 text-foreground" />
+                          </button>
+                        </form>
+                        <SuggestionsDropdown />
+                      </div>
+                      <div className="flex items-center gap-2 mb-4">
+                        {(["pt", "es", "en"] as Language[]).map((lang) => (
+                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                            {LANG_LABELS[lang]}
+                          </button>
+                        ))}
+                        <button
+                          onClick={toggleDarkMode}
+                          className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-1"
+                          title={darkMode ? "Modo claro" : "Modo noturno"}
+                        >
+                          {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                        </button>
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        {navLinks(() => setMenuOpen(false))}
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              )}
+            </>
           )}
         </div>
 

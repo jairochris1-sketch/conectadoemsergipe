@@ -13,6 +13,7 @@ import AdminModerationLogs from "@/components/AdminModerationLogs";
 import AdminBannerManager from "@/components/AdminBannerManager";
 import AdminForbiddenWords from "@/components/AdminForbiddenWords";
 import AdminProfileLinks from "@/components/AdminProfileLinks";
+import AdminLoginSettings from "@/components/AdminLoginSettings";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -50,7 +51,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "categories" | "profile_links" | "services">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "categories" | "profile_links" | "services" | "login_settings">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -192,6 +193,10 @@ const AdminPanel = () => {
               className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "services" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🛠️ Serviços
             </button>
+            <button onClick={() => setTab("login_settings")}
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "login_settings" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🔐 Login
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -207,8 +212,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" && tab !== "profile_links" && tab !== "services" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" && tab !== "profile_links" && tab !== "services" && tab !== "login_settings" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "login_settings" ? (
+            <AdminLoginSettings />
           ) : tab === "services" ? (
             <AdminServiceManager />
           ) : tab === "profile_links" ? (

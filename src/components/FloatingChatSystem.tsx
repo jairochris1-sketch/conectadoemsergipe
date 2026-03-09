@@ -120,6 +120,13 @@ const FloatingChatSystem = () => {
                   </span>
                 )}
               </h3>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer p-0.5"
+                title="Fechar chat"
+              >
+                ✕
+              </button>
             </div>
             <input
               type="text"
@@ -198,13 +205,21 @@ const FloatingChatSystem = () => {
           <>
             <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setSidebarOpen(false)} />
             <div className="fixed bottom-20 right-4 z-50 w-72 max-h-[60vh] bg-card border border-border rounded-xl shadow-2xl overflow-hidden animate-scale-in">
-              <div className="p-3 border-b border-border">
+              <div className="p-3 border-b border-border flex items-center justify-between">
                 <h3 className="text-sm font-bold flex items-center gap-1.5">
                   💬 Chat
                   {onlineCount > 0 && (
                     <span className="text-[10px] text-green-500">• {onlineCount} online</span>
                   )}
                 </h3>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-muted-foreground hover:text-foreground bg-transparent border-none cursor-pointer p-0.5"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="p-3 pt-0">
                 <input
                   type="text"
                   value={search}

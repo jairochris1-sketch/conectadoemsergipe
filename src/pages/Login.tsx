@@ -17,6 +17,8 @@ const Login = () => {
   const [forgotError, setForgotError] = useState("");
   const [bannerImage, setBannerImage] = useState("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
+  const [customTitle, setCustomTitle] = useState("");
+  const [customText, setCustomText] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
@@ -25,11 +27,13 @@ const Login = () => {
     supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", ["login_banner", "header_overlay_opacity"])
+      .in("key", ["login_banner", "header_overlay_opacity", "login_welcome_title", "login_welcome_text"])
       .then(({ data }) => {
         data?.forEach((row: any) => {
           if (row.key === "login_banner" && row.value) setBannerImage(row.value);
           if (row.key === "header_overlay_opacity" && row.value) setOverlayOpacity(Number(row.value) / 100);
+          if (row.key === "login_welcome_title" && row.value) setCustomTitle(row.value);
+          if (row.key === "login_welcome_text" && row.value) setCustomText(row.value);
         });
       });
   }, []);
@@ -218,10 +222,14 @@ const Login = () => {
             className="text-xl sm:text-2xl font-bold text-foreground mb-4 text-center"
             style={{ fontFamily: "Georgia, serif" }}
           >
-            {t("login.welcome_title")}
+            {customTitle || t("login.welcome_title")}
           </h2>
           <div className="text-base text-foreground space-y-4 max-w-[520px] mx-auto">
-            <p>{t("login.welcome_text")}</p>
+            {customText ? (
+              <p>{customText}</p>
+            ) : (
+              <p>{t("login.welcome_text")}</p>
+            )}
             <p>
               {t("login.opened")} <b>Sergipe</b>.
             </p>
