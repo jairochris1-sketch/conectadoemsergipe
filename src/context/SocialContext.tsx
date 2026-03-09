@@ -52,6 +52,11 @@ interface SocialContextType {
   searchProfiles: (query: string) => Promise<{ id: string; name: string; school: string; photo: string }[]>;
   getComments: (postId: string) => Promise<Comment[]>;
   addComment: (postId: string, content: string) => Promise<void>;
+  deleteComment: (commentId: string, postId: string) => Promise<void>;
+  toggleReaction: (postId: string) => Promise<void>;
+  getReactionCount: (postId: string) => number;
+  hasReacted: (postId: string) => boolean;
+  refreshReactions: () => Promise<void>;
 }
 
 const SocialContext = createContext<SocialContextType | null>(null);
@@ -296,6 +301,61 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
     await supabase.from("comments").insert({ post_id: postId, user_id: user.id, content });
   };
 
+  const deleteComment = async (commentId: string, _postId: string) => {
+    if (!user) return;
+    await supabase.from("comments").delete().eq("id", commentId);
+  };
+
+  // Reactions state
+  const [reactions, setReactions] = useState<Record<string, { count: number; userReacted: boolean }>>({});
+
+  const refreshReactions = useCallback(async () => {
+    if (!posts.length) return;
+    const postIds = posts.map(p => p.id);
+    const { data } = await supabase
+      .from("post_reactions")
+      .select("post_id, user_id")
+      .in("post_id", postIds);
+
+    if (!data) return;
+    const map: Record<string, { count: number; userReacted: boolean }> = {};
+    for (const r of data) {
+      if (!map[r.post_id]) map[r.post_id] = { count: 0, userReacted: false };
+      map[r.post_id].count++;
+      if (user && r.user_id === user.id) map[r.post_id].userReacted = true;
+    }
+    setReactions(map);
+  }, [posts, user]);
+
+  useEffect(() => {
+    refreshReactions();
+  }, [refreshReactions]);
+
+  // Realtime: reactions
+  useEffect(() => {
+    const channel = supabase
+      .channel("reactions-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "post_reactions" }, () => {
+        refreshReactions();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [refreshReactions]);
+
+  const toggleReaction = async (postId: string) => {
+    if (!user) return;
+    const reacted = reactions[postId]?.userReacted;
+    if (reacted) {
+      await supabase.from("post_reactions").delete().eq("post_id", postId).eq("user_id", user.id);
+    } else {
+      await supabase.from("post_reactions").insert({ post_id: postId, user_id: user.id } as any);
+    }
+    await refreshReactions();
+  };
+
+  const getReactionCount = (postId: string) => reactions[postId]?.count || 0;
+  const hasReacted = (postId: string) => reactions[postId]?.userReacted || false;
+
   return (
     <SocialContext.Provider
       value={{
@@ -316,6 +376,11 @@ export const SocialProvider = ({ children }: { children: ReactNode }) => {
         searchProfiles,
         getComments,
         addComment,
+        deleteComment,
+        toggleReaction,
+        getReactionCount,
+        hasReacted,
+        refreshReactions,
       }}
     >
       {children}

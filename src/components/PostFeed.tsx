@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
+import { Pencil, Trash2, Check, X, ImagePlus, ArrowBigUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSocial, Comment } from "@/context/SocialContext";
 import { useAuth } from "@/context/AuthContext";
@@ -43,7 +43,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const { language, t } = useLanguage();
-  const { posts, createPost, deleteOwnPost, updatePost, getComments, addComment, refreshPosts } = useSocial();
+  const { posts, createPost, deleteOwnPost, updatePost, getComments, addComment, deleteComment, toggleReaction, getReactionCount, hasReacted, refreshPosts } = useSocial();
   const { user } = useAuth();
   const { isAdmin, deletePost } = useAdmin();
   const [banModal, setBanModal] = useState<{ userId: string; userName: string } | null>(null);
@@ -365,14 +365,30 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
             </div>
 
-            {/* Comments toggle */}
-            <button
-              onClick={() => toggleComments(post.id)}
-              className="text-sm text-primary mt-2 bg-transparent border-none cursor-pointer hover:underline"
-            >
-              {openComments[post.id] ? t("comments.hide") : t("comments.show")}
-              {comments[post.id] && ` (${comments[post.id].length})`}
-            </button>
+            {/* Top reaction + Comments toggle */}
+            <div className="flex items-center gap-4 mt-2">
+              {user && (
+                <button
+                  onClick={() => toggleReaction(post.id)}
+                  className={`text-sm bg-transparent border-none cursor-pointer hover:opacity-80 inline-flex items-center gap-1 font-medium transition-colors ${hasReacted(post.id) ? 'text-primary' : 'text-muted-foreground'}`}
+                >
+                  <ArrowBigUp className={`w-5 h-5 ${hasReacted(post.id) ? 'fill-primary' : ''}`} />
+                  Top {getReactionCount(post.id) > 0 && `(${getReactionCount(post.id)})`}
+                </button>
+              )}
+              {!user && getReactionCount(post.id) > 0 && (
+                <span className="text-sm text-muted-foreground inline-flex items-center gap-1">
+                  <ArrowBigUp className="w-5 h-5" /> Top ({getReactionCount(post.id)})
+                </span>
+              )}
+              <button
+                onClick={() => toggleComments(post.id)}
+                className="text-sm text-primary bg-transparent border-none cursor-pointer hover:underline"
+              >
+                {openComments[post.id] ? t("comments.hide") : t("comments.show")}
+                {comments[post.id] && ` (${comments[post.id].length})`}
+              </button>
+            </div>
 
             {/* Comments section */}
             {openComments[post.id] && (
@@ -386,7 +402,7 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                         <span className="text-[10px] text-muted-foreground flex items-center justify-center h-full">👤</span>
                       )}
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm">
                         <Link to={`/user/${c.authorId}`} className="font-bold">{c.authorName}</Link>
                         <VerificationBadge {...(badges.get(c.authorId) || {})} />
@@ -394,6 +410,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                       </p>
                       <p className="text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                     </div>
+                    {(user && (c.authorId === user.id || isAdmin)) && (
+                      <button
+                        onClick={async () => {
+                          await deleteComment(c.id, post.id);
+                          const data = await getComments(post.id);
+                          setComments((prev) => ({ ...prev, [post.id]: data }));
+                        }}
+                        className="shrink-0 text-destructive bg-transparent border-none cursor-pointer hover:opacity-70 p-1"
+                        title="Excluir comentário"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 ))}
                 {user && (
@@ -482,16 +511,17 @@ const PostFeed = ({ userName }: PostFeedProps) => {
             className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-2 sm:p-4"
             onClick={() => setLightboxPost(null)}
           >
-            <button
-              onClick={() => setLightboxPost(null)}
-              className="absolute top-3 right-3 text-white/80 hover:text-white text-3xl bg-transparent border-none cursor-pointer z-10"
-            >
-              ✕
-            </button>
             <div
-              className="flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
+              className="relative flex flex-col lg:flex-row w-full max-w-[1100px] h-[95vh] lg:h-[90vh] max-h-[800px] bg-card rounded-md overflow-hidden shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Close button inside modal */}
+              <button
+                onClick={() => setLightboxPost(null)}
+                className="absolute top-2 right-2 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 text-2xl border-none cursor-pointer transition-colors"
+              >
+                ✕
+              </button>
               {/* Image - top on mobile, left on desktop */}
               <div className="h-[40vh] lg:h-full lg:flex-1 bg-black flex items-center justify-center min-w-0 shrink-0">
                 <img
@@ -533,6 +563,22 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                     </p>
                   </div>
                 )}
+                {/* Top reaction in lightbox */}
+                <div className="px-3 lg:px-4 py-2 border-b border-border shrink-0">
+                  {user ? (
+                    <button
+                      onClick={() => toggleReaction(post.id)}
+                      className={`text-sm bg-transparent border-none cursor-pointer hover:opacity-80 inline-flex items-center gap-1 font-medium transition-colors ${hasReacted(post.id) ? 'text-primary' : 'text-muted-foreground'}`}
+                    >
+                      <ArrowBigUp className={`w-5 h-5 ${hasReacted(post.id) ? 'fill-primary' : ''}`} />
+                      Top {getReactionCount(post.id) > 0 && `(${getReactionCount(post.id)})`}
+                    </button>
+                  ) : getReactionCount(post.id) > 0 ? (
+                    <span className="text-sm text-muted-foreground inline-flex items-center gap-1">
+                      <ArrowBigUp className="w-5 h-5" /> Top ({getReactionCount(post.id)})
+                    </span>
+                  ) : null}
+                </div>
                 {/* Comments list */}
                 <div className="flex-1 overflow-y-auto px-3 lg:px-4 py-2 lg:py-3 space-y-2 lg:space-y-3 min-h-0">
                   <p className="text-xs font-bold text-muted-foreground">{t("comments.show")}</p>
@@ -553,6 +599,19 @@ const PostFeed = ({ userName }: PostFeedProps) => {
                         </p>
                         <p className="text-[10px] lg:text-xs text-muted-foreground">{formatDate(c.timestamp)}</p>
                       </div>
+                      {(user && (c.authorId === user.id || isAdmin)) && (
+                        <button
+                          onClick={async () => {
+                            await deleteComment(c.id, post.id);
+                            const data = await getComments(post.id);
+                            setComments((prev) => ({ ...prev, [post.id]: data }));
+                          }}
+                          className="shrink-0 text-destructive bg-transparent border-none cursor-pointer hover:opacity-70 p-1"
+                          title="Excluir comentário"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
