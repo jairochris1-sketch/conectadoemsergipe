@@ -34,6 +34,7 @@ import ProductPage from "./pages/ProductPage";
 import MyStore from "./pages/MyStore";
 import TopSellers from "./pages/TopSellers";
 import BuyCredits from "./pages/BuyCredits";
+import StorePlans from "./pages/StorePlans";
 
 const queryClient = new QueryClient();
 
