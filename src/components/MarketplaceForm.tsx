@@ -133,7 +133,7 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
     const uploadedUrls: string[] = [];
     for (const file of imageFiles) {
       const ext = file.name.split(".").pop();
-      const path = `marketplace/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${user.id}/marketplace/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(path, file, { upsert: true });
