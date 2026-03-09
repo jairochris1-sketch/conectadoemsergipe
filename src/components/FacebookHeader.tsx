@@ -313,7 +313,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     )}
                   </Link>
                   <button
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
                     aria-label="Notificações"
                   >
                     <span className="text-base">🔔</span>
