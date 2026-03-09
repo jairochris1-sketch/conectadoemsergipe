@@ -35,6 +35,7 @@ const CONDITIONS = [
 
 const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
   const { t } = useLanguage();
+  const { categoryNames } = useMarketplaceCategories();
   const [newItem, setNewItem] = useState({ title: "", price: "", description: "", category: "Outros", city: "", whatsapp: "", condition: "used" });
   const [priceDisplay, setPriceDisplay] = useState("");
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
