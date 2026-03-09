@@ -108,6 +108,7 @@ const Profile = () => {
                     <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                     <p><b>{t("friends")}:</b> {friends.length}</p>
                     <p><b>{t("admin.followers")}:</b> {followerCount}</p>
+                    <ProfileLinksDisplay userId={user.id} />
                   </div>
                 ) : (
                   <div className="space-y-3 flex-1">

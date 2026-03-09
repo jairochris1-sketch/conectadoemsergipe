@@ -202,8 +202,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" && tab !== "profile_links" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "profile_links" ? (
+            <AdminProfileLinks />
           ) : tab === "categories" ? (
             <AdminCategoryManager />
           ) : tab === "forbidden" ? (

@@ -124,6 +124,7 @@ const PublicProfile = () => {
                     <p><b>📅 Membro desde:</b> {new Date(profile.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
                   )}
                   <p><b>{t("admin.followers")}:</b> {followerCount}</p>
+                  <ProfileLinksDisplay userId={userId!} />
 
                   {/* Actions */}
                   {user && userId && (
