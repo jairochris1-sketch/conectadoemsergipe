@@ -148,11 +148,11 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
       {isLoggedIn ? (
         <>
-          <Link to="/" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
-          <Link to="/profile" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
-          <Link to="/marketplace" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
-          <Link to="/servicos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
-          <Link to="/messages" className="md:hidden text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+          <Link to="/" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/servicos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
+          <Link to="/messages" className="md:hidden text-white relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
             <Mail className="w-5 h-5" />
             {t("messages")}
             {unreadCount > 0 && (
@@ -161,9 +161,9 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </span>
             )}
           </Link>
-          <Link to="/amigos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
+          <Link to="/amigos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
           {isAdmin && (
-            <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+            <Link to="/admin" className="text-white font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
               {t("admin.panel")}
               {pendingReports > 0 && (
                 <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
@@ -173,18 +173,18 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
             </Link>
           )}
           {isModerator && !isAdmin && (
-            <Link to="/moderator" className="text-primary-foreground font-bold text-sm hover:underline" onClick={onNav}>
+            <Link to="/moderator" className="text-white font-bold text-sm hover:underline" onClick={onNav}>
               ⭐ Colaborador
             </Link>
           )}
-          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
+          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-white bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
             {t("logout")}
           </button>
         </>
       ) : (
         <>
-          <Link to="/login" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
-          <Link to="/register" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
+          <Link to="/login" className="text-white text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
+          <Link to="/register" className="text-white text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
         </>
       )}
     </>
