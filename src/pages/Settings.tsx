@@ -360,7 +360,7 @@ const Settings = () => {
                           settings.theme === "system" ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/50"
                         }`}
                       >
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-amber-400 to-slate-700" />
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-primary/60 to-muted-foreground" />
                         <span className="text-sm font-medium">Sistema</span>
                       </Label>
                     </div>
