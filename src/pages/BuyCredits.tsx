@@ -16,7 +16,7 @@ const CREDIT_PACKAGES = [
 ];
 
 const BuyCredits = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedPkg, setSelectedPkg] = useState(CREDIT_PACKAGES[1]);
   const [paymentMethod, setPaymentMethod] = useState<"PIX" | "BOLETO">("PIX");
