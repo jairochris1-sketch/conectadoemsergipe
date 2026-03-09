@@ -32,6 +32,7 @@ import CreateStore from "./pages/CreateStore";
 import StorePage from "./pages/StorePage";
 import ProductPage from "./pages/ProductPage";
 import MyStore from "./pages/MyStore";
+import TopSellers from "./pages/TopSellers";
 
 const queryClient = new QueryClient();
 
