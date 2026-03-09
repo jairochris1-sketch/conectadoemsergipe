@@ -365,8 +365,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
         {/* Desktop nav row */}
         {!isMobile && (
-          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-primary-foreground/15">
-            {isLoggedIn && <span className="text-sm text-primary-foreground/90">{t("welcome")}, <b>{userName}</b></span>}
+          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-white/15">
+            {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
             {navLinks()}
           </div>
         )}
