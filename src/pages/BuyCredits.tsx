@@ -118,7 +118,7 @@ const BuyCredits = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <FacebookHeader />
+      <FacebookHeader isLoggedIn={!!user} />
       <div className="max-w-2xl mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">💰 Comprar Créditos</h1>
         <p className="text-muted-foreground text-sm mb-4">
