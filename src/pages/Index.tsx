@@ -56,8 +56,11 @@ const Index = () => {
             </div>
           )}
 
-          {/* Mobile-only: Profile first */}
-          <div className="md:hidden mb-3">
+          {/* Mobile-only: Quick nav */}
+          <MobileQuickNav />
+
+          {/* Mobile/Tablet: Profile first */}
+          <div className="lg:hidden mb-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
