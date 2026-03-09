@@ -8,6 +8,7 @@ import { useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useOnlineStatus } from "@/hooks/usePresence";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { validateAndCompressImage } from "@/lib/imageCompression";
+import { useAudioRecorder } from "@/hooks/useAudioRecorder";
 
 interface Message {
   id: string;
@@ -15,6 +16,7 @@ interface Message {
   receiver_id: string;
   content: string;
   image_url?: string | null;
+  audio_url?: string | null;
   read: boolean;
   created_at: string;
 }
@@ -53,6 +55,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   const canMessage = isFriend(partnerId);
   const inputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
+  const { isRecording, recordingTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,19 +123,46 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
     return () => { supabase.removeChannel(channel); };
   }, [user, partnerId, minimized]);
 
-  const sendMessage = async (imageUrl?: string) => {
+  const sendMessage = async (imageUrl?: string, audioUrl?: string) => {
     if (!user || !canMessage) return;
     const content = newMessage.trim();
-    if (!content && !imageUrl) return;
+    if (!content && !imageUrl && !audioUrl) return;
 
     await supabase.from("messages").insert({
       sender_id: user.id,
       receiver_id: partnerId,
-      content: content || (imageUrl ? "📷 Imagem" : ""),
+      content: content || (imageUrl ? "📷 Imagem" : audioUrl ? "🎤 Áudio" : ""),
       image_url: imageUrl || null,
+      audio_url: audioUrl || null,
     } as any);
     setNewMessage("");
     inputRef.current?.focus();
+  };
+
+  const handleSendAudio = async () => {
+    if (!user) return;
+    const blob = await stopRecording();
+    if (!blob) return;
+    setUploading(true);
+    try {
+      const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.webm`;
+      const { error } = await supabase.storage
+        .from("chat-audio")
+        .upload(fileName, blob, { contentType: "audio/webm" });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("chat-audio").getPublicUrl(fileName);
+      await sendMessage(undefined, urlData.publicUrl);
+    } catch (err) {
+      console.error("Audio upload failed:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,7 +234,16 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
             onClick={(e) => { e.stopPropagation(); setPreviewImage(msg.image_url!); }}
           />
         )}
-        {msg.content && msg.content !== "📷 Imagem" && (
+        {msg.audio_url && (
+          <audio
+            controls
+            src={msg.audio_url}
+            className="max-w-full h-8 mb-1"
+            style={{ minWidth: "180px" }}
+            preload="metadata"
+          />
+        )}
+        {msg.content && msg.content !== "📷 Imagem" && msg.content !== "🎤 Áudio" && (
           <p className="break-words">{msg.content}</p>
         )}
         <p className={`text-[9px] mt-0.5 ${isMine ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
@@ -329,65 +368,98 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                 {uploading && (
                   <div className="flex items-center gap-2 mb-2 px-1">
                     <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] text-muted-foreground">Enviando imagem...</span>
+                    <span className="text-[10px] text-muted-foreground">Enviando...</span>
                   </div>
                 )}
 
-                <div className="flex gap-1.5 items-center">
-                  {/* Emoji button */}
-                  <button
-                    onClick={() => setShowEmojis(!showEmojis)}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer transition-colors shrink-0 ${
-                      showEmojis ? "bg-primary text-primary-foreground" : "hover:bg-accent text-muted-foreground"
-                    }`}
-                    title="Emojis"
-                  >
-                    😊
-                  </button>
+                {isRecording ? (
+                  <div className="flex gap-1.5 items-center">
+                    <span className="w-2.5 h-2.5 rounded-full bg-destructive animate-pulse shrink-0" />
+                    <span className="text-xs text-destructive font-mono flex-1">
+                      {formatRecordingTime(recordingTime)}
+                    </span>
+                    <button
+                      onClick={cancelRecording}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0"
+                      title="Cancelar"
+                    >
+                      ✕
+                    </button>
+                    <button
+                      onClick={handleSendAudio}
+                      className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm cursor-pointer hover:brightness-110 transition-all shrink-0"
+                      title="Enviar áudio"
+                    >
+                      ➤
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-1.5 items-center">
+                    {/* Emoji button */}
+                    <button
+                      onClick={() => setShowEmojis(!showEmojis)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer transition-colors shrink-0 ${
+                        showEmojis ? "bg-primary text-primary-foreground" : "hover:bg-accent text-muted-foreground"
+                      }`}
+                      title="Emojis"
+                    >
+                      😊
+                    </button>
 
-                  {/* Image upload button */}
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0 disabled:opacity-40"
-                    title="Enviar imagem"
-                  >
-                    📷
-                  </button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleImageUpload}
-                  />
+                    {/* Image upload button */}
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0 disabled:opacity-40"
+                      title="Enviar imagem"
+                    >
+                      📷
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
 
-                  {/* Text input */}
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
-                    placeholder={t("messages.placeholder") || "Digite..."}
-                    className="flex-1 border border-border px-3 py-2 text-xs bg-background rounded-full focus:outline-none focus:ring-1 focus:ring-primary"
-                    autoFocus
-                  />
+                    {/* Text input */}
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          sendMessage();
+                        }
+                      }}
+                      placeholder={t("messages.placeholder") || "Digite..."}
+                      className="flex-1 border border-border px-3 py-2 text-xs bg-background rounded-full focus:outline-none focus:ring-1 focus:ring-primary"
+                      autoFocus
+                    />
 
-                  {/* Send button */}
-                  <button
-                    onClick={() => sendMessage()}
-                    disabled={!newMessage.trim() && !uploading}
-                    className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm cursor-pointer hover:brightness-110 disabled:opacity-40 transition-all shrink-0"
-                  >
-                    ➤
-                  </button>
-                </div>
+                    {/* Send or Record button */}
+                    {newMessage.trim() ? (
+                      <button
+                        onClick={() => sendMessage()}
+                        className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm cursor-pointer hover:brightness-110 transition-all shrink-0"
+                      >
+                        ➤
+                      </button>
+                    ) : (
+                      <button
+                        onClick={startRecording}
+                        disabled={uploading}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-base cursor-pointer hover:bg-accent text-muted-foreground transition-colors shrink-0 disabled:opacity-40"
+                        title="Gravar áudio"
+                      >
+                        🎤
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="border-t border-border p-2 text-center bg-card">
