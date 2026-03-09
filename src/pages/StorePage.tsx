@@ -53,16 +53,6 @@ const StorePage = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
-  // Product form state
-  const [pTitle, setPTitle] = useState("");
-  const [pPrice, setPPrice] = useState("");
-  const [pPriceDisplay, setPPriceDisplay] = useState("");
-  const [pDescription, setPDescription] = useState("");
-  const [pCity, setPCity] = useState("");
-  const [pPhotoFile, setPPhotoFile] = useState<File | null>(null);
-  const [pPhotoPreview, setPPhotoPreview] = useState("");
-  const [posting, setPosting] = useState(false);
-  const pFileRef = useRef<HTMLInputElement>(null);
 
   const isOwner = user && store && user.id === store.user_id;
 
