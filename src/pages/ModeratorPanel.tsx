@@ -6,6 +6,13 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import AdminPageEditor from "@/components/AdminPageEditor";
+import FacebookHeader from "@/components/FacebookHeader";
+import FacebookFooter from "@/components/FacebookFooter";
+import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Report {
   id: string;
