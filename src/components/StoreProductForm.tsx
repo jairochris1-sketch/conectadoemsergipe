@@ -191,6 +191,13 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         placeholder="Descrição do produto"
       />
 
+      <DeliveryOptionsSelect
+        value={deliveryOptions}
+        onChange={setDeliveryOptions}
+        deliveryCost={deliveryCost}
+        onDeliveryCostChange={setDeliveryCost}
+      />
+
       <div className="flex gap-2">
         <Button onClick={handleSubmit} disabled={posting} size="sm">
           {posting ? "Salvando..." : "Adicionar Produto"}
