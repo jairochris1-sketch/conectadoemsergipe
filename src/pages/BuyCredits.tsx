@@ -47,8 +47,6 @@ const BuyCredits = () => {
 
     // Fetch user profile
     const { data: profileData } = await supabase.from("profiles").select("name, email").eq("user_id", user.id).single();
-      return;
-    }
 
     setLoading(true);
     try {
