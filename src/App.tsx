@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SocialProvider } from "@/context/SocialContext";
 import { PresenceProvider } from "@/components/PresenceProvider";
+import FloatingChatSystem from "@/components/FloatingChatSystem";
 import AppNavSidebar from "@/components/AppNavSidebar";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
