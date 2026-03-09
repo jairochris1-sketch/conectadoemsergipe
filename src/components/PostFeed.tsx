@@ -365,14 +365,30 @@ const PostFeed = ({ userName }: PostFeedProps) => {
               </div>
             </div>
 
-            {/* Comments toggle */}
-            <button
-              onClick={() => toggleComments(post.id)}
-              className="text-sm text-primary mt-2 bg-transparent border-none cursor-pointer hover:underline"
-            >
-              {openComments[post.id] ? t("comments.hide") : t("comments.show")}
-              {comments[post.id] && ` (${comments[post.id].length})`}
-            </button>
+            {/* Top reaction + Comments toggle */}
+            <div className="flex items-center gap-4 mt-2">
+              {user && (
+                <button
+                  onClick={() => toggleReaction(post.id)}
+                  className={`text-sm bg-transparent border-none cursor-pointer hover:opacity-80 inline-flex items-center gap-1 font-medium transition-colors ${hasReacted(post.id) ? 'text-primary' : 'text-muted-foreground'}`}
+                >
+                  <ArrowBigUp className={`w-5 h-5 ${hasReacted(post.id) ? 'fill-primary' : ''}`} />
+                  Top {getReactionCount(post.id) > 0 && `(${getReactionCount(post.id)})`}
+                </button>
+              )}
+              {!user && getReactionCount(post.id) > 0 && (
+                <span className="text-sm text-muted-foreground inline-flex items-center gap-1">
+                  <ArrowBigUp className="w-5 h-5" /> Top ({getReactionCount(post.id)})
+                </span>
+              )}
+              <button
+                onClick={() => toggleComments(post.id)}
+                className="text-sm text-primary bg-transparent border-none cursor-pointer hover:underline"
+              >
+                {openComments[post.id] ? t("comments.hide") : t("comments.show")}
+                {comments[post.id] && ` (${comments[post.id].length})`}
+              </button>
+            </div>
 
             {/* Comments section */}
             {openComments[post.id] && (
