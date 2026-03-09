@@ -222,10 +222,14 @@ const Login = () => {
             className="text-xl sm:text-2xl font-bold text-foreground mb-4 text-center"
             style={{ fontFamily: "Georgia, serif" }}
           >
-            {t("login.welcome_title")}
+            {customTitle || t("login.welcome_title")}
           </h2>
           <div className="text-base text-foreground space-y-4 max-w-[520px] mx-auto">
-            <p>{t("login.welcome_text")}</p>
+            {customText ? (
+              <p>{customText}</p>
+            ) : (
+              <p>{t("login.welcome_text")}</p>
+            )}
             <p>
               {t("login.opened")} <b>Sergipe</b>.
             </p>
