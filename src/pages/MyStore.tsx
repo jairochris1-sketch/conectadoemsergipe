@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import FacebookHeader from "@/components/FacebookHeader";
@@ -7,11 +7,9 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, Package, Trash2, Edit2, MapPin, Plus, Settings, Eye } from "lucide-react";
+import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
-import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
-import { Navigate } from "react-router-dom";
 import StoreProductForm from "@/components/StoreProductForm";
 
 interface StoreRow {
@@ -28,8 +26,10 @@ interface StoreRow {
 interface ProductRow {
   id: string;
   title: string;
+  description: string;
   price: string;
   image_url: string;
+  images: string[];
   city: string;
   category: string;
   is_active: boolean;
@@ -40,6 +40,23 @@ const STORE_CATEGORIES = [
   "Geral", "Moda", "Eletrônicos", "Alimentos", "Artesanato", "Beleza",
   "Casa e Decoração", "Esportes", "Livros", "Brinquedos", "Pet Shop", "Outros"
 ];
+
+const PRODUCT_CATEGORIES = [
+  "Geral", "Moda", "Eletrônicos", "Alimentos", "Artesanato", "Beleza",
+  "Casa e Decoração", "Esportes", "Livros", "Brinquedos", "Pet Shop",
+  "Veículos", "Imóveis", "Móveis", "Outros"
+];
+
+const formatBRL = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "";
+  return (parseInt(digits, 10) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
+const parseBRL = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "0";
+  return (parseInt(digits, 10) / 100).toFixed(2);
+};
 
 const MyStore = () => {
   const { user, logout } = useAuth();
@@ -53,6 +70,19 @@ const MyStore = () => {
   const [editCity, setEditCity] = useState("");
   const [editCategory, setEditCategory] = useState("");
   const [saving, setSaving] = useState(false);
+  const [storePhotoFile, setStorePhotoFile] = useState<File | null>(null);
+  const [storePhotoPreview, setStorePhotoPreview] = useState("");
+  const storePhotoRef = useRef<HTMLInputElement>(null);
+
+  // Edit product state
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [epTitle, setEpTitle] = useState("");
+  const [epPrice, setEpPrice] = useState("");
+  const [epPriceDisplay, setEpPriceDisplay] = useState("");
+  const [epDescription, setEpDescription] = useState("");
+  const [epCity, setEpCity] = useState("");
+  const [epCategory, setEpCategory] = useState("Geral");
+  const [epSaving, setEpSaving] = useState(false);
 
   useEffect(() => {
     if (user) fetchMyStore();
@@ -81,26 +111,45 @@ const MyStore = () => {
     setLoading(false);
   };
 
+  // Store editing
   const startEditStore = () => {
     if (!store) return;
     setEditName(store.name);
     setEditDesc(store.description);
     setEditCity(store.city);
     setEditCategory(store.category);
+    setStorePhotoPreview(store.photo_url || "");
+    setStorePhotoFile(null);
     setEditingStore(true);
   };
 
+  const handleStorePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setStorePhotoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => setStorePhotoPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   const saveStore = async () => {
-    if (!store) return;
+    if (!store || !user) return;
     setSaving(true);
+
+    let photo_url = store.photo_url;
+    if (storePhotoFile) {
+      const ext = storePhotoFile.name.split(".").pop();
+      const path = `${user.id}/store/${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("post-images").upload(path, storePhotoFile, { upsert: true });
+      if (!error) {
+        const { data: urlData } = supabase.storage.from("post-images").getPublicUrl(path);
+        photo_url = urlData.publicUrl;
+      }
+    }
+
     const { error } = await supabase
       .from("stores")
-      .update({
-        name: editName.trim(),
-        description: editDesc.trim(),
-        city: editCity,
-        category: editCategory,
-      } as any)
+      .update({ name: editName.trim(), description: editDesc.trim(), city: editCity, category: editCategory, photo_url } as any)
       .eq("id", store.id);
 
     if (error) {
@@ -113,6 +162,7 @@ const MyStore = () => {
     setSaving(false);
   };
 
+  // Product actions
   const deleteProduct = async (productId: string) => {
     if (!confirm("Excluir este produto?")) return;
     await supabase.from("store_products").delete().eq("id", productId);
@@ -124,6 +174,44 @@ const MyStore = () => {
     await supabase.from("store_products").update({ is_active: !currentActive } as any).eq("id", productId);
     toast.success(currentActive ? "Produto desativado" : "Produto ativado");
     fetchMyStore();
+  };
+
+  const startEditProduct = (p: ProductRow) => {
+    setEditingProductId(p.id);
+    setEpTitle(p.title);
+    setEpDescription(p.description || "");
+    setEpPrice(p.price);
+    setEpPriceDisplay(parseFloat(p.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }));
+    setEpCity(p.city || "");
+    setEpCategory(p.category || "Geral");
+  };
+
+  const cancelEditProduct = () => {
+    setEditingProductId(null);
+  };
+
+  const saveEditProduct = async () => {
+    if (!editingProductId) return;
+    setEpSaving(true);
+    const { error } = await supabase
+      .from("store_products")
+      .update({
+        title: epTitle.trim(),
+        description: epDescription.trim(),
+        price: epPrice,
+        city: epCity,
+        category: epCategory,
+      } as any)
+      .eq("id", editingProductId);
+
+    if (error) {
+      toast.error("Erro ao salvar produto");
+    } else {
+      toast.success("Produto atualizado!");
+      setEditingProductId(null);
+      fetchMyStore();
+    }
+    setEpSaving(false);
   };
 
   if (loading) {
@@ -179,7 +267,7 @@ const MyStore = () => {
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Link to={`/store/${store.slug}`}>
                 <Button size="sm" variant="outline" className="gap-1.5"><Eye className="w-4 h-4" /> Ver Loja</Button>
               </Link>
@@ -191,6 +279,21 @@ const MyStore = () => {
 
           {editingStore && (
             <div className="border-t border-border pt-4 mt-4 space-y-3">
+              {/* Store photo edit */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => storePhotoRef.current?.click()}
+                  className="w-16 h-16 rounded-xl bg-muted border-2 border-dashed border-border flex items-center justify-center overflow-hidden hover:border-primary transition-colors"
+                >
+                  {storePhotoPreview ? (
+                    <img src={storePhotoPreview} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <Camera className="w-5 h-5 text-muted-foreground" />
+                  )}
+                </button>
+                <input ref={storePhotoRef} type="file" accept="image/*" className="hidden" onChange={handleStorePhotoChange} />
+                <span className="text-xs text-muted-foreground">Foto da loja</span>
+              </div>
               <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Nome da loja" />
               <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[60px] resize-none" placeholder="Descrição" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -231,42 +334,99 @@ const MyStore = () => {
           />
         )}
 
-        {/* Products Grid */}
+        {/* Products List */}
         {products.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground bg-card border border-border rounded-xl">
             <Package className="w-12 h-12 mx-auto mb-3 opacity-40" />
             <p>Nenhum produto ainda</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="space-y-3">
             {products.map((p) => (
               <div key={p.id} className={`bg-card border border-border rounded-xl overflow-hidden ${!p.is_active ? "opacity-60" : ""}`}>
-                <Link to={`/produto/${p.id}`} className="block no-underline">
-                  <div className="aspect-video bg-muted overflow-hidden">
-                    {p.image_url ? (
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="w-8 h-8 text-muted-foreground/40" />
+                {editingProductId === p.id ? (
+                  /* Edit mode */
+                  <div className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold text-sm text-foreground">Editando produto</h3>
+                      <button onClick={cancelEditProduct} className="text-muted-foreground hover:text-foreground">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <Input value={epTitle} onChange={(e) => setEpTitle(e.target.value)} placeholder="Nome do produto" />
+                    <Input
+                      value={epPriceDisplay}
+                      onChange={(e) => {
+                        setEpPriceDisplay(formatBRL(e.target.value));
+                        setEpPrice(parseBRL(e.target.value));
+                      }}
+                      placeholder="Preço (R$)"
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <select value={epCategory} onChange={(e) => setEpCategory(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-10">
+                        {PRODUCT_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <select value={epCity} onChange={(e) => setEpCity(e.target.value)} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm h-10">
+                        <option value="">Cidade</option>
+                        {SERGIPE_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
+                    <textarea
+                      value={epDescription}
+                      onChange={(e) => setEpDescription(e.target.value)}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[60px] resize-none"
+                      placeholder="Descrição"
+                    />
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={saveEditProduct} disabled={epSaving} className="gap-1.5">
+                        <Check className="w-4 h-4" /> {epSaving ? "Salvando..." : "Salvar"}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={cancelEditProduct}>Cancelar</Button>
+                    </div>
+                  </div>
+                ) : (
+                  /* View mode */
+                  <div className="flex flex-col sm:flex-row">
+                    <Link to={`/produto/${p.id}`} className="sm:w-40 shrink-0 no-underline">
+                      <div className="aspect-video sm:aspect-square bg-muted overflow-hidden">
+                        {p.image_url ? (
+                          <img src={p.image_url} alt={p.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="w-8 h-8 text-muted-foreground/40" />
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </Link>
+                    <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-w-0">
+                      <div>
+                        <Link to={`/produto/${p.id}`} className="no-underline">
+                          <h3 className="font-semibold text-sm text-foreground hover:text-primary transition-colors">{p.title}</h3>
+                        </Link>
+                        <p className="text-primary font-bold text-sm mt-1">
+                          {parseFloat(p.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5 mt-1 text-xs text-muted-foreground">
+                          {p.city && <span className="flex items-center gap-0.5"><MapPin className="w-3 h-3" /> {p.city}</span>}
+                          {p.category && p.category !== "Geral" && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">{p.category}</span>}
+                          {!p.is_active && <span className="text-destructive font-medium">Desativado</span>}
+                        </div>
+                        {p.description && <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>}
+                      </div>
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        <Button size="sm" variant="ghost" className="text-xs h-7 gap-1" onClick={() => startEditProduct(p)}>
+                          <Edit2 className="w-3 h-3" /> Editar
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => toggleProduct(p.id, p.is_active)}>
+                          {p.is_active ? "Desativar" : "Ativar"}
+                        </Button>
+                        <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive gap-1" onClick={() => deleteProduct(p.id)}>
+                          <Trash2 className="w-3 h-3" /> Excluir
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-3">
-                    <h3 className="font-semibold text-sm text-foreground truncate">{p.title}</h3>
-                    <p className="text-primary font-bold text-sm mt-1">
-                      {parseFloat(p.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
-                    </p>
-                    {!p.is_active && <span className="text-xs text-destructive font-medium">Desativado</span>}
-                  </div>
-                </Link>
-                <div className="px-3 pb-3 flex gap-2">
-                  <Button size="sm" variant="ghost" className="text-xs h-7" onClick={() => toggleProduct(p.id, p.is_active)}>
-                    {p.is_active ? "Desativar" : "Ativar"}
-                  </Button>
-                  <Button size="sm" variant="ghost" className="text-xs h-7 text-destructive" onClick={() => deleteProduct(p.id)}>
-                    <Trash2 className="w-3 h-3 mr-1" /> Excluir
-                  </Button>
-                </div>
+                )}
               </div>
             ))}
           </div>
