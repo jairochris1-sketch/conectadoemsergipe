@@ -137,49 +137,49 @@ const AdminPanel = () => {
             </h2>
           </div>
 
-          <div className="flex gap-2 mb-3">
+          <div className="flex flex-wrap gap-1.5 mb-3">
             <button onClick={() => setTab("active")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "active" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "active" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               {t("admin.active_bans")}
             </button>
             <button onClick={() => setTab("expired")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "expired" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "expired" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               {t("admin.expired_bans")}
             </button>
             <button onClick={() => setTab("reports")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "reports" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "reports" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🚩 {t("admin.reports")}
             </button>
             <button onClick={() => setTab("pages")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "pages" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               {t("admin.pages_tab")}
             </button>
             <button onClick={() => setTab("footer")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "footer" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
-              🖼️ Banner Login
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "footer" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🖼️ Banner
             </button>
             <button onClick={() => setTab("badges")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "badges" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "badges" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🏅 Selos
             </button>
             <button onClick={() => setTab("moderators")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "moderators" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
-              🤝 Colaboradores
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "moderators" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🤝 Colab.
             </button>
             <button onClick={() => setTab("logs")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "logs" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "logs" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📋 Logs
             </button>
             <button onClick={() => setTab("banners")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "banners" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "banners" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📢 Banners
             </button>
             <button onClick={() => setTab("forbidden")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "forbidden" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "forbidden" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🚫 Filtro
             </button>
             <button onClick={() => setTab("categories")}
-              className={`px-3 py-1 text-[11px] border cursor-pointer ${tab === "categories" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "categories" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📂 Categorias
             </button>
           </div>
