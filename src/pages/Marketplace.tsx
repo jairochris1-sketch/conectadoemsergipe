@@ -215,6 +215,28 @@ const Marketplace = () => {
             />
           )}
 
+          {/* City Filter */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {user && userCity && (
+              <Button
+                size="sm"
+                variant={nearMe ? "default" : "outline"}
+                onClick={handleNearMe}
+                className="gap-1.5 text-xs h-8"
+              >
+                <MapPin className="w-3 h-3" /> Perto de mim
+              </Button>
+            )}
+            <select
+              value={cityFilter}
+              onChange={(e) => { setCityFilter(e.target.value); setNearMe(false); }}
+              className="rounded-md border border-input bg-background px-3 py-1 text-xs h-8"
+            >
+              <option value="">Todas as cidades</option>
+              {SERGIPE_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+
           <div className="flex flex-wrap gap-1.5 mb-4 text-sm">
             {categoryNamesWithAll.map((c) => (
               <button
