@@ -112,7 +112,7 @@ const HomepageMarketplace = () => {
 
       {/* Category filters */}
       <div className="flex flex-wrap gap-1.5 mb-3">
-        {CATEGORIES.map((c) => (
+        {categoryNamesWithAll.map((c) => (
           <button
             key={c}
             onClick={() => setCategory(c)}
@@ -120,7 +120,7 @@ const HomepageMarketplace = () => {
               category === c ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
             }`}
           >
-            {t(CATEGORY_KEYS[c])}
+            {c === "All" ? t("marketplace.all") : c}
           </button>
         ))}
       </div>
