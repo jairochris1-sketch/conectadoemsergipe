@@ -26,6 +26,7 @@ import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
 import FriendsPage from "./pages/Friends";
 import Settings from "./pages/Settings";
+import Services from "./pages/Services";
 
 const queryClient = new QueryClient();
 
