@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, User, ShoppingCart, MessageCircle, Users, Settings, Wrench, Store } from "lucide-react";
+import { Home, User, ShoppingCart, MessageCircle, Users, Settings, Wrench, Store, Trophy } from "lucide-react";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 import { useAuth } from "@/context/AuthContext";
 
