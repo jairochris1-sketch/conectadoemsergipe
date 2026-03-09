@@ -81,7 +81,8 @@ const App = () => {
                   <Route path="/messages" element={<MessagesPage />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/seller-dashboard" element={<SellerDashboard />} />
-                  <Route path="/sobre" Navigate telement={<Navigate to="/page/about" replace                <Route path="/amigos" element={<FriendsPage />} />
+                  <Route path="/sobre" element={<Navigate to="/page/about" replace />} />
+                  <Route path="/amigos" element={<FriendsPage />} />
                   <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/servicos" element={<Services />} />
                   <Route path="/stores" element={<Stores />} />
