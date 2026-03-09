@@ -50,6 +50,54 @@ const PostFeed = ({ userName }: PostFeedProps) => {
   const [banDays, setBanDays] = useState("1");
   const [banReason, setBanReason] = useState("");
   const { containsForbiddenWord } = useForbiddenWords();
+  const [storeProducts, setStoreProducts] = useState<StoreProductFeedItem[]>([]);
+
+  // Fetch recent store products for feed
+  useEffect(() => {
+    const fetchStoreProducts = async () => {
+      const { data } = await supabase
+        .from("store_products")
+        .select("id, title, price, image_url, city, created_at, store_id, user_id")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (!data || data.length === 0) return;
+
+      const storeIds = [...new Set(data.map((p: any) => p.store_id))];
+      const userIds = [...new Set(data.map((p: any) => p.user_id))];
+
+      const [{ data: stores }, { data: profiles }] = await Promise.all([
+        supabase.from("stores").select("id, name, slug, photo_url").in("id", storeIds),
+        supabase.from("profiles").select("user_id, name, photo_url").in("user_id", userIds),
+      ]);
+
+      const storeMap = new Map((stores || []).map((s: any) => [s.id, s]));
+      const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+
+      setStoreProducts(
+        data.map((p: any) => {
+          const store = storeMap.get(p.store_id) as any;
+          const profile = profileMap.get(p.user_id) as any;
+          return {
+            id: p.id,
+            title: p.title,
+            price: p.price,
+            image_url: p.image_url || "",
+            city: p.city || "",
+            created_at: p.created_at,
+            store_name: store?.name || "Loja",
+            store_slug: store?.slug || "",
+            store_photo: store?.photo_url || "",
+            seller_name: profile?.name || "Vendedor",
+            seller_photo: profile?.photo_url || "",
+            seller_id: p.user_id,
+          };
+        })
+      );
+    };
+    fetchStoreProducts();
+  }, [posts]); // Re-fetch when posts refresh
 
   const allUserIds = useMemo(() => {
     const ids = new Set(posts.map(p => p.authorId));
