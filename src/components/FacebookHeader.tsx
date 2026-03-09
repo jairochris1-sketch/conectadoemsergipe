@@ -148,11 +148,11 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
       {isLoggedIn ? (
         <>
-          <Link to="/" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
-          <Link to="/profile" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
-          <Link to="/marketplace" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
-          <Link to="/servicos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
-          <Link to="/messages" className="md:hidden text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+          <Link to="/" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/servicos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
+          <Link to="/messages" className="md:hidden text-white relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
             <Mail className="w-5 h-5" />
             {t("messages")}
             {unreadCount > 0 && (
@@ -161,9 +161,9 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </span>
             )}
           </Link>
-          <Link to="/amigos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
+          <Link to="/amigos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
           {isAdmin && (
-            <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+            <Link to="/admin" className="text-white font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
               {t("admin.panel")}
               {pendingReports > 0 && (
                 <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
@@ -173,18 +173,18 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
             </Link>
           )}
           {isModerator && !isAdmin && (
-            <Link to="/moderator" className="text-primary-foreground font-bold text-sm hover:underline" onClick={onNav}>
+            <Link to="/moderator" className="text-white font-bold text-sm hover:underline" onClick={onNav}>
               ⭐ Colaborador
             </Link>
           )}
-          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
+          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-white bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
             {t("logout")}
           </button>
         </>
       ) : (
         <>
-          <Link to="/login" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
-          <Link to="/register" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
+          <Link to="/login" className="text-white text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
+          <Link to="/register" className="text-white text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
         </>
       )}
     </>
@@ -204,7 +204,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
     <div
       ref={headerRef}
-      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat border-b border-primary-foreground/15 shadow-lg"
+      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-white bg-cover bg-center bg-no-repeat border-b border-white/15 shadow-lg"
       style={bannerImage ? {
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
@@ -231,7 +231,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </form>
               <button
                 onClick={() => { setMobileSearchOpen(false); setSearchQuery(""); setShowSuggestions(false); }}
-                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground shrink-0"
+                className="bg-transparent border-none cursor-pointer p-1 text-white shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -243,13 +243,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                 {isMobile && location.pathname !== "/" && (
                   <button
                     onClick={() => navigate(-1)}
-                    className="bg-transparent border-none cursor-pointer text-primary-foreground p-0.5 flex items-center shrink-0"
+                    className="bg-transparent border-none cursor-pointer text-white p-0.5 flex items-center shrink-0"
                     aria-label="Voltar"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                 )}
-                <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
+                <Link to="/" className="text-white no-underline hover:no-underline shrink-0">
                   <h1 className="text-[1.1rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                     Conectadoemsergipe
                   </h1>
@@ -274,19 +274,19 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     </form>
                     <SuggestionsDropdown />
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-xl bg-primary-foreground/10 px-2 py-1">
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-2 py-1">
                     {(["pt", "es", "en"] as Language[]).map((lang) => (
                       <button
                         key={lang}
                         onClick={() => setLanguage(lang)}
-                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-primary-foreground/20 text-primary-foreground" : "text-primary-foreground/75 hover:text-primary-foreground"}`}
+                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-white/20 text-white" : "text-white/75 hover:text-white"}`}
                       >
                         {LANG_LABELS[lang]}
                       </button>
                     ))}
                     <button
                       onClick={toggleDarkMode}
-                      className="bg-transparent border-none cursor-pointer text-primary-foreground/85 hover:text-primary-foreground ml-1 p-1"
+                      className="bg-transparent border-none cursor-pointer text-white/85 hover:text-white ml-1 p-1"
                       title={darkMode ? "Modo claro" : "Modo noturno"}
                     >
                       {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -299,12 +299,12 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                 <div className="flex items-center gap-0.5 shrink-0">
                   <button
                     onClick={() => setMobileSearchOpen(true)}
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
                     aria-label="Buscar"
                   >
                     <Search className="w-[18px] h-[18px]" />
                   </button>
-                  <Link to="/messages" className="relative p-1.5 text-primary-foreground">
+                  <Link to="/messages" className="relative p-1.5 text-white">
                     <Mail className="w-[18px] h-[18px]" />
                     {unreadCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
@@ -313,22 +313,22 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     )}
                   </Link>
                   <button
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-primary-foreground"
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
                     aria-label="Notificações"
                   >
                     <span className="text-base">🔔</span>
                   </button>
-                  <Link to="/profile" className="p-1.5 text-primary-foreground">
+                  <Link to="/profile" className="p-1.5 text-white">
                     <span className="text-base">👤</span>
                   </Link>
                   <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
                       <button className="bg-transparent border-none cursor-pointer p-1.5">
-                        <Menu className="w-[18px] h-[18px] text-primary-foreground" />
+                        <Menu className="w-[18px] h-[18px] text-white" />
                       </button>
                     </SheetTrigger>
                     <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
-                      <SheetTitle className="text-primary-foreground text-lg mb-4">Menu</SheetTitle>
+                      <SheetTitle className="text-white text-lg mb-4">Menu</SheetTitle>
                       <div className="relative mb-4">
                         <form onSubmit={handleSearch} className="flex items-center">
                           <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
@@ -340,13 +340,13 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                       </div>
                       <div className="flex items-center gap-2 mb-4">
                         {(["pt", "es", "en"] as Language[]).map((lang) => (
-                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}>
+                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-white" : "text-white/70 hover:underline"}`}>
                             {LANG_LABELS[lang]}
                           </button>
                         ))}
                         <button
                           onClick={toggleDarkMode}
-                          className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-1"
+                          className="bg-transparent border-none cursor-pointer text-white/80 hover:text-white ml-1 p-1"
                           title={darkMode ? "Modo claro" : "Modo noturno"}
                         >
                           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -365,8 +365,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
         {/* Desktop nav row */}
         {!isMobile && (
-          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-primary-foreground/15">
-            {isLoggedIn && <span className="text-sm text-primary-foreground/90">{t("welcome")}, <b>{userName}</b></span>}
+          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-white/15">
+            {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
             {navLinks()}
           </div>
         )}
