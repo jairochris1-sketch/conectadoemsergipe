@@ -81,16 +81,16 @@ const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: str
 const ShareButton = ({ item, t, size = "normal" }: { item: { title: string; price: string; id: string }; t: (k: string) => string; size?: "small" | "normal" }) => {
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Use the site domain + product path for sharing
-    const baseUrl = window.location.origin;
-    const url = `${baseUrl}/marketplace?item=${item.id}`;
+    // Use the edge function URL for sharing so social media crawlers get proper OG meta tags
+    // The edge function serves OG tags and redirects the user to the actual page
+    const ogUrl = `https://rkzjhpmoijnixmfljgip.supabase.co/functions/v1/og-marketplace?id=${item.id}`;
     const text = `${item.title} - ${formatPriceDisplay(item.price)}`;
     if (navigator.share) {
       try {
-        await navigator.share({ title: item.title, text, url });
+        await navigator.share({ title: item.title, text, url: ogUrl });
       } catch { /* user cancelled */ }
     } else {
-      await navigator.clipboard.writeText(`${text}\n${url}`);
+      await navigator.clipboard.writeText(`${text}\n${ogUrl}`);
       const { toast } = await import("sonner");
       toast.success(t("marketplace.link_copied"));
     }
