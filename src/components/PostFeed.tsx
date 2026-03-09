@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Pencil, Trash2, Check, X, ImagePlus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { validateAndCompressImage } from "@/lib/imageCompression";
 import { useForbiddenWords } from "@/hooks/useForbiddenWords";
 import { toast } from "sonner";
+import StoreProductFeedCard, { type StoreProductFeedItem } from "@/components/StoreProductFeedCard";
 
 interface PostFeedProps {
   userName?: string;
