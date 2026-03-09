@@ -182,9 +182,6 @@ const AdminPanel = () => {
             <button onClick={() => setTab("categories")}
               className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "categories" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               📂 Categorias
-            <button onClick={() => setTab("categories")}
-              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "categories" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
-              📂 Categorias
             </button>
             <button onClick={() => setTab("profile_links")}
               className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "profile_links" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
