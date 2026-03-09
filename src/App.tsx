@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigateeact-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { SocialProvider } from "@/context/SocialContext";
@@ -81,8 +81,7 @@ const App = () => {
                   <Route path="/messages" element={<MessagesPage />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/seller-dashboard" element={<SellerDashboard />} />
-                  <Route path="/sobre" Navigate to="/page/about" replacent={<About />} />
-                  <Route path="/amigos" element={<FriendsPage />} />
+                  <Route path="/sobre" Navigate telement={<Navigate to="/page/about" replace                <Route path="/amigos" element={<FriendsPage />} />
                   <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/servicos" element={<Services />} />
                   <Route path="/stores" element={<Stores />} />
