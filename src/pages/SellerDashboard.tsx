@@ -166,12 +166,6 @@ const SellerDashboard = () => {
                 {showForm ? t("marketplace.cancel") : t("ads.new_campaign")}
               </button>
             </div>
-                onClick={() => setShowForm(!showForm)}
-                className="bg-primary text-primary-foreground border-none px-3 py-1 text-[11px] cursor-pointer hover:opacity-90"
-              >
-                {showForm ? t("marketplace.cancel") : t("ads.new_campaign")}
-              </button>
-            </div>
           </div>
 
           {/* Create campaign form */}
