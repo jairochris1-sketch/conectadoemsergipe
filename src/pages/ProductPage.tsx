@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
-import { MapPin, MessageCircle, ChevronLeft, ChevronRight, Store, Package, Calendar } from "lucide-react";
+import { MapPin, MessageCircle, ChevronLeft, ChevronRight, Store, Package, Calendar, Bell } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
+import SellerRating from "@/components/SellerRating";
+import SellerReviewsList from "@/components/SellerReviewsList";
+import PriceAlertButton from "@/components/PriceAlertButton";
+import DeliveryInfo from "@/components/DeliveryInfo";
+import SimilarProducts from "@/components/SimilarProducts";
+import { useSellerReviews } from "@/hooks/useSellerReviews";
 
 interface ProductDetail {
   id: string;
@@ -20,6 +26,8 @@ interface ProductDetail {
   city: string;
   category: string;
   created_at: string;
+  delivery_options?: any[];
+  delivery_cost?: string;
 }
 
 interface StoreInfo {
@@ -33,11 +41,15 @@ interface StoreInfo {
 const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [store, setStore] = useState<StoreInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  const sellerId = store?.user_id;
+  const { averageRating, totalReviews } = useSellerReviews(sellerId);
 
   useEffect(() => {
     if (id) fetchProduct();
@@ -53,13 +65,23 @@ const ProductPage = () => {
 
     if (!data) { setLoading(false); return; }
 
+    // Increment view count
+    await supabase.from("store_products").update({ view_count: ((data as any).view_count || 0) + 1 } as any).eq("id", id);
+
     const rawImages = (data as any).images;
     const imgs: string[] = Array.isArray(rawImages) ? rawImages : [];
     if ((data as any).image_url && !imgs.includes((data as any).image_url)) {
       imgs.unshift((data as any).image_url);
     }
 
-    setProduct({ ...(data as any), images: imgs });
+    const deliveryOpts = (data as any).delivery_options;
+
+    setProduct({
+      ...(data as any),
+      images: imgs,
+      delivery_options: Array.isArray(deliveryOpts) ? deliveryOpts : [],
+      delivery_cost: (data as any).delivery_cost || "",
+    });
 
     const { data: storeData } = await supabase
       .from("stores")
@@ -68,6 +90,15 @@ const ProductPage = () => {
       .maybeSingle();
     setStore(storeData as StoreInfo | null);
     setLoading(false);
+  };
+
+  const handleContactSeller = async () => {
+    if (!store || !user) return;
+    // Increment contact count
+    if (product) {
+      await supabase.from("store_products").update({ contact_count: ((product as any).contact_count || 0) + 1 } as any).eq("id", product.id);
+    }
+    navigate(`/messages?to=${store.user_id}&product=${product?.title}`);
   };
 
   const allImages = product?.images?.length ? product.images : (product?.image_url ? [product.image_url] : []);
@@ -194,6 +225,11 @@ const ProductPage = () => {
                 {parseFloat(product.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
               </p>
 
+              {/* Price alert */}
+              <div className="mt-3">
+                <PriceAlertButton itemId={product.id} price={parseFloat(product.price)} itemType="store_product" />
+              </div>
+
               <div className="flex flex-wrap gap-2 mt-4 text-xs">
                 {product.category && product.category !== "Geral" && (
                   <span className="bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">{product.category}</span>
@@ -214,6 +250,16 @@ const ProductPage = () => {
                   <p className="text-sm text-muted-foreground whitespace-pre-wrap">{product.description}</p>
                 </div>
               )}
+
+              {/* Delivery Options */}
+              {product.delivery_options && product.delivery_options.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <DeliveryInfo
+                    options={product.delivery_options}
+                    deliveryCost={product.delivery_cost}
+                  />
+                </div>
+              )}
             </div>
 
             {/* Seller card */}
@@ -231,16 +277,19 @@ const ProductPage = () => {
                   </div>
                   <div>
                     <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{store.name}</p>
-                    <p className="text-xs text-muted-foreground">Ver loja completa</p>
+                    <SellerRating rating={averageRating} totalReviews={totalReviews} />
                   </div>
                 </Link>
 
                 {user && store.user_id !== user.id && (
-                  <Link to={`/messages?to=${store.user_id}`} className="block mt-3">
-                    <Button className="w-full gap-2">
-                      <MessageCircle className="w-4 h-4" /> Enviar mensagem ao vendedor
+                  <div className="mt-3 space-y-2">
+                    <Button onClick={handleContactSeller} className="w-full gap-2">
+                      <MessageCircle className="w-4 h-4" /> Conversar com vendedor
                     </Button>
-                  </Link>
+                    <p className="text-[10px] text-muted-foreground text-center">
+                      Você está conversando sobre: <strong>{product.title}</strong>
+                    </p>
+                  </div>
                 )}
                 {!user && (
                   <Link to="/login" className="block mt-3">
@@ -251,8 +300,24 @@ const ProductPage = () => {
                 )}
               </div>
             )}
+
+            {/* Seller Reviews */}
+            {sellerId && (
+              <div className="bg-card border border-border rounded-xl p-4">
+                <h3 className="font-semibold text-sm mb-3">Avaliações do vendedor</h3>
+                <SellerReviewsList sellerId={sellerId} maxReviews={3} />
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Similar Products */}
+        <SimilarProducts
+          currentProductId={product.id}
+          category={product.category}
+          city={product.city}
+          storeId={product.store_id}
+        />
       </div>
 
       {/* Lightbox */}
