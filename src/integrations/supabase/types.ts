@@ -444,6 +444,36 @@ export type Database = {
         }
         Relationships: []
       }
+      price_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          item_type: string
+          notified: boolean
+          original_price: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          item_type?: string
+          notified?: boolean
+          original_price: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          item_type?: string
+          notified?: boolean
+          original_price?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -531,6 +561,36 @@ export type Database = {
           reporter_id?: string
           resolved_at?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      seller_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          product_id: string | null
+          rating: number
+          reviewer_id: string
+          seller_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          rating: number
+          reviewer_id: string
+          seller_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string | null
+          rating?: number
+          reviewer_id?: string
+          seller_id?: string
         }
         Relationships: []
       }
@@ -777,11 +837,52 @@ export type Database = {
           },
         ]
       }
+      store_plans: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          plan_type: string
+          starts_at: string
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          plan_type?: string
+          starts_at?: string
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          plan_type?: string
+          starts_at?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_plans_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_products: {
         Row: {
           category: string | null
           city: string | null
+          contact_count: number | null
           created_at: string
+          delivery_cost: string | null
+          delivery_options: Json | null
           description: string | null
           id: string
           image_url: string | null
@@ -791,11 +892,15 @@ export type Database = {
           store_id: string
           title: string
           user_id: string
+          view_count: number | null
         }
         Insert: {
           category?: string | null
           city?: string | null
+          contact_count?: number | null
           created_at?: string
+          delivery_cost?: string | null
+          delivery_options?: Json | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -805,11 +910,15 @@ export type Database = {
           store_id: string
           title: string
           user_id: string
+          view_count?: number | null
         }
         Update: {
           category?: string | null
           city?: string | null
+          contact_count?: number | null
           created_at?: string
+          delivery_cost?: string | null
+          delivery_options?: Json | null
           description?: string | null
           id?: string
           image_url?: string | null
@@ -819,6 +928,7 @@ export type Database = {
           store_id?: string
           title?: string
           user_id?: string
+          view_count?: number | null
         }
         Relationships: [
           {
