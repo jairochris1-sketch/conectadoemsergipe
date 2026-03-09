@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Camera, X } from "lucide-react";
+import { Camera, X, AlertTriangle } from "lucide-react";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import DeliveryOptionsSelect from "@/components/DeliveryOptionsSelect";
 import type { DeliveryOption } from "@/components/DeliveryOptionsSelect";
+import { PLAN_PRODUCT_LIMITS } from "@/components/StorePlanBadge";
 
 const MAX_IMAGES = 5;
 
@@ -48,7 +49,25 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const [posting, setPosting] = useState(false);
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [deliveryCost, setDeliveryCost] = useState("");
+  const [productCount, setProductCount] = useState(0);
+  const [productLimit, setProductLimit] = useState(10);
+  const [planType, setPlanType] = useState("free");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Fetch current product count and plan
+    const fetchLimits = async () => {
+      const [{ count }, { data: plan }] = await Promise.all([
+        supabase.from("store_products").select("id", { count: "exact", head: true }).eq("store_id", storeId).eq("is_active", true),
+        supabase.from("store_plans").select("plan_type").eq("store_id", storeId).eq("is_active", true).maybeSingle(),
+      ]);
+      const pt = (plan as any)?.plan_type || "free";
+      setPlanType(pt);
+      setProductCount(count || 0);
+      setProductLimit(PLAN_PRODUCT_LIMITS[pt] || 10);
+    };
+    fetchLimits();
+  }, [storeId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -73,6 +92,10 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const handleSubmit = async () => {
     if (!title.trim() || !price) {
       toast.error("Preencha título e preço");
+      return;
+    }
+    if (productCount >= productLimit) {
+      toast.error(`Limite de ${productLimit} produtos atingido. Faça upgrade do seu plano para adicionar mais.`);
       return;
     }
     setPosting(true);
@@ -121,6 +144,19 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
           <X className="w-4 h-4" />
         </button>
+      </div>
+
+      {/* Product limit warning */}
+      <div className={`text-xs px-3 py-2 rounded-lg flex items-center gap-2 ${
+        productCount >= productLimit 
+          ? "bg-destructive/10 text-destructive" 
+          : "bg-muted text-muted-foreground"
+      }`}>
+        {productCount >= productLimit && <AlertTriangle className="w-3.5 h-3.5 shrink-0" />}
+        <span>
+          {productCount}/{productLimit === 999999 ? "∞" : productLimit} produtos
+          {productCount >= productLimit && " — Faça upgrade do plano para adicionar mais"}
+        </span>
       </div>
 
       {/* Images */}

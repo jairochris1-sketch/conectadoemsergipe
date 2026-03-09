@@ -6,8 +6,9 @@ import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, MapPin, Store, Package, Heart } from "lucide-react";
+import { Search, Plus, MapPin, Store, Package, Heart, Crown } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
+import StorePlanBadge from "@/components/StorePlanBadge";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 
 interface StoreRow {
@@ -22,6 +23,7 @@ interface StoreRow {
   created_at: string;
   product_count?: number;
   follower_count?: number;
+  plan_type?: string;
 }
 
 const Stores = () => {
@@ -71,9 +73,10 @@ const Stores = () => {
 
     // Fetch product counts and follower counts
     const storeIds = data.map((s: any) => s.id);
-    const [{ data: productCounts }, { data: followerCounts }] = await Promise.all([
+    const [{ data: productCounts }, { data: followerCounts }, { data: storePlans }] = await Promise.all([
       supabase.from("store_products").select("store_id").eq("is_active", true).in("store_id", storeIds),
       supabase.from("store_followers").select("store_id").in("store_id", storeIds),
+      supabase.from("store_plans").select("store_id, plan_type").eq("is_active", true).in("store_id", storeIds),
     ]);
 
     const pCountMap = new Map<string, number>();
@@ -86,11 +89,21 @@ const Stores = () => {
       fCountMap.set(f.store_id, (fCountMap.get(f.store_id) || 0) + 1);
     });
 
+    const planMap = new Map<string, string>();
+    (storePlans || []).forEach((p: any) => {
+      planMap.set(p.store_id, p.plan_type);
+    });
+
     const enriched = data.map((s: any) => ({
       ...s,
       product_count: pCountMap.get(s.id) || 0,
       follower_count: fCountMap.get(s.id) || 0,
+      plan_type: planMap.get(s.id) || "free",
     }));
+
+    // Sort: premium stores first (ouro > prata > bronze > free)
+    const planPriority: Record<string, number> = { ouro: 3, premium: 3, prata: 2, professional: 2, bronze: 1, basic: 1, free: 0 };
+    enriched.sort((a: any, b: any) => (planPriority[b.plan_type] || 0) - (planPriority[a.plan_type] || 0));
 
     setStores(enriched as StoreRow[]);
     setLoading(false);
@@ -202,7 +215,12 @@ const Stores = () => {
               <Link
                 key={store.id}
                 to={`/store/${store.slug}`}
-                className="group bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-all duration-200 no-underline"
+                className={`group bg-card rounded-xl border overflow-hidden hover:shadow-lg transition-all duration-200 no-underline ${
+                  store.plan_type === "ouro" ? "border-yellow-400 ring-1 ring-yellow-400/30" :
+                  store.plan_type === "prata" ? "border-slate-400 ring-1 ring-slate-400/20" :
+                  store.plan_type === "bronze" ? "border-amber-600/40" :
+                  "border-border"
+                }`}
               >
                 <div className="aspect-square bg-muted relative overflow-hidden">
                   {store.photo_url ? (
@@ -217,8 +235,9 @@ const Stores = () => {
                   </span>
                 </div>
                 <div className="p-3">
-                  <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors">
+                  <h3 className="font-semibold text-sm text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
                     {store.name}
+                    <StorePlanBadge planType={store.plan_type || "free"} />
                   </h3>
                   {store.city && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">

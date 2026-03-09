@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
 import { CreditCard, QrCode, FileText, Coins, Copy, Check, RefreshCw, History, Clock } from "lucide-react";
+import { validateCPFOrCNPJ } from "@/lib/cpfCnpjValidator";
 
 const CREDIT_PACKAGES = [
   { credits: 50, price: 5, label: "50 créditos" },
@@ -67,6 +68,11 @@ const BuyCredits = () => {
     if (!user) return;
     if (!cpf || cpf.replace(/\D/g, "").length < 11) {
       toast.error("Informe um CPF/CNPJ válido.");
+      return;
+    }
+    const { valid, type } = validateCPFOrCNPJ(cpf);
+    if (!valid) {
+      toast.error(type === "unknown" ? "CPF deve ter 11 dígitos ou CNPJ 14 dígitos." : `${type.toUpperCase()} inválido. Verifique os dígitos.`);
       return;
     }
 
