@@ -36,7 +36,7 @@ const FacebookFooter = () => {
         )}
         <p>{t("footer.production")}</p>
         <p className="mt-1.5">
-          <Link to="/sobre" className="text-primary hover:underline">{t("footer.about")}</Link> ·{" "}
+          <Link to="/page/about" className="text-primary hover:underline">{t("footer.about")}</Link> ·{" "}
           <Link to="/page/contact" className="text-primary hover:underline">{t("footer.contact")}</Link> ·{" "}
           <Link to="/page/privacy" className="text-primary hover:underline">{t("footer.privacy")}</Link> ·{" "}
           <Link to="/page/terms" className="text-primary hover:underline">{t("footer.terms")}</Link>
