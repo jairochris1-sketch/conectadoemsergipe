@@ -8,6 +8,7 @@ import { useVerificationBadge } from "@/hooks/useVerificationBadges";
 import { useOnlineStatus } from "@/hooks/usePresence";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { validateAndCompressImage } from "@/lib/imageCompression";
+import { useAudioRecorder } from "@/hooks/useAudioRecorder";
 
 interface Message {
   id: string;
