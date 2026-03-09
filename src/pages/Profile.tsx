@@ -225,6 +225,38 @@ const Profile = () => {
                 )}
               </div>
             </div>
+
+            {/* Followed Stores */}
+            {followedStores.length > 0 && (
+              <div className="bg-card border border-border p-5 mt-4">
+                <div className="border-b border-border pb-3 mb-4">
+                  <h3 className="text-lg font-bold text-primary flex items-center gap-2" style={{ fontFamily: 'Georgia, serif' }}>
+                    <Store className="w-5 h-5" /> Lojas que sigo ({followedStores.length})
+                  </h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {followedStores.map((store: any) => (
+                    <Link key={store.id} to={`/store/${store.slug}`} className="flex items-center gap-3 text-sm border border-border p-2 rounded-sm no-underline hover:bg-accent/50 transition-colors">
+                      <div className="w-[40px] h-[40px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-sm">
+                        {store.photo_url ? (
+                          <img src={store.photo_url} alt={store.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Store className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-bold truncate block text-foreground">{store.name}</span>
+                        {store.city && (
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                            <MapPin className="w-2.5 h-2.5" /> {store.city}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="w-full md:w-[220px] md:shrink-0">
             <FriendsSidebar />
