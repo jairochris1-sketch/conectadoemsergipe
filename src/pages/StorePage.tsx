@@ -169,7 +169,7 @@ const StorePage = () => {
   if (!store) {
     return (
       <div className="min-h-screen bg-background">
-        <FacebookHeader />
+        <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
         <div className="max-w-6xl mx-auto px-4 py-20 text-center">
           <Store className="w-16 h-16 mx-auto text-muted-foreground/40 mb-4" />
           <h1 className="text-xl font-bold text-foreground">Loja não encontrada</h1>
