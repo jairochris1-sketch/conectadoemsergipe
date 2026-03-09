@@ -22,10 +22,22 @@ const escapeHtml = (str: string): string =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+// Detect crawlers/bots that fetch OG previews
+const isCrawler = (userAgent: string): boolean => {
+  const crawlers = [
+    'facebookexternalhit', 'Facebot', 'WhatsApp', 'Twitterbot', 
+    'TelegramBot', 'LinkedInBot', 'Slackbot', 'Discordbot',
+    'Pinterest', 'Googlebot', 'bingbot', 'Embedly', 'Iframely'
+  ];
+  return crawlers.some(c => userAgent.toLowerCase().includes(c.toLowerCase()));
+};
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const userAgent = req.headers.get("user-agent") || "";
 
   const url = new URL(req.url);
   const itemId = url.searchParams.get("id");
