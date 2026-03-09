@@ -92,7 +92,6 @@ export const useBrowserNotifications = () => {
         { event: "INSERT", schema: "public", table: "friendships" },
         async (payload) => {
           const friendship = payload.new as any;
-          // Only notify the addressee (the one receiving the request)
           if (friendship.addressee_id !== user.id) return;
 
           const requesterName = await getProfileName(friendship.requester_id);
@@ -108,7 +107,6 @@ export const useBrowserNotifications = () => {
         { event: "UPDATE", schema: "public", table: "friendships" },
         async (payload) => {
           const friendship = payload.new as any;
-          // Notify the requester when their request is accepted
           if (friendship.status === "accepted" && friendship.requester_id === user.id) {
             const addresseeName = await getProfileName(friendship.addressee_id);
             showNotification(
@@ -121,9 +119,49 @@ export const useBrowserNotifications = () => {
       )
       .subscribe();
 
+    // Listen for new store products from followed stores
+    const storeProductChannel = supabase
+      .channel("notif-store-products")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "store_products" },
+        async (payload) => {
+          const product = payload.new as any;
+          // Don't notify for own products
+          if (product.user_id === user.id) return;
+
+          // Check if user follows this store
+          const { count } = await supabase
+            .from("store_followers")
+            .select("*", { count: "exact", head: true })
+            .eq("store_id", product.store_id)
+            .eq("user_id", user.id);
+
+          if (!count || count === 0) return;
+
+          // Get store name
+          const { data: store } = await supabase
+            .from("stores")
+            .select("name, slug")
+            .eq("id", product.store_id)
+            .single();
+
+          const storeName = store?.name || "Uma loja";
+          const price = parseFloat(product.price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+          showNotification(
+            `🛍️ Novo produto em ${storeName}`,
+            `${product.title} — ${price}`,
+            `/produto/${product.id}`
+          );
+        }
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(msgChannel);
       supabase.removeChannel(friendChannel);
+      supabase.removeChannel(storeProductChannel);
     };
   }, [user?.id, getProfileName]);
 };
