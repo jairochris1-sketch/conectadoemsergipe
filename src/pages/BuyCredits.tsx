@@ -161,6 +161,35 @@ const BuyCredits = () => {
           Use créditos para impulsionar produtos e ativar planos premium para sua loja.
         </p>
 
+        {/* How credits work */}
+        <div className="bg-accent border border-border rounded-lg p-4 mb-6 space-y-3">
+          <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+            <Coins className="w-5 h-5 text-primary" />
+            Como funcionam os créditos?
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Os créditos são a moeda virtual da plataforma. Com eles, você pode destacar seus produtos e lojas para alcançar mais clientes.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="bg-card border border-border rounded-md p-3">
+              <p className="font-bold text-foreground mb-1">🚀 Impulsionar anúncios</p>
+              <p className="text-muted-foreground text-xs">Destaque seus produtos no marketplace para aparecer em primeiro nas buscas e no feed. Cada impressão consome 1 crédito.</p>
+            </div>
+            <div className="bg-card border border-border rounded-md p-3">
+              <p className="font-bold text-foreground mb-1">⭐ Planos premium</p>
+              <p className="text-muted-foreground text-xs">Ative planos Bronze, Prata ou Ouro para sua loja e ganhe selo exclusivo, mais produtos e prioridade nas buscas.</p>
+            </div>
+            <div className="bg-card border border-border rounded-md p-3">
+              <p className="font-bold text-foreground mb-1">📊 Campanhas patrocinadas</p>
+              <p className="text-muted-foreground text-xs">Crie campanhas direcionadas por cidade e categoria. Você define o orçamento e acompanha cliques e impressões em tempo real.</p>
+            </div>
+            <div className="bg-card border border-border rounded-md p-3">
+              <p className="font-bold text-foreground mb-1">💡 Sem validade</p>
+              <p className="text-muted-foreground text-xs">Seus créditos não expiram. Compre quando quiser e use no seu ritmo, sem pressa.</p>
+            </div>
+          </div>
+        </div>
+
         {balance !== null && (
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6 flex items-center gap-3">
             <Coins className="w-6 h-6 text-primary" />
