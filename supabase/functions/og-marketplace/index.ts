@@ -79,13 +79,14 @@ Deno.serve(async (req) => {
   const ogImage = escapeHtml(images[0] || item.image_url || DEFAULT_IMAGE);
   const redirectUrl = `${SITE_URL}/marketplace?item=${itemId}`;
 
-  // For crawlers: serve OG tags WITHOUT redirect so they can parse them
-  // For humans: redirect immediately to the actual page
-  const shouldRedirect = !isCrawler(userAgent);
-  const redirectMeta = shouldRedirect 
-    ? `<meta http-equiv="refresh" content="0;url=${escapeHtml(redirectUrl)}"/>` 
-    : '';
+  // For human users (non-crawlers): redirect immediately with 302
+  if (!isCrawler(userAgent)) {
+    return Response.redirect(redirectUrl, 302);
+  }
 
+  // For crawlers: serve OG tags so they can parse the preview
+  // Note: Supabase forces Content-Type: text/plain, but most crawlers
+  // (WhatsApp, Facebook, Telegram) still parse OG tags from the body
   const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -96,25 +97,26 @@ Deno.serve(async (req) => {
   <meta property="og:title" content="${title}"/>
   <meta property="og:description" content="${description}"/>
   <meta property="og:image" content="${ogImage}"/>
+  <meta property="og:image:width" content="600"/>
+  <meta property="og:image:height" content="600"/>
   <meta property="og:url" content="${escapeHtml(redirectUrl)}"/>
   <meta property="og:site_name" content="Conectados em Sergipe"/>
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content="${title}"/>
   <meta name="twitter:description" content="${description}"/>
   <meta name="twitter:image" content="${ogImage}"/>
-  ${redirectMeta}
 </head>
 <body>
-  <p>Redirecionando para <a href="${escapeHtml(redirectUrl)}">${title}</a>...</p>
+  <p>${title}</p>
 </body>
 </html>`;
 
-  const headers = new Headers({
-    ...corsHeaders,
-    "Content-Type": "text/html; charset=utf-8",
-    "Cache-Control": "public, max-age=300",
-    "X-Content-Type-Options": "nosniff",
+  return new Response(html, {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "public, max-age=300",
+    },
   });
-
-  return new Response(html, { status: 200, headers });
 });
