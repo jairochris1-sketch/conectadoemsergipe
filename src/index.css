@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tahoma&family=Lucida+Grande&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Merriweather:wght@700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,35 +6,35 @@
 
 @layer base {
   :root {
-    --background: 0 0% 90%;
-    --foreground: 0 0% 10%;
+    --background: 214 33% 96%;
+    --foreground: 220 26% 16%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card-foreground: 220 26% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 220 26% 16%;
 
-    --primary: 220 70% 32%;
+    --primary: 221 67% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 60% 94%;
-    --secondary-foreground: 220 70% 32%;
+    --secondary: 215 40% 92%;
+    --secondary-foreground: 221 67% 30%;
 
-    --muted: 220 20% 92%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 216 33% 92%;
+    --muted-foreground: 220 14% 42%;
 
-    --accent: 220 60% 94%;
-    --accent-foreground: 220 70% 32%;
+    --accent: 213 48% 92%;
+    --accent-foreground: 221 67% 30%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 78% 54%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 80%;
-    --input: 220 20% 80%;
-    --ring: 220 70% 32%;
+    --border: 218 28% 84%;
+    --input: 218 28% 84%;
+    --ring: 221 67% 38%;
 
-    --radius: 0px;
+    --radius: 14px;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -45,31 +45,31 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --fb-header: 220 70% 32%;
-    --fb-link: 220 80% 40%;
-    --fb-light-blue: 214 80% 96%;
+    --fb-header: 221 67% 38%;
+    --fb-link: 221 67% 38%;
+    --fb-light-blue: 213 60% 95%;
   }
 
   .dark {
-    --background: 220 20% 12%;
-    --foreground: 220 10% 90%;
-    --card: 220 20% 16%;
-    --card-foreground: 220 10% 90%;
-    --popover: 220 20% 16%;
-    --popover-foreground: 220 10% 90%;
-    --primary: 220 40% 75%;
-    --primary-foreground: 0 0% 100%;
+    --background: 220 26% 10%;
+    --foreground: 216 14% 90%;
+    --card: 220 22% 14%;
+    --card-foreground: 216 14% 90%;
+    --popover: 220 22% 14%;
+    --popover-foreground: 216 14% 90%;
+    --primary: 218 78% 73%;
+    --primary-foreground: 220 40% 12%;
     --secondary: 220 20% 22%;
-    --secondary-foreground: 220 10% 85%;
-    --muted: 220 15% 22%;
-    --muted-foreground: 220 10% 60%;
-    --accent: 220 20% 25%;
-    --accent-foreground: 220 10% 85%;
-    --destructive: 0 70% 50%;
+    --secondary-foreground: 216 14% 90%;
+    --muted: 220 18% 20%;
+    --muted-foreground: 220 12% 66%;
+    --accent: 220 18% 24%;
+    --accent-foreground: 216 14% 90%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 15% 25%;
-    --input: 220 15% 25%;
-    --ring: 220 40% 60%;
+    --border: 220 18% 28%;
+    --input: 220 18% 28%;
+    --ring: 218 78% 73%;
     --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 220 10% 90%;
     --sidebar-primary: 220 40% 75%;
@@ -79,7 +79,7 @@
     --sidebar-border: 220 15% 22%;
     --sidebar-ring: 220 40% 60%;
     --fb-header: 220 50% 18%;
-    --fb-link: 220 60% 75%;
+    --fb-link: 218 78% 73%;
     --fb-light-blue: 220 20% 20%;
   }
 }
@@ -91,15 +91,18 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
+    font-family: 'Manrope', 'Lucida Grande', Tahoma, Verdana, Arial, sans-serif;
     font-size: 16px;
+    background-image: radial-gradient(circle at top, hsl(var(--accent) / 0.75), hsl(var(--background)) 40%);
   }
 }
 
 a {
   color: hsl(var(--fb-link));
   text-decoration: none;
+  transition: color 160ms ease;
 }
+
 a:hover {
   text-decoration: underline;
 }

@@ -20,10 +20,10 @@ const Index = () => {
       <SEOHead title="Conectados em Sergipe" description="Rede social que conecta pessoas em Sergipe. Faça amigos, compartilhe momentos e descubra o marketplace local." path="/" />
       <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
 
-      <div className="w-full flex justify-center gap-3 px-2 py-3">
+      <main className="w-full max-w-[1240px] mx-auto flex justify-center gap-4 px-3 md:px-5 py-4 md:py-6">
         {/* Left column: Profile + Ads */}
-        <div className="hidden md:flex flex-col gap-3 w-[220px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
+        <aside className="hidden md:flex flex-col gap-3 w-[250px] shrink-0">
+          <div className="sticky top-24 flex flex-col gap-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
               bio={user?.bio || t("login_to_see")}
@@ -36,13 +36,13 @@ const Index = () => {
             <BannerAdColumn position="left" />
             <MarketplaceHighlights />
           </div>
-        </div>
+        </aside>
 
         {/* Center: Feed */}
-        <div className="flex-1 min-w-0 max-w-[600px]">
+        <section className="flex-1 min-w-0 max-w-[680px]">
           {!user && (
-            <div className="bg-accent border border-border p-4 mb-3 text-center">
-              <h2 className="text-xl font-bold text-primary mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="bg-card border border-border rounded-2xl shadow-sm p-5 mb-4 text-center">
+              <h2 className="text-2xl font-bold text-primary mb-2" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                 Conectadoemsergipe
               </h2>
               <p className="text-sm text-foreground mb-2">
@@ -81,17 +81,17 @@ const Index = () => {
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
-        </div>
+        </section>
 
         {/* Right column: Friends + Ads */}
-        <div className="hidden md:block w-[220px] shrink-0">
-          <div className="sticky top-3 flex flex-col gap-3">
+        <aside className="hidden md:block w-[250px] shrink-0">
+          <div className="sticky top-24 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
             <BannerAdColumn position="right" />
           </div>
-        </div>
-      </div>
+        </aside>
+      </main>
 
       <FacebookFooter />
     </div>

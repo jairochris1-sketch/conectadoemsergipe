@@ -113,14 +113,14 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const SuggestionsDropdown = () => {
     if (!showSuggestions || suggestions.length === 0) return null;
     return (
-      <div className="absolute top-full left-0 right-0 bg-card border border-border shadow-lg z-50 mt-[1px]">
+      <div className="absolute top-full left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 mt-2 overflow-hidden">
         {suggestions.map((s) => (
           <button
             key={s.user_id}
             onClick={() => handleSelectSuggestion(s.user_id)}
             className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-accent bg-transparent border-none cursor-pointer"
           >
-            <div className="w-[32px] h-[32px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-sm">
+            <div className="w-[32px] h-[32px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-md">
               {s.photo_url ? (
                 <img src={s.photo_url} alt={s.name} className="w-full h-full object-cover" />
               ) : (
@@ -192,14 +192,14 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
     <div
       ref={headerRef}
-      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat"
+      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat border-b border-primary-foreground/15 shadow-lg"
       style={bannerImage ? {
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
       } : undefined}
     >
-      <div className="max-w-[1140px] mx-auto px-3 py-2">
+      <div className="max-w-[1240px] mx-auto px-4 py-2.5">
         {/* Top row: logo + search */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {isMobile && location.pathname !== "/" && (
               <button
@@ -211,7 +211,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </button>
             )}
             <Link to="/" className="text-primary-foreground no-underline hover:no-underline shrink-0">
-              <h1 className="text-xl sm:text-2xl font-bold tracking-[-1px] leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+              <h1 className="text-[1.35rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                 Conectadoemsergipe
               </h1>
             </Link>
@@ -227,27 +227,27 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
                     placeholder={t("search")}
-                    className="border border-border px-2 py-1.5 text-sm text-foreground bg-card w-[160px]"
+                    className="border border-border px-3 py-2 text-sm text-foreground bg-card w-[220px] rounded-l-xl"
                   />
-                  <button type="submit" className="bg-muted border border-border border-l-0 px-2 py-1.5 cursor-pointer flex items-center">
+                  <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
                     <Search className="w-5 h-5 text-foreground" />
                   </button>
                 </form>
                 <SuggestionsDropdown />
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 rounded-xl bg-primary-foreground/10 px-2 py-1">
                 {(["pt", "es", "en"] as Language[]).map((lang) => (
                   <button
                     key={lang}
                     onClick={() => setLanguage(lang)}
-                    className={`bg-transparent border-none cursor-pointer text-xs px-1.5 ${language === lang ? "font-bold underline text-primary-foreground" : "text-primary-foreground/70 hover:underline"}`}
+                    className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-primary-foreground/20 text-primary-foreground" : "text-primary-foreground/75 hover:text-primary-foreground"}`}
                   >
                     {LANG_LABELS[lang]}
                   </button>
                 ))}
                 <button
                   onClick={toggleDarkMode}
-                  className="bg-transparent border-none cursor-pointer text-primary-foreground/80 hover:text-primary-foreground ml-1 p-1"
+                  className="bg-transparent border-none cursor-pointer text-primary-foreground/85 hover:text-primary-foreground ml-1 p-1"
                   title={darkMode ? "Modo claro" : "Modo noturno"}
                 >
                   {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
@@ -276,8 +276,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   <SheetTitle className="text-primary-foreground text-lg mb-4">Menu</SheetTitle>
                   <div className="relative mb-4">
                     <form onSubmit={handleSearch} className="flex items-center">
-                      <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1" />
-                      <button type="submit" className="bg-muted border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center">
+                      <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
+                      <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
                         <Search className="w-5 h-5 text-foreground" />
                       </button>
                     </form>
@@ -308,8 +308,8 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
 
         {/* Desktop nav row */}
         {!isMobile && (
-          <div className="flex items-center justify-end gap-4 text-sm mt-1">
-            {isLoggedIn && <span className="text-sm">{t("welcome")}, <b>{userName}</b></span>}
+          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-primary-foreground/15">
+            {isLoggedIn && <span className="text-sm text-primary-foreground/90">{t("welcome")}, <b>{userName}</b></span>}
             {navLinks()}
           </div>
         )}
