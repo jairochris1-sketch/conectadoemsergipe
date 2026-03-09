@@ -17,6 +17,8 @@ const Login = () => {
   const [forgotError, setForgotError] = useState("");
   const [bannerImage, setBannerImage] = useState("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.85);
+  const [customTitle, setCustomTitle] = useState("");
+  const [customText, setCustomText] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
