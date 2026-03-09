@@ -1,13 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Camera, X } from "lucide-react";
+import { Camera, X, AlertTriangle } from "lucide-react";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import DeliveryOptionsSelect from "@/components/DeliveryOptionsSelect";
 import type { DeliveryOption } from "@/components/DeliveryOptionsSelect";
+import { PLAN_PRODUCT_LIMITS } from "@/components/StorePlanBadge";
 
 const MAX_IMAGES = 5;
 
