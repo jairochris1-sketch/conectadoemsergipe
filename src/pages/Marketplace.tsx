@@ -59,7 +59,9 @@ const Marketplace = () => {
   const [items, setItems] = useState<MarketItem[]>([]);
   const [category, setCategory] = useState("All");
   const [showForm, setShowForm] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useLanguage();
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
