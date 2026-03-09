@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useMarketplaceRecommendations } from "@/hooks/useMarketplaceRecommendations";
+import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
 import MarketplaceItemCard from "@/components/MarketplaceItemCard";
 import MarketplaceForm from "@/components/MarketplaceForm";
 
