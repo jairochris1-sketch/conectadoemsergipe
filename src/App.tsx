@@ -27,6 +27,9 @@ import About from "./pages/About";
 import FriendsPage from "./pages/Friends";
 import Settings from "./pages/Settings";
 import Services from "./pages/Services";
+import Stores from "./pages/Stores";
+import CreateStore from "./pages/CreateStore";
+import StorePage from "./pages/StorePage";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +80,9 @@ const App = () => {
                   <Route path="/amigos" element={<FriendsPage />} />
                   <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/servicos" element={<Services />} />
+                  <Route path="/stores" element={<Stores />} />
+                  <Route path="/stores/create" element={<CreateStore />} />
+                  <Route path="/store/:slug" element={<StorePage />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
