@@ -146,6 +146,19 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         </button>
       </div>
 
+      {/* Product limit warning */}
+      <div className={`text-xs px-3 py-2 rounded-lg flex items-center gap-2 ${
+        productCount >= productLimit 
+          ? "bg-destructive/10 text-destructive" 
+          : "bg-muted text-muted-foreground"
+      }`}>
+        {productCount >= productLimit && <AlertTriangle className="w-3.5 h-3.5 shrink-0" />}
+        <span>
+          {productCount}/{productLimit === 999999 ? "∞" : productLimit} produtos
+          {productCount >= productLimit && " — Faça upgrade do plano para adicionar mais"}
+        </span>
+      </div>
+
       {/* Images */}
       <div>
         <label className="text-sm font-medium text-foreground block mb-2">
