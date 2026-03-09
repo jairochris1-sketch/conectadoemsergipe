@@ -231,7 +231,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </form>
               <button
                 onClick={() => { setMobileSearchOpen(false); setSearchQuery(""); setShowSuggestions(false); }}
-                className="bg-transparent border-none cursor-pointer p-1 text-primary-foreground shrink-0"
+                className="bg-transparent border-none cursor-pointer p-1 text-white shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
