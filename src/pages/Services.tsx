@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
@@ -6,7 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
-import { Phone, MapPin, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { Phone, MapPin, ChevronRight, Plus, Trash2, ImagePlus } from "lucide-react";
+import { validateAndCompressImage } from "@/lib/imageCompression";
 
 interface ServiceCategory {
   id: string;
@@ -45,6 +46,10 @@ const Services = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [newListing, setNewListing] = useState({
     title: "",
@@ -118,6 +123,19 @@ const Services = () => {
     }
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione uma imagem válida");
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async () => {
     if (!user) {
       toast.error("Faça login para anunciar");
@@ -128,23 +146,45 @@ const Services = () => {
       return;
     }
 
-    const { error } = await supabase.from("service_listings").insert({
-      user_id: user.id,
-      title: newListing.title.trim(),
-      description: newListing.description.trim(),
-      whatsapp: newListing.whatsapp.trim(),
-      city: newListing.city,
-      category_id: newListing.category_id,
-      subcategory_id: newListing.subcategory_id || null,
-    });
+    setUploading(true);
+    let uploadedUrl = "";
 
-    if (error) {
-      toast.error("Erro ao criar anúncio");
-    } else {
-      toast.success("Serviço anunciado!");
-      setShowForm(false);
-      setNewListing({ title: "", description: "", whatsapp: "", city: "", category_id: "", subcategory_id: "" });
-      fetchListings();
+    try {
+      if (imageFile) {
+        const { blob } = await validateAndCompressImage(imageFile);
+        const path = `services/${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+        const { error: uploadError } = await supabase.storage
+          .from("post-images")
+          .upload(path, blob, { contentType: "image/jpeg" });
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from("post-images").getPublicUrl(path);
+          uploadedUrl = urlData.publicUrl;
+        }
+      }
+
+      const { error } = await supabase.from("service_listings").insert({
+        user_id: user.id,
+        title: newListing.title.trim(),
+        description: newListing.description.trim(),
+        whatsapp: newListing.whatsapp.trim(),
+        city: newListing.city,
+        category_id: newListing.category_id,
+        subcategory_id: newListing.subcategory_id || null,
+        image_url: uploadedUrl,
+      });
+
+      if (error) {
+        toast.error("Erro ao criar anúncio");
+      } else {
+        toast.success("Serviço anunciado!");
+        setShowForm(false);
+        setNewListing({ title: "", description: "", whatsapp: "", city: "", category_id: "", subcategory_id: "" });
+        setImageFile(null);
+        setImagePreview(null);
+        fetchListings();
+      }
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -258,15 +298,49 @@ const Services = () => {
                   className="w-full border border-border p-2 text-sm bg-card rounded-sm resize-none"
                 />
               </div>
+
+              {/* Image upload */}
+              <div>
+                <label className="text-xs font-bold block mb-1">Imagem (opcional)</label>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-2 text-xs border border-border bg-card hover:bg-muted rounded-sm cursor-pointer"
+                  >
+                    <ImagePlus className="w-4 h-4" /> Selecionar imagem
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageSelect}
+                  />
+                  {imagePreview && (
+                    <div className="relative">
+                      <img src={imagePreview} alt="Preview" className="w-16 h-16 object-cover rounded-sm border border-border" />
+                      <button
+                        onClick={() => { setImageFile(null); setImagePreview(null); }}
+                        className="absolute -top-1.5 -right-1.5 bg-destructive text-destructive-foreground w-5 h-5 rounded-full text-[10px] flex items-center justify-center cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="flex gap-2">
                 <button
                   onClick={handleSubmit}
-                  className="bg-primary text-primary-foreground px-4 py-2 text-sm hover:opacity-90 rounded-sm"
+                  disabled={uploading}
+                  className="bg-primary text-primary-foreground px-4 py-2 text-sm hover:opacity-90 rounded-sm disabled:opacity-50"
                 >
-                  Publicar
+                  {uploading ? "Enviando..." : "Publicar"}
                 </button>
                 <button
-                  onClick={() => setShowForm(false)}
+                  onClick={() => { setShowForm(false); setImageFile(null); setImagePreview(null); }}
                   className="bg-muted text-foreground border border-border px-4 py-2 text-sm hover:opacity-90 rounded-sm"
                 >
                   Cancelar
@@ -346,50 +420,66 @@ const Services = () => {
                   <p className="text-sm text-muted-foreground">Nenhum serviço anunciado nesta categoria.</p>
                 )}
                 {listings.map((listing) => (
-                  <div key={listing.id} className="border border-border p-3 bg-card rounded-sm flex gap-3">
-                    <div className="w-[44px] h-[44px] bg-muted border border-border rounded-full overflow-hidden shrink-0">
-                      {listing.profile?.photo_url ? (
-                        <img src={listing.profile.photo_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-xs text-muted-foreground flex items-center justify-center h-full">👤</span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h4 className="text-sm font-bold">{listing.title}</h4>
-                          <Link to={`/user/${listing.user_id}`} className="text-xs text-primary hover:underline">
-                            {listing.profile?.name || "Usuário"}
-                          </Link>
-                        </div>
-                        {user && listing.user_id === user.id && (
-                          <button
-                            onClick={() => handleDelete(listing.id)}
-                            className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                  <div key={listing.id} className="border border-border bg-card rounded-sm overflow-hidden">
+                    <div className="flex flex-col sm:flex-row">
+                      {/* Image */}
+                      <div className="sm:w-[140px] h-[140px] sm:h-auto bg-muted shrink-0 flex items-center justify-center overflow-hidden">
+                        {listing.image_url ? (
+                          <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-muted-foreground text-xs gap-1 p-4">
+                            <span className="text-3xl">🛠️</span>
+                            <span>Sem imagem</span>
+                          </div>
                         )}
                       </div>
-                      {listing.description && (
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{listing.description}</p>
-                      )}
-                      <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                        {listing.city && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" /> {listing.city}
-                          </span>
+                      {/* Content */}
+                      <div className="flex-1 p-3 min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-muted border border-border rounded-full overflow-hidden shrink-0">
+                              {listing.profile?.photo_url ? (
+                                <img src={listing.profile.photo_url} alt="" className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="text-xs text-muted-foreground flex items-center justify-center h-full">👤</span>
+                              )}
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-bold">{listing.title}</h4>
+                              <Link to={`/user/${listing.user_id}`} className="text-xs text-primary hover:underline">
+                                {listing.profile?.name || "Usuário"}
+                              </Link>
+                            </div>
+                          </div>
+                          {user && listing.user_id === user.id && (
+                            <button
+                              onClick={() => handleDelete(listing.id)}
+                              className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                        {listing.description && (
+                          <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2">{listing.description}</p>
                         )}
-                        {listing.whatsapp && (
-                          <a
-                            href={`https://wa.me/55${listing.whatsapp.replace(/\D/g, "")}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-green-600 hover:underline"
-                          >
-                            <Phone className="w-3 h-3" /> WhatsApp
-                          </a>
-                        )}
+                        <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                          {listing.city && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" /> {listing.city}
+                            </span>
+                          )}
+                          {listing.whatsapp && (
+                            <a
+                              href={`https://wa.me/55${listing.whatsapp.replace(/\D/g, "")}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-green-600 hover:underline"
+                            >
+                              <Phone className="w-3 h-3" /> WhatsApp
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
