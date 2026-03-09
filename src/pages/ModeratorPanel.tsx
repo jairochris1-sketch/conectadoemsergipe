@@ -295,7 +295,7 @@ const ModeratorPanel = () => {
                 ))}
               </div>
             )
-          ) : (
+          ) : tab === "marketplace" ? (
             marketplaceItems.length === 0 ? (
               <p className="text-[11px] text-muted-foreground">Nenhum anúncio encontrado.</p>
             ) : (
