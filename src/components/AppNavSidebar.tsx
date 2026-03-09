@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { icon: User, label: "Perfil", to: "/profile", exact: false },
   { icon: ShoppingCart, label: "Mercado", to: "/marketplace", exact: false },
   { icon: Wrench, label: "Serviços", to: "/servicos", exact: false },
+  { icon: Store, label: "Lojas", to: "/stores", exact: false },
   { icon: MessageCircle, label: "Chat", to: "/messages", exact: false, showBadge: true },
   { icon: Users, label: "Amigos", to: "/amigos", exact: false },
   { icon: Settings, label: "Config.", to: "/configuracoes", exact: false },

@@ -80,6 +80,9 @@ const App = () => {
                   <Route path="/amigos" element={<FriendsPage />} />
                   <Route path="/configuracoes" element={<Settings />} />
                   <Route path="/servicos" element={<Services />} />
+                  <Route path="/stores" element={<Stores />} />
+                  <Route path="/stores/create" element={<CreateStore />} />
+                  <Route path="/store/:slug" element={<StorePage />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
