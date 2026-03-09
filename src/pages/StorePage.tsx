@@ -173,12 +173,19 @@ const StorePage = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold text-foreground">{store.name}</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
+                {store.name}
+                <StorePlanBadge planType={planType} />
+              </h1>
               <div className="flex flex-wrap gap-2 mt-1 text-xs text-muted-foreground">
                 {store.city && (
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {store.city}</span>
                 )}
                 <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">{store.category}</span>
+              </div>
+              {/* Seller Rating */}
+              <div className="mt-1">
+                <SellerRating rating={averageRating} totalReviews={totalReviews} />
               </div>
               {store.description && (
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{store.description}</p>
