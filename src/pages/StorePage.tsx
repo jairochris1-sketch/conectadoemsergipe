@@ -84,55 +84,6 @@ const StorePage = () => {
     setLoading(false);
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setPPhotoFile(file);
-    const reader = new FileReader();
-    reader.onloadend = () => setPPhotoPreview(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleAddProduct = async () => {
-    if (!pTitle.trim() || !pPrice || !store || !user) {
-      toast.error("Preencha título e preço");
-      return;
-    }
-    setPosting(true);
-
-    let image_url = "";
-    if (pPhotoFile) {
-      const ext = pPhotoFile.name.split(".").pop();
-      const path = `${user.id}/store-products/${Date.now()}.${ext}`;
-      const { error } = await supabase.storage.from("post-images").upload(path, pPhotoFile, { upsert: true });
-      if (!error) {
-        const { data: urlData } = supabase.storage.from("post-images").getPublicUrl(path);
-        image_url = urlData.publicUrl;
-      }
-    }
-
-    const { error } = await supabase.from("store_products").insert({
-      store_id: store.id,
-      user_id: user.id,
-      title: pTitle.trim(),
-      description: pDescription.trim(),
-      price: pPrice,
-      image_url,
-      city: pCity || store.city,
-    } as any);
-
-    if (error) {
-      toast.error("Erro ao adicionar produto");
-      setPosting(false);
-      return;
-    }
-
-    toast.success("Produto adicionado!");
-    setPTitle(""); setPPrice(""); setPPriceDisplay(""); setPDescription(""); setPCity(""); setPPhotoFile(null); setPPhotoPreview("");
-    setShowForm(false);
-    setPosting(false);
-    fetchStore();
-  };
 
   const handleDeleteProduct = async (productId: string) => {
     if (!confirm("Excluir este produto?")) return;
