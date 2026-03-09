@@ -133,7 +133,63 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       </div>
     );
   };
-...
+
+  const navLinks = (onNav?: () => void) => (
+    <>
+      {isLoggedIn ? (
+        <>
+          <Link to="/" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/messages" className="text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+            <Mail className="w-5 h-5" />
+            {t("messages")}
+            {unreadCount > 0 && (
+              <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                {unreadCount}
+              </span>
+            )}
+          </Link>
+          {isAdmin && (
+            <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+              {t("admin.panel")}
+              {pendingReports > 0 && (
+                <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                  {pendingReports}
+                </span>
+              )}
+            </Link>
+          )}
+          {isModerator && !isAdmin && (
+            <Link to="/moderator" className="text-primary-foreground font-bold text-sm hover:underline" onClick={onNav}>
+              ⭐ Colaborador
+            </Link>
+          )}
+          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-primary-foreground bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
+            {t("logout")}
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
+          <Link to="/register" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
+        </>
+      )}
+    </>
+  );
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    if (!headerRef.current) return;
+    const ro = new ResizeObserver(([entry]) => setHeaderHeight(entry.contentRect.height));
+    ro.observe(headerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <>
     <div
       ref={headerRef}
       className="fixed top-0 left-0 w-full z-[1000] bg-primary text-primary-foreground bg-cover bg-center bg-no-repeat border-b border-primary-foreground/15 shadow-lg"
