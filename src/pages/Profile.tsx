@@ -13,6 +13,7 @@ import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
+import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
 
 const Profile = () => {
   const { user, logout, updateProfile } = useAuth();
@@ -108,6 +109,7 @@ const Profile = () => {
                     <p><b>{t("bio")}:</b> {user.bio || t("no_bio")}</p>
                     <p><b>{t("friends")}:</b> {friends.length}</p>
                     <p><b>{t("admin.followers")}:</b> {followerCount}</p>
+                    <ProfileLinksDisplay userId={user.id} />
                   </div>
                 ) : (
                   <div className="space-y-3 flex-1">

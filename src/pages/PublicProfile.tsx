@@ -12,6 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
+import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
 
 interface PublicProfile {
   user_id: string;
@@ -124,6 +125,7 @@ const PublicProfile = () => {
                     <p><b>📅 Membro desde:</b> {new Date(profile.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}</p>
                   )}
                   <p><b>{t("admin.followers")}:</b> {followerCount}</p>
+                  <ProfileLinksDisplay userId={userId!} />
 
                   {/* Actions */}
                   {user && userId && (

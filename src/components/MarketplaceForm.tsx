@@ -3,6 +3,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useForbiddenWords } from "@/hooks/useForbiddenWords";
 import { useMarketplaceCategories } from "@/hooks/useMarketplaceCategories";
+import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import { toast } from "sonner";
 
 const MAX_IMAGES = 5;
@@ -192,7 +193,12 @@ const MarketplaceForm = ({ user, onClose, onItemPosted }: Props) => {
       </div>
       <div>
         <label className="block font-bold mb-1">{t("marketplace.city")}</label>
-        <input type="text" value={newItem.city} onChange={(e) => setNewItem({ ...newItem, city: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card" placeholder="Aracaju" />
+        <select value={newItem.city} onChange={(e) => setNewItem({ ...newItem, city: e.target.value })} className="w-full border border-border p-1 text-[11px] bg-card">
+          <option value="">Selecione a cidade...</option>
+          {SERGIPE_CITIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block font-bold mb-1">📱 {t("marketplace.whatsapp_label")} *</label>
