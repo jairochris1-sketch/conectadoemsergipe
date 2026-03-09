@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import FacebookHeader from "@/components/FacebookHeader";
 import FacebookFooter from "@/components/FacebookFooter";
-import { CreditCard, QrCode, FileText, Coins, Copy, Check, RefreshCw } from "lucide-react";
+import { CreditCard, QrCode, FileText, Coins, Copy, Check, RefreshCw, History, Clock } from "lucide-react";
 
 const CREDIT_PACKAGES = [
   { credits: 50, price: 5, label: "50 créditos" },
@@ -14,6 +14,17 @@ const CREDIT_PACKAGES = [
   { credits: 500, price: 35, label: "500 créditos" },
   { credits: 1000, price: 59, label: "1.000 créditos" },
 ];
+
+const STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  PENDING: { label: "Pendente", color: "bg-yellow-500/10 text-yellow-600" },
+  CONFIRMED: { label: "Confirmado", color: "bg-green-500/10 text-green-600" },
+  RECEIVED: { label: "Recebido", color: "bg-green-500/10 text-green-600" },
+  RECEIVED_IN_CASH: { label: "Recebido", color: "bg-green-500/10 text-green-600" },
+  OVERDUE: { label: "Vencido", color: "bg-red-500/10 text-red-600" },
+  REFUNDED: { label: "Reembolsado", color: "bg-blue-500/10 text-blue-600" },
+  CHARGEBACK: { label: "Estornado", color: "bg-red-500/10 text-red-600" },
+  SUBSCRIPTION_ACTIVE: { label: "Assinatura", color: "bg-purple-500/10 text-purple-600" },
+};
 
 const BuyCredits = () => {
   const { user } = useAuth();
@@ -26,16 +37,30 @@ const BuyCredits = () => {
   const [copied, setCopied] = useState(false);
   const [balance, setBalance] = useState<number | null>(null);
   const [checkingStatus, setCheckingStatus] = useState(false);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     if (!user) { navigate("/login"); return; }
     fetchBalance();
+    fetchPayments();
   }, [user]);
 
   const fetchBalance = async () => {
     if (!user) return;
     const { data } = await supabase.from("ad_credits").select("balance").eq("user_id", user.id).single();
     setBalance(data?.balance ?? 0);
+  };
+
+  const fetchPayments = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("payments")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setPayments(data || []);
   };
 
   const handlePayment = async () => {
@@ -45,7 +70,6 @@ const BuyCredits = () => {
       return;
     }
 
-    // Fetch user profile
     const { data: profileData } = await supabase.from("profiles").select("name, email").eq("user_id", user.id).single();
 
     setLoading(true);
@@ -67,6 +91,7 @@ const BuyCredits = () => {
 
       setPaymentResult(data);
       toast.success("Pagamento criado com sucesso!");
+      fetchPayments();
     } catch (err: any) {
       toast.error("Erro ao criar pagamento: " + err.message);
     } finally {
@@ -85,6 +110,7 @@ const BuyCredits = () => {
         toast.success("Pagamento confirmado! Créditos adicionados.");
         setPaymentResult(null);
         fetchBalance();
+        fetchPayments();
       } else {
         toast.info(`Status: ${data?.status || "PENDENTE"}`);
       }
@@ -110,6 +136,12 @@ const BuyCredits = () => {
       return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4").replace(/[.-]$/, "");
     }
     return digits.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, "$1.$2.$3/$4-$5").replace(/[./-]$/, "");
+  };
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("pt-BR", {
+      day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit",
+    });
   };
 
   if (!user) return null;
@@ -286,6 +318,53 @@ const BuyCredits = () => {
             </button>
           </div>
         )}
+
+        {/* Payment History */}
+        <div className="mt-8 border-t border-border pt-6">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="flex items-center gap-2 text-foreground font-bold text-base mb-4 hover:text-primary transition-colors"
+          >
+            <History className="w-5 h-5" />
+            Histórico de pagamentos
+            <span className="text-xs text-muted-foreground ml-1">({payments.length})</span>
+          </button>
+
+          {showHistory && (
+            <div className="space-y-3">
+              {payments.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">Nenhum pagamento realizado ainda.</p>
+              ) : (
+                payments.map((p) => {
+                  const statusInfo = STATUS_LABELS[p.status] || { label: p.status, color: "bg-muted text-muted-foreground" };
+                  return (
+                    <div key={p.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-foreground text-sm">
+                            {p.credits > 0 ? `${p.credits} créditos` : "Assinatura"}
+                          </span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusInfo.color}`}>
+                            {statusInfo.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          {formatDate(p.created_at)}
+                          <span className="mx-1">•</span>
+                          {p.payment_method}
+                        </div>
+                      </div>
+                      <p className="font-bold text-foreground text-sm whitespace-nowrap">
+                        R$ {Number(p.amount).toFixed(2).replace(".", ",")}
+                      </p>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <FacebookFooter />
     </div>
