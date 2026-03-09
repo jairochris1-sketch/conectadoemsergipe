@@ -7,7 +7,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check, Sparkles } from "lucide-react";
+import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, Check, Sparkles, BarChart3, MessageSquare } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import StoreProductForm from "@/components/StoreProductForm";
