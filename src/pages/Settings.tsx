@@ -7,9 +7,9 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2 } from "lucide-react";
+import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import FacebookHeader from "@/components/FacebookHeader";
+import { Link } from "react-router-dom";
 
 interface UserSettings {
   // Privacy
