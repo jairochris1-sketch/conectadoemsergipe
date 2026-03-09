@@ -83,15 +83,15 @@ const Index = () => {
 
           <PostFeed userName={user?.name} />
 
-          {/* Mobile-only: Friends below feed */}
-          <div className="md:hidden mt-3 space-y-3">
+          {/* Mobile/Tablet: Friends below feed */}
+          <div className="lg:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
         </section>
 
         {/* Right column: Friends + Ads */}
-        <aside className="hidden md:block w-[250px] shrink-0">
+        <aside className="hidden lg:block w-[250px] shrink-0">
           <div className="sticky top-24 flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
