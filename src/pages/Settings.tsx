@@ -92,7 +92,16 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <FacebookHeader />
+      {/* Simple header for settings */}
+      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur border-b border-border">
+        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center gap-3">
+          <Link to="/" className="p-2 -ml-2 rounded-lg hover:bg-muted transition-colors">
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <h1 className="font-semibold">Configurações</h1>
+        </div>
+      </header>
+      
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2.5 rounded-xl bg-primary/10">
