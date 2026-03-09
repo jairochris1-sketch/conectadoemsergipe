@@ -25,7 +25,7 @@ const slugify = (text: string) =>
     .replace(/(^-|-$)/g, "");
 
 const CreateStore = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
