@@ -123,19 +123,46 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
     return () => { supabase.removeChannel(channel); };
   }, [user, partnerId, minimized]);
 
-  const sendMessage = async (imageUrl?: string) => {
+  const sendMessage = async (imageUrl?: string, audioUrl?: string) => {
     if (!user || !canMessage) return;
     const content = newMessage.trim();
-    if (!content && !imageUrl) return;
+    if (!content && !imageUrl && !audioUrl) return;
 
     await supabase.from("messages").insert({
       sender_id: user.id,
       receiver_id: partnerId,
-      content: content || (imageUrl ? "📷 Imagem" : ""),
+      content: content || (imageUrl ? "📷 Imagem" : audioUrl ? "🎤 Áudio" : ""),
       image_url: imageUrl || null,
+      audio_url: audioUrl || null,
     } as any);
     setNewMessage("");
     inputRef.current?.focus();
+  };
+
+  const handleSendAudio = async () => {
+    if (!user) return;
+    const blob = await stopRecording();
+    if (!blob) return;
+    setUploading(true);
+    try {
+      const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).slice(2)}.webm`;
+      const { error } = await supabase.storage
+        .from("chat-audio")
+        .upload(fileName, blob, { contentType: "audio/webm" });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("chat-audio").getPublicUrl(fileName);
+      await sendMessage(undefined, urlData.publicUrl);
+    } catch (err) {
+      console.error("Audio upload failed:", err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
