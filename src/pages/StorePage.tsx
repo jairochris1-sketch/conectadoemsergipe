@@ -34,16 +34,6 @@ interface ProductRow {
   created_at: string;
 }
 
-const formatBRL = (value: string): string => {
-  const digits = value.replace(/\D/g, "");
-  if (!digits) return "";
-  return (parseInt(digits, 10) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-};
-const parseBRL = (value: string): string => {
-  const digits = value.replace(/\D/g, "");
-  if (!digits) return "0";
-  return (parseInt(digits, 10) / 100).toFixed(2);
-};
 
 const StorePage = () => {
   const { slug } = useParams<{ slug: string }>();
