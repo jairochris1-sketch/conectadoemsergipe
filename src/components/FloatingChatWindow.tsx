@@ -62,7 +62,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   const inputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
-  const { isRecording, recordingTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
+  const { isRecording, recordingTime, maxTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
