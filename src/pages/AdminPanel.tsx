@@ -193,6 +193,10 @@ const AdminPanel = () => {
               className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "services" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🛠️ Serviços
             </button>
+            <button onClick={() => setTab("login_settings")}
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "login_settings" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🔐 Login
+            </button>
           </div>
 
           {tab === "reports" && (
