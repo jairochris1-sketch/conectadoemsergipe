@@ -44,6 +44,7 @@ const Marketplace = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useLanguage();
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
+  const { categoryNamesWithAll } = useMarketplaceCategories();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
 
   const loadItems = useCallback(async () => {
