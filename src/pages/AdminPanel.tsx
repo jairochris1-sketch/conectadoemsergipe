@@ -5,6 +5,7 @@ import FacebookFooter from "@/components/FacebookFooter";
 import AdminPageEditor from "@/components/AdminPageEditor";
 import AdminFooterImage from "@/components/AdminFooterImage";
 import AdminCategoryManager from "@/components/AdminCategoryManager";
+import AdminServiceManager from "@/components/AdminServiceManager";
 import AdminHeaderOpacity from "@/components/AdminHeaderOpacity";
 import AdminBadgeManager from "@/components/AdminBadgeManager";
 import AdminModeratorManager from "@/components/AdminModeratorManager";
@@ -49,7 +50,7 @@ const AdminPanel = () => {
   const [bans, setBans] = useState<BanRecord[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "categories" | "profile_links">("active");
+  const [tab, setTab] = useState<"active" | "expired" | "reports" | "pages" | "footer" | "badges" | "moderators" | "logs" | "banners" | "forbidden" | "categories" | "profile_links" | "services">("active");
   const [reportTab, setReportTab] = useState<"pending" | "resolved">("pending");
 
   const fetchBans = async () => {
@@ -187,6 +188,10 @@ const AdminPanel = () => {
               className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "profile_links" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
               🔗 Links
             </button>
+            <button onClick={() => setTab("services")}
+              className={`px-2.5 py-1.5 text-[11px] border rounded cursor-pointer whitespace-nowrap ${tab === "services" ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-border hover:bg-accent"}`}>
+              🛠️ Serviços
+            </button>
           </div>
 
           {tab === "reports" && (
@@ -202,8 +207,10 @@ const AdminPanel = () => {
             </div>
           )}
 
-          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" && tab !== "profile_links" ? (
+          {loading && tab !== "pages" && tab !== "footer" && tab !== "badges" && tab !== "moderators" && tab !== "logs" && tab !== "banners" && tab !== "forbidden" && tab !== "categories" && tab !== "profile_links" && tab !== "services" ? (
             <p className="text-[11px] text-muted-foreground">{t("admin.loading")}</p>
+          ) : tab === "services" ? (
+            <AdminServiceManager />
           ) : tab === "profile_links" ? (
             <AdminProfileLinks />
           ) : tab === "categories" ? (

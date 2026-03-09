@@ -26,6 +26,7 @@ import ModeratorPanel from "./pages/ModeratorPanel";
 import About from "./pages/About";
 import FriendsPage from "./pages/Friends";
 import Settings from "./pages/Settings";
+import Services from "./pages/Services";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => {
                   <Route path="/sobre" element={<About />} />
                   <Route path="/amigos" element={<FriendsPage />} />
                   <Route path="/configuracoes" element={<Settings />} />
+                  <Route path="/servicos" element={<Services />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>

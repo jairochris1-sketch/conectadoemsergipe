@@ -142,6 +142,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
           <Link to="/" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
           <Link to="/profile" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
           <Link to="/marketplace" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/servicos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
           <Link to="/messages" className="md:hidden text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
             <Mail className="w-5 h-5" />
             {t("messages")}
