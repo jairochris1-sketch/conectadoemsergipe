@@ -50,6 +50,17 @@ const Marketplace = () => {
   const { recommendations, trackClick, trackImpression, trackCategoryFilter } = useMarketplaceRecommendations();
   const { categoryNamesWithAll } = useMarketplaceCategories();
   const [sponsoredIds, setSponsoredIds] = useState<Set<string>>(new Set());
+  const [cityFilter, setCityFilter] = useState("");
+  const [nearMe, setNearMe] = useState(false);
+  const [userCity, setUserCity] = useState("");
+
+  // Get user city
+  useEffect(() => {
+    if (user) {
+      supabase.from("profiles").select("city").eq("user_id", user.id).maybeSingle()
+        .then(({ data }) => { if (data?.city) setUserCity(data.city); });
+    }
+  }, [user]);
 
   const loadItems = useCallback(async () => {
     const { data: campaigns } = await supabase
