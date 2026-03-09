@@ -138,10 +138,11 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     <>
       {isLoggedIn ? (
         <>
-          <Link to="/" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
-          <Link to="/profile" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
-          <Link to="/marketplace" className="text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
-          <Link to="/messages" className="text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
+          {/* Mobile-only links - desktop uses sidebar */}
+          <Link to="/" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/messages" className="md:hidden text-primary-foreground relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
             <Mail className="w-5 h-5" />
             {t("messages")}
             {unreadCount > 0 && (
@@ -150,6 +151,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </span>
             )}
           </Link>
+          <Link to="/amigos" className="md:hidden text-primary-foreground text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
           {isAdmin && (
             <Link to="/admin" className="text-primary-foreground font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
               {t("admin.panel")}
