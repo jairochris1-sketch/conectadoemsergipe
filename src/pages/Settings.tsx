@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2, ArrowLeft } from "lucide-react";
+import { Bell, Lock, Palette, User, LogOut, Shield, Eye, Moon, Sun, Volume2, ArrowLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
@@ -54,17 +55,50 @@ const Settings = () => {
   const { toast } = useToast();
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
       return;
     }
-    // Load settings from localStorage
-    const saved = localStorage.getItem(`settings_${user.id}`);
-    if (saved) {
-      setSettings({ ...defaultSettings, ...JSON.parse(saved) });
-    }
+    
+    // Load settings from database
+    const loadSettings = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("user_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (error) {
+        console.error("Error loading settings:", error);
+        setLoading(false);
+        return;
+      }
+      
+      if (data) {
+        setSettings({
+          profileVisibility: data.profile_visibility as UserSettings["profileVisibility"],
+          showOnlineStatus: data.show_online_status,
+          showLastSeen: data.show_last_seen,
+          allowMessagesFrom: data.allow_messages_from as UserSettings["allowMessagesFrom"],
+          emailNotifications: data.email_notifications,
+          pushNotifications: data.push_notifications,
+          messageNotifications: data.message_notifications,
+          friendRequestNotifications: data.friend_request_notifications,
+          marketplaceNotifications: data.marketplace_notifications,
+          soundEnabled: data.sound_enabled,
+          theme: data.theme as UserSettings["theme"],
+          language: data.language as UserSettings["language"],
+          compactMode: data.compact_mode,
+        });
+      }
+      setLoading(false);
+    };
+    
+    loadSettings();
   }, [user, navigate]);
 
   const updateSetting = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
@@ -74,11 +108,34 @@ const Settings = () => {
   const saveSettings = async () => {
     if (!user) return;
     setSaving(true);
-    try {
-      localStorage.setItem(`settings_${user.id}`, JSON.stringify(settings));
-      toast({ title: "Configurações salvas!", description: "Suas preferências foram atualizadas." });
-    } catch {
+    
+    const dbSettings = {
+      user_id: user.id,
+      profile_visibility: settings.profileVisibility,
+      show_online_status: settings.showOnlineStatus,
+      show_last_seen: settings.showLastSeen,
+      allow_messages_from: settings.allowMessagesFrom,
+      email_notifications: settings.emailNotifications,
+      push_notifications: settings.pushNotifications,
+      message_notifications: settings.messageNotifications,
+      friend_request_notifications: settings.friendRequestNotifications,
+      marketplace_notifications: settings.marketplaceNotifications,
+      sound_enabled: settings.soundEnabled,
+      theme: settings.theme,
+      language: settings.language,
+      compact_mode: settings.compactMode,
+    };
+    
+    // Use upsert to insert or update
+    const { error } = await supabase
+      .from("user_settings")
+      .upsert(dbSettings, { onConflict: "user_id" });
+    
+    if (error) {
+      console.error("Error saving settings:", error);
       toast({ title: "Erro", description: "Não foi possível salvar as configurações.", variant: "destructive" });
+    } else {
+      toast({ title: "Configurações salvas!", description: "Suas preferências foram atualizadas." });
     }
     setSaving(false);
   };
@@ -89,6 +146,14 @@ const Settings = () => {
   };
 
   if (!user) return null;
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
