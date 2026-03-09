@@ -250,6 +250,12 @@ const PostFeed = ({ userName }: PostFeedProps) => {
         {posts.map((post, index) => (
           <div key={post.id}>
             {index > 0 && index % 3 === 0 && <InlineBannerAd />}
+            {/* Store product feed card interleaved every 4 posts */}
+            {index > 0 && index % 4 === 0 && storeProducts[Math.floor(index / 4) - 1] && (
+              <div className="mb-3">
+                <StoreProductFeedCard product={storeProducts[Math.floor(index / 4) - 1]} />
+              </div>
+            )}
             <div className="border-b border-border pb-3">
             <div className="flex items-start gap-3">
               <div className="w-[44px] h-[44px] bg-muted border border-border flex items-center justify-center shrink-0 overflow-hidden rounded-sm">
