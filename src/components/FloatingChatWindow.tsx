@@ -62,7 +62,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
   const inputRef = useRef<HTMLInputElement>(null);
   const emojiRef = useRef<HTMLDivElement>(null);
   const contextMenuRef = useRef<HTMLDivElement>(null);
-  const { isRecording, recordingTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
+  const { isRecording, recordingTime, maxTime, startRecording, stopRecording, cancelRecording } = useAudioRecorder();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -324,9 +324,11 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
 
   return (
     <>
+      {/* Desktop: positioned from right; Mobile: centered */}
       <div
-        className="fixed bottom-0 z-50 animate-scale-in"
-        style={{ right: `${rightOffset}px`, width: "320px" }}
+        className="fixed bottom-0 z-50 animate-scale-in lg:w-[320px] w-[95vw] max-w-[360px] left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0"
+        style={{ right: undefined }}
+        ref={(el) => { if (el && window.innerWidth >= 1024) { el.style.right = `${rightOffset}px`; el.style.left = 'auto'; el.style.transform = 'none'; } }}
       >
         {/* Header */}
         <div
@@ -482,7 +484,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
                   <div className="flex gap-1.5 items-center">
                     <span className="w-2.5 h-2.5 rounded-full bg-destructive animate-pulse shrink-0" />
                     <span className="text-xs text-destructive font-mono flex-1">
-                      {formatRecordingTime(recordingTime)}
+                      {formatRecordingTime(recordingTime)} / {formatRecordingTime(maxTime)}
                     </span>
                     <button
                       onClick={cancelRecording}
