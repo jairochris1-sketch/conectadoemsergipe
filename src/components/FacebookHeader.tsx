@@ -279,7 +279,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                       <button
                         key={lang}
                         onClick={() => setLanguage(lang)}
-                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-primary-foreground/20 text-primary-foreground" : "text-primary-foreground/75 hover:text-primary-foreground"}`}
+                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-white/20 text-white" : "text-white/75 hover:text-white"}`}
                       >
                         {LANG_LABELS[lang]}
                       </button>
