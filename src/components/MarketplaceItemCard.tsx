@@ -53,6 +53,7 @@ interface Props {
   onDelete: (id: string) => void;
   onMarkSold: (id: string) => void;
   onContact: (sellerId: string) => void;
+  onEdit?: () => void;
 }
 
 const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: string; title: string; t: (k: string) => string; size?: "small" | "normal" }) => {
