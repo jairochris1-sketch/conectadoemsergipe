@@ -3,6 +3,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import ReportButton from "@/components/ReportButton";
+import MarketplaceEditForm from "@/components/MarketplaceEditForm";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,6 +53,7 @@ interface Props {
   onDelete: (id: string) => void;
   onMarkSold: (id: string) => void;
   onContact: (sellerId: string) => void;
+  onEdit?: () => void;
 }
 
 const WhatsAppButton = ({ whatsapp, title, t, size = "normal" }: { whatsapp: string; title: string; t: (k: string) => string; size?: "small" | "normal" }) => {
@@ -181,10 +183,11 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
   );
 };
 
-const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDelete, onMarkSold, onContact }: Props) => {
+const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDelete, onMarkSold, onContact, onEdit }: Props) => {
   const { t } = useLanguage();
   const [soldChecked, setSoldChecked] = useState(false);
   const [showSoldConfirm, setShowSoldConfirm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const isOwner = currentUserId && item.sellerId === currentUserId;
 
   const handleSoldCheck = (checked: boolean) => {
@@ -206,6 +209,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
 
   if (variant === "grid") {
     return (
+      <>
       <div
         className={`relative border p-3 cursor-pointer hover:bg-accent transition-colors rounded-sm ${
           item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
@@ -245,6 +249,12 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
         </div>
         {isOwner && (
           <div className="flex flex-col gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowEdit(true)}
+              className="bg-primary/10 text-primary border border-primary/30 px-3 py-1 text-xs cursor-pointer hover:bg-primary/20 rounded-sm"
+            >
+              ✏️ Editar
+            </button>
             <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
               <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-4 w-4" />
               {t("marketplace.mark_sold_check")}
@@ -286,11 +296,21 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           </div>
         )}
       </div>
+      {showEdit && (
+        <MarketplaceEditForm
+          item={{ id: item.id, title: item.title, price: item.price, description: item.description, category: item.category, city: item.city, whatsapp: item.whatsapp || "", condition: item.condition || "used", images: item.images || (item.imageUrl ? [item.imageUrl] : []) }}
+          open={showEdit}
+          onClose={() => setShowEdit(false)}
+          onSaved={() => onEdit?.()}
+        />
+      )}
+    </>
     );
   }
 
   // List variant
   return (
+    <>
     <div
       className={`relative border p-3 flex gap-4 cursor-pointer hover:bg-accent/30 transition-colors rounded-sm ${
         item.isSponsored ? "border-primary/50 bg-primary/5" : "border-border"
@@ -335,6 +355,12 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
         </div>
         {isOwner && (
           <div className="flex flex-col gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowEdit(true)}
+              className="bg-primary/10 text-primary border border-primary/30 px-3 py-1 text-xs cursor-pointer hover:bg-primary/20 rounded-sm"
+            >
+              ✏️ Editar
+            </button>
             <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
               <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-4 w-4" />
               {t("marketplace.mark_sold_check")}
@@ -377,6 +403,25 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
         )}
       </div>
     </div>
+      {showEdit && (
+        <MarketplaceEditForm
+          item={{
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            description: item.description,
+            category: item.category,
+            city: item.city,
+            whatsapp: item.whatsapp || "",
+            condition: item.condition || "used",
+            images: item.images || (item.imageUrl ? [item.imageUrl] : []),
+          }}
+          open={showEdit}
+          onClose={() => setShowEdit(false)}
+          onSaved={() => onEdit?.()}
+        />
+      )}
+    </>
   );
 };
 

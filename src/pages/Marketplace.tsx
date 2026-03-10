@@ -265,6 +265,7 @@ const Marketplace = () => {
                     onDelete={handleDelete}
                     onMarkSold={handleMarkSold}
                     onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+                    onEdit={loadItems}
                   />
                 ))}
               </div>
@@ -286,6 +287,7 @@ const Marketplace = () => {
                   onDelete={handleDelete}
                   onMarkSold={handleMarkSold}
                   onContact={(sellerId) => navigate(`/messages?with=${sellerId}`)}
+                  onEdit={loadItems}
                 />
               </div>
             ))}

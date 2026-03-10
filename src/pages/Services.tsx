@@ -6,8 +6,9 @@ import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
-import { Phone, MapPin, ChevronRight, Plus, Trash2, ImagePlus } from "lucide-react";
+import { Phone, MapPin, ChevronRight, Plus, Trash2, ImagePlus, Pencil } from "lucide-react";
 import { validateAndCompressImage } from "@/lib/imageCompression";
+import ServiceEditForm from "@/components/ServiceEditForm";
 
 interface ServiceCategory {
   id: string;
@@ -49,6 +50,7 @@ const Services = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [editingListing, setEditingListing] = useState<ServiceListing | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [newListing, setNewListing] = useState({
@@ -452,12 +454,22 @@ const Services = () => {
                             </div>
                           </div>
                           {user && listing.user_id === user.id && (
-                            <button
-                              onClick={() => handleDelete(listing.id)}
-                              className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingListing(listing)}
+                                className="text-primary bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
+                                title="Editar"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(listing.id)}
+                                className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
+                                title="Excluir"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           )}
                         </div>
                         {listing.description && (
@@ -491,6 +503,24 @@ const Services = () => {
       </div>
 
       <FacebookFooter />
+
+      {editingListing && (
+        <ServiceEditForm
+          listing={{
+            id: editingListing.id,
+            title: editingListing.title,
+            description: editingListing.description,
+            whatsapp: editingListing.whatsapp,
+            city: editingListing.city,
+            category_id: editingListing.category_id,
+            subcategory_id: editingListing.subcategory_id,
+            image_url: editingListing.image_url,
+          }}
+          open={!!editingListing}
+          onClose={() => setEditingListing(null)}
+          onSaved={() => fetchListings()}
+        />
+      )}
     </div>
   );
 };
