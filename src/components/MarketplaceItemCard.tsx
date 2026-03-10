@@ -209,6 +209,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
 
   if (variant === "grid") {
     return (
+      <>
       <div
         className={`relative border p-3 cursor-pointer hover:bg-accent transition-colors rounded-sm ${
           item.isSponsored ? "border-primary/50 bg-primary/5" : "border-primary/30 bg-accent/50"
