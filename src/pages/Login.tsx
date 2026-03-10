@@ -249,16 +249,6 @@ const Login = () => {
                   {t("register")}
                 </button>
               </Link>
-              <button
-                onClick={() =>
-                  document
-                    .querySelector<HTMLInputElement>('input[type="text"]')
-                    ?.focus()
-                }
-                className="bg-muted border border-border px-6 py-2.5 text-base cursor-pointer font-bold rounded-sm hover:opacity-90"
-              >
-                {t("login")}
-              </button>
             </div>
           </div>
         </div>
