@@ -344,6 +344,12 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
         </div>
         {isOwner && (
           <div className="flex flex-col gap-2 mt-2" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowEdit(true)}
+              className="bg-primary/10 text-primary border border-primary/30 px-3 py-1 text-xs cursor-pointer hover:bg-primary/20 rounded-sm"
+            >
+              ✏️ Editar
+            </button>
             <label className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
               <Checkbox checked={soldChecked} onCheckedChange={(c) => handleSoldCheck(c === true)} className="h-4 w-4" />
               {t("marketplace.mark_sold_check")}
