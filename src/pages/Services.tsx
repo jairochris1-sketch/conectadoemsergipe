@@ -503,6 +503,24 @@ const Services = () => {
       </div>
 
       <FacebookFooter />
+
+      {editingListing && (
+        <ServiceEditForm
+          listing={{
+            id: editingListing.id,
+            title: editingListing.title,
+            description: editingListing.description,
+            whatsapp: editingListing.whatsapp,
+            city: editingListing.city,
+            category_id: editingListing.category_id,
+            subcategory_id: editingListing.subcategory_id,
+            image_url: editingListing.image_url,
+          }}
+          open={!!editingListing}
+          onClose={() => setEditingListing(null)}
+          onSaved={() => fetchListings()}
+        />
+      )}
     </div>
   );
 };
