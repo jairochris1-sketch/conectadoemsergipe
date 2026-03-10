@@ -295,6 +295,15 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
           </div>
         )}
       </div>
+      {showEdit && (
+        <MarketplaceEditForm
+          item={{ id: item.id, title: item.title, price: item.price, description: item.description, category: item.category, city: item.city, whatsapp: item.whatsapp || "", condition: item.condition || "used", images: item.images || (item.imageUrl ? [item.imageUrl] : []) }}
+          open={showEdit}
+          onClose={() => setShowEdit(false)}
+          onSaved={() => onEdit?.()}
+        />
+      )}
+    </>
     );
   }
 
