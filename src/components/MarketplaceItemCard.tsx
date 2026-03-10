@@ -183,10 +183,11 @@ const ImageGallery = ({ images, imageUrl, title }: { images?: string[]; imageUrl
   );
 };
 
-const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDelete, onMarkSold, onContact }: Props) => {
+const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDelete, onMarkSold, onContact, onEdit }: Props) => {
   const { t } = useLanguage();
   const [soldChecked, setSoldChecked] = useState(false);
   const [showSoldConfirm, setShowSoldConfirm] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const isOwner = currentUserId && item.sellerId === currentUserId;
 
   const handleSoldCheck = (checked: boolean) => {
