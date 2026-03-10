@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Star, MessageSquare } from "lucide-react";
+import { Star, MessageSquare, Reply } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
+import { useAuth } from "@/context/AuthContext";
 import ReviewForm from "@/components/ReviewForm";
 import SellerRating from "@/components/SellerRating";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface SellerReviewsListProps {
   sellerId: string;
@@ -13,8 +16,32 @@ interface SellerReviewsListProps {
 }
 
 const SellerReviewsList = ({ sellerId, showAddButton = true, maxReviews }: SellerReviewsListProps) => {
-  const { reviews, averageRating, totalReviews, loading, addReview, canReview } = useSellerReviews(sellerId);
+  const { user } = useAuth();
+  const { reviews, averageRating, totalReviews, loading, addReview, canReview, refresh } = useSellerReviews(sellerId);
   const [showForm, setShowForm] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replyingSaving, setReplyingSaving] = useState(false);
+
+  const isSeller = user?.id === sellerId;
+
+  const handleReply = async (reviewId: string) => {
+    if (!replyText.trim()) return;
+    setReplyingSaving(true);
+    const { error } = await supabase
+      .from("seller_reviews")
+      .update({ seller_reply: replyText.trim(), seller_reply_at: new Date().toISOString() } as any)
+      .eq("id", reviewId);
+    if (error) {
+      toast.error("Erro ao responder");
+    } else {
+      toast.success("Resposta enviada!");
+      setReplyingTo(null);
+      setReplyText("");
+      refresh();
+    }
+    setReplyingSaving(false);
+  };
 
   const displayReviews = maxReviews ? reviews.slice(0, maxReviews) : reviews;
 
@@ -24,7 +51,6 @@ const SellerReviewsList = ({ sellerId, showAddButton = true, maxReviews }: Selle
 
   return (
     <div className="space-y-4">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <SellerRating rating={averageRating} totalReviews={totalReviews} size="md" />
         {showAddButton && canReview && !showForm && (
@@ -34,7 +60,6 @@ const SellerReviewsList = ({ sellerId, showAddButton = true, maxReviews }: Selle
         )}
       </div>
 
-      {/* Add review form */}
       {showForm && (
         <ReviewForm
           onSubmit={(rating, comment) => addReview(rating, comment)}
@@ -42,7 +67,6 @@ const SellerReviewsList = ({ sellerId, showAddButton = true, maxReviews }: Selle
         />
       )}
 
-      {/* Reviews list */}
       {displayReviews.length > 0 ? (
         <div className="space-y-3">
           {displayReviews.map((review) => (
@@ -64,27 +88,62 @@ const SellerReviewsList = ({ sellerId, showAddButton = true, maxReviews }: Selle
                     </Link>
                     <div className="flex items-center gap-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-3 h-3 ${i < review.rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"}`}
-                        />
+                        <Star key={i} className={`w-3 h-3 ${i < review.rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"}`} />
                       ))}
                     </div>
                   </div>
-                  {review.comment && (
-                    <p className="text-sm text-muted-foreground mt-1">{review.comment}</p>
-                  )}
+                  {review.comment && <p className="text-sm text-muted-foreground mt-1">{review.comment}</p>}
                   <p className="text-[10px] text-muted-foreground mt-1">
                     {new Date(review.created_at).toLocaleDateString("pt-BR")}
                   </p>
+
+                  {/* Seller reply */}
+                  {(review as any).seller_reply && (
+                    <div className="mt-2 ml-2 pl-3 border-l-2 border-primary/30 bg-accent/30 rounded-r-md p-2">
+                      <p className="text-xs font-semibold text-primary">Resposta do vendedor:</p>
+                      <p className="text-sm text-foreground">{(review as any).seller_reply}</p>
+                      {(review as any).seller_reply_at && (
+                        <p className="text-[10px] text-muted-foreground mt-0.5">
+                          {new Date((review as any).seller_reply_at).toLocaleDateString("pt-BR")}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Reply button for seller */}
+                  {isSeller && !(review as any).seller_reply && replyingTo !== review.id && (
+                    <button
+                      onClick={() => { setReplyingTo(review.id); setReplyText(""); }}
+                      className="mt-1 text-xs text-primary hover:underline flex items-center gap-1"
+                    >
+                      <Reply className="w-3 h-3" /> Responder
+                    </button>
+                  )}
+
+                  {/* Reply form */}
+                  {replyingTo === review.id && (
+                    <div className="mt-2 space-y-2">
+                      <textarea
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value)}
+                        placeholder="Escreva sua resposta..."
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[50px] resize-none"
+                        maxLength={500}
+                      />
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => handleReply(review.id)} disabled={replyingSaving}>
+                          {replyingSaving ? "Enviando..." : "Enviar"}
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={() => setReplyingTo(null)}>Cancelar</Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           ))}
           {maxReviews && reviews.length > maxReviews && (
-            <p className="text-xs text-muted-foreground text-center">
-              +{reviews.length - maxReviews} avaliações
-            </p>
+            <p className="text-xs text-muted-foreground text-center">+{reviews.length - maxReviews} avaliações</p>
           )}
         </div>
       ) : (
