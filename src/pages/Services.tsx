@@ -50,6 +50,7 @@ const Services = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [editingListing, setEditingListing] = useState<ServiceListing | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [newListing, setNewListing] = useState({
