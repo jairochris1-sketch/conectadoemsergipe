@@ -454,12 +454,22 @@ const Services = () => {
                             </div>
                           </div>
                           {user && listing.user_id === user.id && (
-                            <button
-                              onClick={() => handleDelete(listing.id)}
-                              className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingListing(listing)}
+                                className="text-primary bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
+                                title="Editar"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(listing.id)}
+                                className="text-destructive bg-transparent border-none cursor-pointer p-1 hover:opacity-70"
+                                title="Excluir"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           )}
                         </div>
                         {listing.description && (
