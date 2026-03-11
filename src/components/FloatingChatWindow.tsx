@@ -9,6 +9,7 @@ import { useOnlineStatus } from "@/hooks/usePresence";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { validateAndCompressImage } from "@/lib/imageCompression";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import AudioPlayer from "@/components/AudioPlayerBubble";
 
 interface Message {
   id: string;
