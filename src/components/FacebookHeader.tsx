@@ -210,7 +210,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
       } : undefined}
     >
       <div className="max-w-[1240px] mx-auto px-3 py-2">
-        {/* Top row: logo + search */}
+        {/* Top row: logo + controls */}
         <div className="flex items-center justify-between gap-2">
           {/* Left: back + logo OR mobile search */}
           {isMobile && mobileSearchOpen ? (
@@ -257,41 +257,23 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
               </div>
 
               {!isMobile && (
-                <div className="flex items-center gap-3">
-                  <div className="relative" ref={suggestionsRef}>
-                    <form onSubmit={handleSearch} className="flex items-center">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => handleSearchChange(e.target.value)}
-                        onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
-                        placeholder={t("search")}
-                        className="border border-border px-3 py-2 text-sm text-foreground bg-card w-[220px] rounded-l-xl"
-                      />
-                      <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
-                        <Search className="w-5 h-5 text-foreground" />
-                      </button>
-                    </form>
-                    <SuggestionsDropdown />
-                  </div>
-                  <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-2 py-1">
-                    {(["pt", "es", "en"] as Language[]).map((lang) => (
-                      <button
-                        key={lang}
-                        onClick={() => setLanguage(lang)}
-                        className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-white/20 text-white" : "text-white/75 hover:text-white"}`}
-                      >
-                        {LANG_LABELS[lang]}
-                      </button>
-                    ))}
+                <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-2 py-1">
+                  {(["pt", "es", "en"] as Language[]).map((lang) => (
                     <button
-                      onClick={toggleDarkMode}
-                      className="bg-transparent border-none cursor-pointer text-white/85 hover:text-white ml-1 p-1"
-                      title={darkMode ? "Modo claro" : "Modo noturno"}
+                      key={lang}
+                      onClick={() => setLanguage(lang)}
+                      className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-white/20 text-white" : "text-white/75 hover:text-white"}`}
                     >
-                      {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                      {LANG_LABELS[lang]}
                     </button>
-                  </div>
+                  ))}
+                  <button
+                    onClick={toggleDarkMode}
+                    className="bg-transparent border-none cursor-pointer text-white/85 hover:text-white ml-1 p-1"
+                    title={darkMode ? "Modo claro" : "Modo noturno"}
+                  >
+                    {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  </button>
                 </div>
               )}
 
@@ -363,11 +345,29 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
           )}
         </div>
 
-        {/* Desktop nav row */}
+        {/* Desktop: search bar below logo */}
         {!isMobile && (
-          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-white/15">
-            {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
-            {navLinks()}
+          <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/15">
+            <div className="relative flex-1 max-w-[400px]" ref={suggestionsRef}>
+              <form onSubmit={handleSearch} className="flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                  placeholder={t("search")}
+                  className="border border-border px-3 py-1.5 text-sm text-foreground bg-card flex-1 rounded-l-xl"
+                />
+                <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-1.5 cursor-pointer flex items-center rounded-r-xl">
+                  <Search className="w-4 h-4 text-foreground" />
+                </button>
+              </form>
+              <SuggestionsDropdown />
+            </div>
+            <div className="flex items-center gap-4 text-sm ml-auto">
+              {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
+              {navLinks()}
+            </div>
           </div>
         )}
       </div>
