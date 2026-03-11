@@ -345,11 +345,29 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
           )}
         </div>
 
-        {/* Desktop nav row */}
+        {/* Desktop: search bar below logo */}
         {!isMobile && (
-          <div className="flex items-center justify-end gap-4 text-sm mt-2 pt-2 border-t border-white/15">
-            {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
-            {navLinks()}
+          <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/15">
+            <div className="relative flex-1 max-w-[400px]" ref={suggestionsRef}>
+              <form onSubmit={handleSearch} className="flex items-center">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                  placeholder={t("search")}
+                  className="border border-border px-3 py-1.5 text-sm text-foreground bg-card flex-1 rounded-l-xl"
+                />
+                <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-1.5 cursor-pointer flex items-center rounded-r-xl">
+                  <Search className="w-4 h-4 text-foreground" />
+                </button>
+              </form>
+              <SuggestionsDropdown />
+            </div>
+            <div className="flex items-center gap-4 text-sm ml-auto">
+              {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
+              {navLinks()}
+            </div>
           </div>
         )}
       </div>
