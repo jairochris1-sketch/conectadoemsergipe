@@ -11,6 +11,7 @@ import { Store, Package, Trash2, MapPin, Plus, Settings, Eye, Camera, X, Edit2, 
 import SEOHead from "@/components/SEOHead";
 import { SERGIPE_CITIES } from "@/lib/sergipeCities";
 import StoreProductForm from "@/components/StoreProductForm";
+import StorePaymentMethods from "@/components/StorePaymentMethods";
 
 interface StoreRow {
   id: string;

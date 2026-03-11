@@ -191,6 +191,13 @@ const StorePage = () => {
               {store.description && (
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{store.description}</p>
               )}
+              {/* Payment Methods */}
+              <StorePaymentMethods
+                storeId={store.id}
+                currentMethods={((store as any).payment_methods as string[]) || []}
+                onUpdate={fetchStore}
+                readOnly={!isOwner}
+              />
               {/* Follow button */}
               {!isOwner && (
                 <div className="mt-3">
