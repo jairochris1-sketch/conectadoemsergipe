@@ -486,9 +486,9 @@ const Services = () => {
                               href={`https://wa.me/55${listing.whatsapp.replace(/\D/g, "")}`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-green-600 hover:underline"
+                              className="flex items-center gap-1 text-green-600 hover:underline font-medium"
                             >
-                              <Phone className="w-3 h-3" /> WhatsApp
+                              <Phone className="w-3 h-3" /> {listing.whatsapp}
                             </a>
                           )}
                         </div>
