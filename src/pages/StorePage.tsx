@@ -14,6 +14,7 @@ import SellerReviewsList from "@/components/SellerReviewsList";
 import SellerRating from "@/components/SellerRating";
 import StorePlanBadge from "@/components/StorePlanBadge";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
+import StorePaymentMethods from "@/components/StorePaymentMethods";
 
 interface StoreRow {
   id: string;
