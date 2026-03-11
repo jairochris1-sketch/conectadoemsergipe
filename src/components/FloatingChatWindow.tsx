@@ -9,6 +9,7 @@ import { useOnlineStatus } from "@/hooks/usePresence";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { validateAndCompressImage } from "@/lib/imageCompression";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import AudioPlayer from "@/components/AudioPlayerBubble";
 
 interface Message {
   id: string;
@@ -301,13 +302,7 @@ const FloatingChatWindow = ({ partnerId, partnerName, partnerPhoto, onClose, ind
           />
         )}
         {msg.audio_url && (
-          <audio
-            controls
-            src={msg.audio_url}
-            className="max-w-full h-8 mb-1"
-            style={{ minWidth: "180px" }}
-            preload="metadata"
-          />
+          <AudioPlayer src={msg.audio_url} isMine={isMine} />
         )}
         {msg.content && msg.content !== "📷 Imagem" && msg.content !== "🎤 Áudio" && (
           <p className="break-words">{msg.content}</p>

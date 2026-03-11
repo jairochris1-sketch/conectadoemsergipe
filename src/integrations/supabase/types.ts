@@ -169,6 +169,51 @@ export type Database = {
           },
         ]
       }
+      cultural_events: {
+        Row: {
+          category: string | null
+          city: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          event_date: string
+          event_end_date: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          location: string
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          city?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          event_date: string
+          event_end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location: string
+          title: string
+        }
+        Update: {
+          category?: string | null
+          city?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          event_date?: string
+          event_end_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          location?: string
+          title?: string
+        }
+        Relationships: []
+      }
       followers: {
         Row: {
           created_at: string
@@ -1032,6 +1077,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          payment_methods: Json | null
           photo_url: string | null
           slug: string
           updated_at: string
@@ -1045,6 +1091,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          payment_methods?: Json | null
           photo_url?: string | null
           slug: string
           updated_at?: string
@@ -1058,6 +1105,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          payment_methods?: Json | null
           photo_url?: string | null
           slug?: string
           updated_at?: string

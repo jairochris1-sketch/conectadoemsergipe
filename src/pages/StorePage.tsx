@@ -14,6 +14,7 @@ import SellerReviewsList from "@/components/SellerReviewsList";
 import SellerRating from "@/components/SellerRating";
 import StorePlanBadge from "@/components/StorePlanBadge";
 import { useSellerReviews } from "@/hooks/useSellerReviews";
+import StorePaymentMethods from "@/components/StorePaymentMethods";
 
 interface StoreRow {
   id: string;
@@ -190,6 +191,13 @@ const StorePage = () => {
               {store.description && (
                 <p className="text-sm text-muted-foreground mt-2 line-clamp-3">{store.description}</p>
               )}
+              {/* Payment Methods */}
+              <StorePaymentMethods
+                storeId={store.id}
+                currentMethods={((store as any).payment_methods as string[]) || []}
+                onUpdate={fetchStore}
+                readOnly={!isOwner}
+              />
               {/* Follow button */}
               {!isOwner && (
                 <div className="mt-3">
