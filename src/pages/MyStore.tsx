@@ -374,6 +374,13 @@ const MyStore = () => {
               </div>
             </div>
           )}
+
+          {/* Payment Methods */}
+          <StorePaymentMethods
+            storeId={store.id}
+            currentMethods={((store as any).payment_methods as string[]) || []}
+            onUpdate={fetchMyStore}
+          />
         </div>
 
         {/* Products Header */}
