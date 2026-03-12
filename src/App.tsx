@@ -36,6 +36,7 @@ import TopSellers from "./pages/TopSellers";
 import BuyCredits from "./pages/BuyCredits";
 import StorePlans from "./pages/StorePlans";
 import CulturalEvents from "./pages/CulturalEvents";
+import Notes from "./pages/Notes";
 
 const queryClient = new QueryClient();
 
