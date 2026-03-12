@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, ShoppingBag, Wrench, Store, Mail, User, ChevronDown, ChevronUp, Trophy, LayoutGrid, BookOpen, Calendar } from "lucide-react";
+import { Home, ShoppingBag, Wrench, Store, Mail, User, ChevronDown, ChevronUp, Trophy, LayoutGrid } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -10,11 +10,10 @@ const navItems = [
   { to: "/marketplace", label: "Marketplace", icon: ShoppingBag },
   { to: "/servicos", label: "Serviços", icon: Wrench },
   { to: "/stores", label: "Lojas", icon: Store },
-  { to: "/notas", label: "Notas", icon: BookOpen },
-  { to: "/agenda-cultural", label: "Eventos", icon: Calendar },
-  { to: "/top-vendedores", label: "Top", icon: Trophy },
+  { to: "/top-vendedores", label: "Top Vendedores", icon: Trophy },
   { to: "/messages", label: "Mensagens", icon: Mail, authRequired: true },
   { to: "/profile", label: "Perfil", icon: User, authRequired: true },
+  { to: "/amigos", label: "Amigos", icon: LayoutGrid, authRequired: true },
 ];
 
 const MobileQuickNav = () => {

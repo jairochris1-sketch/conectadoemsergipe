@@ -36,7 +36,6 @@ import TopSellers from "./pages/TopSellers";
 import BuyCredits from "./pages/BuyCredits";
 import StorePlans from "./pages/StorePlans";
 import CulturalEvents from "./pages/CulturalEvents";
-import Notes from "./pages/Notes";
 
 const queryClient = new QueryClient();
 
@@ -50,7 +49,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen w-full">
       {showSidebar && <AppNavSidebar />}
-      <div className={`flex-1 min-w-0 ${showFloatingChat ? 'xl:mr-[260px]' : ''}`}>
+      <div className={`flex-1 min-w-0 ${showFloatingChat ? 'lg:mr-[260px]' : ''}`}>
         {children}
       </div>
       {showFloatingChat && <FloatingChatSystem />}
@@ -96,7 +95,6 @@ const App = () => {
                   <Route path="/comprar-creditos" element={<BuyCredits />} />
                   <Route path="/planos-loja" element={<StorePlans />} />
                   <Route path="/agenda-cultural" element={<CulturalEvents />} />
-                  <Route path="/notas" element={<Notes />} />
                   <Route path="/page/:slug" element={<SitePage />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
