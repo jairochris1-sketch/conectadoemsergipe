@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search, Mail, Menu, Sun, Moon, ArrowLeft, X } from "lucide-react";
+import { Search, Bell, Menu, Sun, Moon, ArrowLeft, X, Plus } from "lucide-react";
 import { useLanguage, Language } from "@/context/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
@@ -13,12 +13,13 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 interface FacebookHeaderProps {
   isLoggedIn: boolean;
   userName?: string;
+  userPhoto?: string;
   onLogout?: () => void;
 }
 
 const LANG_LABELS: Record<Language, string> = { pt: "PT", es: "ES", en: "EN" };
 
-const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps) => {
+const FacebookHeader = ({ isLoggedIn, userName, userPhoto, onLogout }: FacebookHeaderProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [bannerImage, setBannerImage] = useState("");
@@ -123,14 +124,14 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
   const SuggestionsDropdown = () => {
     if (!showSuggestions || suggestions.length === 0) return null;
     return (
-      <div className="absolute top-full left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 mt-2 overflow-hidden">
+      <div className="absolute top-full left-0 right-0 bg-card border border-border rounded-xl shadow-lg z-50 mt-1 overflow-hidden">
         {suggestions.map((s) => (
           <button
             key={s.user_id}
             onClick={() => handleSelectSuggestion(s.user_id)}
             className="flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-accent bg-transparent border-none cursor-pointer"
           >
-            <div className="w-[32px] h-[32px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-md">
+            <div className="w-[28px] h-[28px] bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0 rounded-full">
               {s.photo_url ? (
                 <img src={s.photo_url} alt={s.name} className="w-full h-full object-cover" />
               ) : (
@@ -144,75 +145,65 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
     );
   };
 
-  const navLinks = (onNav?: () => void) => (
+  const mobileNavLinks = (onNav?: () => void) => (
     <>
       {isLoggedIn ? (
         <>
-          <Link to="/" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("home")}</Link>
-          <Link to="/profile" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("profile")}</Link>
-          <Link to="/marketplace" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>{t("marketplace")}</Link>
-          <Link to="/servicos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>🛠️ Serviços</Link>
-          <Link to="/messages" className="md:hidden text-white relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
-            <Mail className="w-5 h-5" />
-            {t("messages")}
+          <Link to="/" className="text-foreground text-sm hover:text-primary" onClick={onNav}>{t("home")}</Link>
+          <Link to="/profile" className="text-foreground text-sm hover:text-primary" onClick={onNav}>{t("profile")}</Link>
+          <Link to="/marketplace" className="text-foreground text-sm hover:text-primary" onClick={onNav}>{t("marketplace")}</Link>
+          <Link to="/servicos" className="text-foreground text-sm hover:text-primary" onClick={onNav}>🛠️ Serviços</Link>
+          <Link to="/messages" className="text-foreground text-sm hover:text-primary" onClick={onNav}>
+            💬 {t("messages")}
             {unreadCount > 0 && (
-              <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+              <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none ml-1">
                 {unreadCount}
               </span>
             )}
           </Link>
-          <Link to="/amigos" className="md:hidden text-white text-sm hover:underline" onClick={onNav}>👥 Amigos</Link>
+          <Link to="/amigos" className="text-foreground text-sm hover:text-primary" onClick={onNav}>👥 Amigos</Link>
+          <Link to="/notas" className="text-foreground text-sm hover:text-primary" onClick={onNav}>📝 Notas</Link>
+          <Link to="/agenda-cultural" className="text-foreground text-sm hover:text-primary" onClick={onNav}>📅 Eventos</Link>
           {isAdmin && (
-            <Link to="/admin" className="text-white font-bold relative inline-flex items-center gap-1 text-sm hover:underline" onClick={onNav}>
-              {t("admin.panel")}
+            <Link to="/admin" className="text-primary font-bold text-sm" onClick={onNav}>
+              ⚙️ {t("admin.panel")}
               {pendingReports > 0 && (
-                <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none ml-1">
                   {pendingReports}
                 </span>
               )}
             </Link>
           )}
           {isModerator && !isAdmin && (
-            <Link to="/moderator" className="text-white font-bold text-sm hover:underline" onClick={onNav}>
+            <Link to="/moderator" className="text-primary font-bold text-sm" onClick={onNav}>
               ⭐ Colaborador
             </Link>
           )}
-          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-white bg-transparent border-none cursor-pointer text-sm hover:underline text-left">
+          <button onClick={() => { onLogout?.(); onNav?.(); }} className="text-destructive bg-transparent border-none cursor-pointer text-sm text-left">
             {t("logout")}
           </button>
         </>
       ) : (
         <>
-          <Link to="/login" className="text-white text-sm hover:underline" onClick={onNav}>{t("login")}</Link>
-          <Link to="/register" className="text-white text-sm hover:underline" onClick={onNav}>{t("register")}</Link>
+          <Link to="/login" className="text-foreground text-sm hover:text-primary" onClick={onNav}>{t("login")}</Link>
+          <Link to="/register" className="text-foreground text-sm hover:text-primary" onClick={onNav}>{t("register")}</Link>
         </>
       )}
     </>
   );
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const [headerHeight, setHeaderHeight] = useState(0);
-
-  useEffect(() => {
-    if (!headerRef.current) return;
-    const ro = new ResizeObserver(([entry]) => setHeaderHeight(entry.contentRect.height));
-    ro.observe(headerRef.current);
-    return () => ro.disconnect();
-  }, []);
-
   return (
-    <>
     <div
-      ref={headerRef}
-      className="fixed top-0 left-0 w-full z-[1000] bg-primary text-white bg-cover bg-center bg-no-repeat border-b border-white/15 shadow-lg"
+      className="fixed top-0 left-0 w-full z-[1000] bg-card border-b border-border shadow-sm"
       style={bannerImage ? {
         backgroundImage: `linear-gradient(rgba(59,89,152,${overlayOpacity}), rgba(59,89,152,${overlayOpacity})), url(${bannerImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
       } : undefined}
     >
-      <div className="max-w-[1240px] mx-auto px-3 py-2">
-        {/* Top row: logo + controls */}
-        <div className="flex items-center justify-between gap-2">
-          {/* Left: back + logo OR mobile search */}
+      <div className="max-w-[1400px] mx-auto px-3 py-2">
+        <div className="flex items-center gap-3">
+          {/* Left: Back + Logo */}
           {isMobile && mobileSearchOpen ? (
             <div className="flex-1 flex items-center gap-2 relative" ref={suggestionsRef}>
               <form onSubmit={handleSearch} className="flex-1 flex items-center">
@@ -223,15 +214,15 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
                   placeholder={t("search") || "Buscar..."}
-                  className="flex-1 border border-border px-3 py-1.5 text-sm text-foreground bg-card rounded-l-xl"
+                  className="flex-1 border border-border px-3 py-1.5 text-sm text-foreground bg-background rounded-l-full"
                 />
-                <button type="submit" className="bg-secondary border border-border border-l-0 px-2.5 py-1.5 cursor-pointer flex items-center rounded-r-xl">
-                  <Search className="w-4 h-4 text-foreground" />
+                <button type="submit" className="bg-primary border border-primary px-3 py-1.5 cursor-pointer flex items-center rounded-r-full">
+                  <Search className="w-4 h-4 text-primary-foreground" />
                 </button>
               </form>
               <button
                 onClick={() => { setMobileSearchOpen(false); setSearchQuery(""); setShowSuggestions(false); }}
-                className="bg-transparent border-none cursor-pointer p-1 text-white shrink-0"
+                className="bg-transparent border-none cursor-pointer p-1 text-foreground shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -239,141 +230,196 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-1 min-w-0">
+              <div className="flex items-center gap-1.5 shrink-0">
                 {isMobile && location.pathname !== "/" && (
                   <button
                     onClick={() => navigate(-1)}
-                    className="bg-transparent border-none cursor-pointer text-white p-0.5 flex items-center shrink-0"
+                    className="bg-transparent border-none cursor-pointer text-foreground p-0.5 flex items-center shrink-0"
                     aria-label="Voltar"
                   >
                     <ArrowLeft className="w-5 h-5" />
                   </button>
                 )}
-                <Link to="/" className="text-white no-underline hover:no-underline shrink-0">
-                  <h1 className="text-[1.1rem] sm:text-[1.55rem] font-bold tracking-tight leading-tight" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
+                <Link to="/" className="no-underline hover:no-underline shrink-0">
+                  <h1 className="text-[1rem] sm:text-[1.35rem] font-bold tracking-tight leading-tight text-primary" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                     Conectadoemsergipe
                   </h1>
                 </Link>
               </div>
 
+              {/* Center: Search bar (desktop only) */}
               {!isMobile && (
-                <div className="flex items-center gap-1.5 rounded-xl bg-white/10 px-2 py-1">
-                  {(["pt", "es", "en"] as Language[]).map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setLanguage(lang)}
-                      className={`bg-transparent border-none cursor-pointer text-xs px-2 py-1 rounded-md ${language === lang ? "font-bold bg-white/20 text-white" : "text-white/75 hover:text-white"}`}
-                    >
-                      {LANG_LABELS[lang]}
-                    </button>
-                  ))}
-                  <button
-                    onClick={toggleDarkMode}
-                    className="bg-transparent border-none cursor-pointer text-white/85 hover:text-white ml-1 p-1"
-                    title={darkMode ? "Modo claro" : "Modo noturno"}
-                  >
-                    {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                  </button>
+                <div className="flex-1 max-w-[480px] relative" ref={suggestionsRef}>
+                  <form onSubmit={handleSearch} className="flex items-center">
+                    <div className="relative flex-1">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                        onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                        placeholder="Buscar pessoas, produtos ou serviços..."
+                        className="w-full border border-border pl-9 pr-3 py-2 text-sm text-foreground bg-background rounded-full"
+                      />
+                    </div>
+                  </form>
+                  <SuggestionsDropdown />
                 </div>
               )}
 
-              {isMobile && (
-                <div className="flex items-center gap-0.5 shrink-0">
+              {/* Right: Actions */}
+              <div className="flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
+                {/* Publish button (desktop) */}
+                {!isMobile && isLoggedIn && (
+                  <Link
+                    to="/notas"
+                    className="bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-sm font-medium no-underline hover:opacity-90 inline-flex items-center gap-1"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Publicar
+                  </Link>
+                )}
+
+                {/* Language + Dark mode (desktop) */}
+                {!isMobile && (
+                  <div className="flex items-center gap-0.5 ml-1">
+                    {(["pt", "es", "en"] as Language[]).map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => setLanguage(lang)}
+                        className={`bg-transparent border-none cursor-pointer text-xs px-1.5 py-1 rounded-md ${language === lang ? "font-bold text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"}`}
+                      >
+                        {LANG_LABELS[lang]}
+                      </button>
+                    ))}
+                    <button
+                      onClick={toggleDarkMode}
+                      className="bg-transparent border-none cursor-pointer text-muted-foreground hover:text-foreground p-1"
+                      title={darkMode ? "Modo claro" : "Modo noturno"}
+                    >
+                      {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                  </div>
+                )}
+
+                {/* Mobile: search icon */}
+                {isMobile && (
                   <button
                     onClick={() => setMobileSearchOpen(true)}
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
+                    className="bg-transparent border-none cursor-pointer p-1.5 text-foreground"
                     aria-label="Buscar"
                   >
                     <Search className="w-[18px] h-[18px]" />
                   </button>
-                  <Link to="/messages" className="relative p-1.5 text-white">
-                    <Mail className="w-[18px] h-[18px]" />
+                )}
+
+                {/* Notifications bell */}
+                {isLoggedIn && (
+                  <button className="bg-transparent border-none cursor-pointer p-1.5 text-muted-foreground hover:text-foreground relative">
+                    <Bell className="w-[18px] h-[18px]" />
+                  </button>
+                )}
+
+                {/* Messages badge */}
+                {isLoggedIn && (
+                  <Link to="/messages" className="relative p-1.5 text-muted-foreground hover:text-foreground">
+                    <span className="text-base">💬</span>
                     {unreadCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
-                        {unreadCount}
+                      <span className="absolute -top-0.5 -right-0.5 bg-destructive text-destructive-foreground text-[8px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {unreadCount > 9 ? "9+" : unreadCount}
                       </span>
                     )}
                   </Link>
-                  <button
-                    className="bg-transparent border-none cursor-pointer p-1.5 text-white"
-                    aria-label="Notificações"
-                  >
-                    <span className="text-base">🔔</span>
-                  </button>
-                  <Link to="/profile" className="p-1.5 text-white">
-                    <span className="text-base">👤</span>
+                )}
+
+                {/* User avatar (desktop) */}
+                {!isMobile && isLoggedIn && (
+                  <Link to="/profile" className="flex items-center gap-2 no-underline ml-1">
+                    <div className="w-[32px] h-[32px] rounded-full overflow-hidden border-2 border-primary/30 bg-muted shrink-0">
+                      {userPhoto ? (
+                        <img src={userPhoto} alt={userName} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="flex items-center justify-center h-full text-xs text-muted-foreground">👤</span>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-foreground truncate max-w-[100px]">{userName}</span>
                   </Link>
+                )}
+
+                {/* Desktop: logout/admin */}
+                {!isMobile && isLoggedIn && (
+                  <div className="flex items-center gap-1 ml-1">
+                    {isAdmin && (
+                      <Link to="/admin" className="text-xs text-primary font-bold hover:underline relative no-underline">
+                        Admin
+                        {pendingReports > 0 && (
+                          <span className="absolute -top-1 -right-3 bg-destructive text-destructive-foreground text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">
+                            {pendingReports}
+                          </span>
+                        )}
+                      </Link>
+                    )}
+                    {isModerator && !isAdmin && (
+                      <Link to="/moderator" className="text-xs text-primary font-bold no-underline">⭐</Link>
+                    )}
+                    <button onClick={onLogout} className="text-xs text-muted-foreground bg-transparent border-none cursor-pointer hover:text-destructive ml-1">
+                      Sair
+                    </button>
+                  </div>
+                )}
+
+                {/* Desktop: login/register */}
+                {!isMobile && !isLoggedIn && (
+                  <div className="flex items-center gap-2 ml-1">
+                    <Link to="/login" className="text-sm text-primary font-medium no-underline hover:underline">{t("login")}</Link>
+                    <Link to="/register" className="bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-sm font-medium no-underline hover:opacity-90">{t("register")}</Link>
+                  </div>
+                )}
+
+                {/* Mobile hamburger */}
+                {isMobile && (
                   <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
                       <button className="bg-transparent border-none cursor-pointer p-1.5">
-                        <Menu className="w-[18px] h-[18px] text-white" />
+                        <Menu className="w-[18px] h-[18px] text-foreground" />
                       </button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="bg-primary border-primary/80 w-[280px] p-5">
-                      <SheetTitle className="text-white text-lg mb-4">Menu</SheetTitle>
+                    <SheetContent side="right" className="bg-card border-border w-[280px] p-5">
+                      <SheetTitle className="text-foreground text-lg mb-4">Menu</SheetTitle>
                       <div className="relative mb-4">
                         <form onSubmit={handleSearch} className="flex items-center">
-                          <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-card flex-1 rounded-l-xl" />
-                          <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-2 cursor-pointer flex items-center rounded-r-xl">
-                            <Search className="w-5 h-5 text-foreground" />
+                          <input type="text" value={searchQuery} onChange={(e) => handleSearchChange(e.target.value)} onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }} placeholder={t("search")} className="border border-border px-3 py-2 text-sm text-foreground bg-background flex-1 rounded-l-full" />
+                          <button type="submit" className="bg-primary border border-primary px-3 py-2 cursor-pointer flex items-center rounded-r-full">
+                            <Search className="w-4 h-4 text-primary-foreground" />
                           </button>
                         </form>
                         <SuggestionsDropdown />
                       </div>
                       <div className="flex items-center gap-2 mb-4">
                         {(["pt", "es", "en"] as Language[]).map((lang) => (
-                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold underline text-white" : "text-white/70 hover:underline"}`}>
+                          <button key={lang} onClick={() => setLanguage(lang)} className={`bg-transparent border-none cursor-pointer text-sm px-1.5 ${language === lang ? "font-bold text-primary" : "text-muted-foreground"}`}>
                             {LANG_LABELS[lang]}
                           </button>
                         ))}
                         <button
                           onClick={toggleDarkMode}
-                          className="bg-transparent border-none cursor-pointer text-white/80 hover:text-white ml-1 p-1"
-                          title={darkMode ? "Modo claro" : "Modo noturno"}
+                          className="bg-transparent border-none cursor-pointer text-muted-foreground hover:text-foreground ml-1 p-1"
                         >
                           {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
                       </div>
-                      <div className="flex flex-col gap-4">
-                        {navLinks(() => setMenuOpen(false))}
+                      <div className="flex flex-col gap-3">
+                        {mobileNavLinks(() => setMenuOpen(false))}
                       </div>
                     </SheetContent>
                   </Sheet>
-                </div>
-              )}
+                )}
+              </div>
             </>
           )}
         </div>
-
-        {/* Desktop: search bar below logo */}
-        {!isMobile && (
-          <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/15">
-            <div className="relative flex-1 max-w-[400px]" ref={suggestionsRef}>
-              <form onSubmit={handleSearch} className="flex items-center">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
-                  placeholder={t("search")}
-                  className="border border-border px-3 py-1.5 text-sm text-foreground bg-card flex-1 rounded-l-xl"
-                />
-                <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-1.5 cursor-pointer flex items-center rounded-r-xl">
-                  <Search className="w-4 h-4 text-foreground" />
-                </button>
-              </form>
-              <SuggestionsDropdown />
-            </div>
-            <div className="flex items-center gap-4 text-sm ml-auto">
-              {isLoggedIn && <span className="text-sm text-white/90">{t("welcome")}, <b>{userName}</b></span>}
-              {navLinks()}
-            </div>
-          </div>
-        )}
       </div>
     </div>
-    <div style={{ height: headerHeight }} />
-    </>
   );
 };
 

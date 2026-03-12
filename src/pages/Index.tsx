@@ -20,30 +20,14 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead title="Conectados em Sergipe" description="Rede social que conecta pessoas em Sergipe. Faça amigos, compartilhe momentos e descubra o marketplace local." path="/" />
-      <FacebookHeader isLoggedIn={!!user} userName={user?.name} onLogout={logout} />
+      <FacebookHeader isLoggedIn={!!user} userName={user?.name} userPhoto={user?.photoUrl} onLogout={logout} />
+      <div className="h-[56px]" />
 
-      <main className="w-full max-w-[1240px] mx-auto flex justify-center gap-4 px-3 md:px-5 py-4 md:py-6">
-        {/* Left column: Profile + Ads */}
-        <aside className="hidden lg:flex flex-col gap-3 w-[250px] shrink-0">
-          <div className="sticky top-24 flex flex-col gap-3">
-            <ProfileSidebar
-              name={user?.name || t("guest_user")}
-              bio={user?.bio || t("login_to_see")}
-              photoUrl={user?.photoUrl || "/placeholder.svg"}
-              school={user?.school}
-              city={user?.city}
-              birthdate={user?.birthdate}
-              createdAt={user?.createdAt}
-            />
-            <BannerAdColumn position="left" />
-            <MarketplaceHighlights />
-          </div>
-        </aside>
-
+      <main className="w-full max-w-[1100px] mx-auto flex justify-center gap-4 px-3 lg:px-5 py-4 lg:py-6">
         {/* Center: Feed */}
         <section className="flex-1 min-w-0 max-w-[680px]">
           {!user && (
-            <div className="bg-card border border-border rounded-2xl shadow-sm p-5 mb-4 text-center">
+            <div className="bg-card border border-border rounded-xl shadow-sm p-5 mb-4 text-center">
               <h2 className="text-2xl font-bold text-primary mb-2" style={{ fontFamily: 'Merriweather, Georgia, serif' }}>
                 Conectadoemsergipe
               </h2>
@@ -59,7 +43,7 @@ const Index = () => {
           {/* Mobile-only: Quick nav */}
           <MobileQuickNav />
 
-          {/* Mobile/Tablet: Profile first */}
+          {/* Mobile: Profile */}
           <div className="lg:hidden mb-3">
             <ProfileSidebar
               name={user?.name || t("guest_user")}
@@ -72,29 +56,28 @@ const Index = () => {
             />
           </div>
 
-          {/* Mobile/Tablet: Marketplace highlights */}
+          {/* Mobile: Marketplace highlights */}
           <div className="lg:hidden mb-3">
             <MarketplaceHighlights />
           </div>
 
           <FollowedStoresNewProducts />
-
           <HomepageMarketplace />
-
           <PostFeed userName={user?.name} />
 
-          {/* Mobile/Tablet: Friends below feed */}
+          {/* Mobile: Friends below feed */}
           <div className="lg:hidden mt-3 space-y-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
           </div>
         </section>
 
-        {/* Right column: Friends + Ads */}
-        <aside className="hidden lg:block w-[250px] shrink-0">
-          <div className="sticky top-24 flex flex-col gap-3">
+        {/* Right column: Friends + Suggestions + Ads */}
+        <aside className="hidden lg:block w-[280px] shrink-0">
+          <div className="sticky top-[72px] flex flex-col gap-3">
             <FriendsSidebar />
             {user && <FriendSuggestions />}
+            <MarketplaceHighlights />
             <BannerAdColumn position="right" />
           </div>
         </aside>
