@@ -50,7 +50,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen w-full">
       {showSidebar && <AppNavSidebar />}
-      <div className={`flex-1 min-w-0 ${showFloatingChat ? 'lg:mr-[260px]' : ''}`}>
+      <div className={`flex-1 min-w-0 ${showFloatingChat ? 'xl:mr-[260px]' : ''}`}>
         {children}
       </div>
       {showFloatingChat && <FloatingChatSystem />}
