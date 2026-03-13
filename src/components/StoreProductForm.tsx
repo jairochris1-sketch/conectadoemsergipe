@@ -132,6 +132,27 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
       return;
     }
 
+    // Publish as story if checked
+    if (publishAsStory && !error) {
+      // Get inserted product id
+      const { data: inserted } = await supabase
+        .from("store_products")
+        .select("id")
+        .eq("store_id", storeId)
+        .eq("title", title.trim())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (inserted) {
+        await supabase.from("store_stories").insert({
+          store_id: storeId,
+          product_id: inserted.id,
+          image_url: uploadedUrls[0] || "/placeholder.svg",
+        } as any);
+      }
+    }
+
     toast.success("Produto adicionado!");
     setPosting(false);
     onClose();
