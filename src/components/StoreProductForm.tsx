@@ -49,6 +49,7 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const [posting, setPosting] = useState(false);
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [deliveryCost, setDeliveryCost] = useState("");
+  const [publishAsStory, setPublishAsStory] = useState(false);
   const [productCount, setProductCount] = useState(0);
   const [productLimit, setProductLimit] = useState(10);
   const [planType, setPlanType] = useState("free");
