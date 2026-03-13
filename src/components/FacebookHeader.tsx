@@ -356,10 +356,10 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
                   placeholder={t("search")}
-                  className="border border-border px-3 py-1.5 text-sm text-foreground bg-card flex-1 rounded-l-xl"
+                  className="border border-border px-2.5 py-1 text-xs text-foreground bg-card flex-1 rounded-l-xl"
                 />
-                <button type="submit" className="bg-secondary border border-border border-l-0 px-3 py-1.5 cursor-pointer flex items-center rounded-r-xl">
-                  <Search className="w-4 h-4 text-foreground" />
+                <button type="submit" className="bg-secondary border border-border border-l-0 px-2 py-1 cursor-pointer flex items-center rounded-r-xl">
+                  <Search className="w-3.5 h-3.5 text-foreground" />
                 </button>
               </form>
               <SuggestionsDropdown />
