@@ -49,6 +49,7 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
   const [posting, setPosting] = useState(false);
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [deliveryCost, setDeliveryCost] = useState("");
+  const [publishAsStory, setPublishAsStory] = useState(false);
   const [productCount, setProductCount] = useState(0);
   const [productLimit, setProductLimit] = useState(10);
   const [planType, setPlanType] = useState("free");
@@ -129,6 +130,27 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
       toast.error("Erro ao adicionar produto");
       setPosting(false);
       return;
+    }
+
+    // Publish as story if checked
+    if (publishAsStory && !error) {
+      // Get inserted product id
+      const { data: inserted } = await supabase
+        .from("store_products")
+        .select("id")
+        .eq("store_id", storeId)
+        .eq("title", title.trim())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (inserted) {
+        await supabase.from("store_stories").insert({
+          store_id: storeId,
+          product_id: inserted.id,
+          image_url: uploadedUrls[0] || "/placeholder.svg",
+        } as any);
+      }
     }
 
     toast.success("Produto adicionado!");
@@ -233,6 +255,17 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         deliveryCost={deliveryCost}
         onDeliveryCostChange={setDeliveryCost}
       />
+
+      {/* Publish as Story */}
+      <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground bg-muted/50 border border-border rounded-lg px-3 py-2.5">
+        <input
+          type="checkbox"
+          checked={publishAsStory}
+          onChange={(e) => setPublishAsStory(e.target.checked)}
+          className="accent-primary w-4 h-4"
+        />
+        <span>📸 Publicar também nos Stories da Loja <span className="text-muted-foreground text-xs">(visível por 24h)</span></span>
+      </label>
 
       <div className="flex gap-2">
         <Button onClick={handleSubmit} disabled={posting} size="sm">

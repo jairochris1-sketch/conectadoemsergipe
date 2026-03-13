@@ -10,6 +10,7 @@ import HomepageMarketplace from "@/components/HomepageMarketplace";
 import FollowedStoresNewProducts from "@/components/FollowedStoresNewProducts";
 import MobileQuickNav from "@/components/MobileQuickNav";
 import SEOHead from "@/components/SEOHead";
+import StoreStoriesBar from "@/components/StoreStoriesBar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -76,6 +77,8 @@ const Index = () => {
           <div className="lg:hidden mb-3">
             <MarketplaceHighlights />
           </div>
+
+          <StoreStoriesBar />
 
           <FollowedStoresNewProducts />
 
