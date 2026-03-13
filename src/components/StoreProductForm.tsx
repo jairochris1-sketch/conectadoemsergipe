@@ -256,6 +256,17 @@ const StoreProductForm = ({ storeId, userId, storeCity, onClose, onProductAdded 
         onDeliveryCostChange={setDeliveryCost}
       />
 
+      {/* Publish as Story */}
+      <label className="flex items-center gap-2 cursor-pointer text-sm text-foreground bg-muted/50 border border-border rounded-lg px-3 py-2.5">
+        <input
+          type="checkbox"
+          checked={publishAsStory}
+          onChange={(e) => setPublishAsStory(e.target.checked)}
+          className="accent-primary w-4 h-4"
+        />
+        <span>📸 Publicar também nos Stories da Loja <span className="text-muted-foreground text-xs">(visível por 24h)</span></span>
+      </label>
+
       <div className="flex gap-2">
         <Button onClick={handleSubmit} disabled={posting} size="sm">
           {posting ? "Salvando..." : "Adicionar Produto"}
