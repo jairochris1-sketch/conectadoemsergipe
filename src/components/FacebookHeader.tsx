@@ -348,7 +348,7 @@ const FacebookHeader = ({ isLoggedIn, userName, onLogout }: FacebookHeaderProps)
         {/* Desktop: search bar below logo */}
         {!isMobile && (
           <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/15">
-            <div className="relative flex-1 max-w-[400px]" ref={suggestionsRef}>
+            <div className="relative flex-1 max-w-[280px]" ref={suggestionsRef}>
               <form onSubmit={handleSearch} className="flex items-center">
                 <input
                   type="text"
