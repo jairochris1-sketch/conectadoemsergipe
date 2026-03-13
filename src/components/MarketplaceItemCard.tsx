@@ -221,7 +221,7 @@ const MarketplaceItemCard = ({ item, variant, currentUserId, onTrackClick, onDel
             ⭐ {t("ads.sponsored")}
           </span>
         )}
-        <div className="w-full h-[100px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-2 rounded-sm">
+        <div className="w-full h-[70px] bg-muted border border-border flex items-center justify-center overflow-hidden mb-2 rounded-sm">
           <ImageGallery images={item.images} imageUrl={item.imageUrl} title={item.title} />
         </div>
         <p className="text-sm font-bold truncate">{item.title}</p>
