@@ -83,6 +83,8 @@ const Index = () => {
 
           <StoreStoriesBar />
 
+          <FollowedStoresNewProducts />
+
           <HomepageMarketplace />
 
           <PostFeed userName={user?.name} />
