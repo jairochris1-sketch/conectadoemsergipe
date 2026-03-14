@@ -25,8 +25,14 @@ const UserStoryUpload = ({ open, onClose, onPublished }: Props) => {
       toast.error("Selecione uma imagem válida");
       return;
     }
-    const compressed = await compressImage(file);
-    setImageFile(compressed);
+    try {
+      const { blob } = await validateAndCompressImage(file);
+      const compressed = new File([blob], file.name, { type: "image/jpeg" });
+      setImageFile(compressed);
+    } catch {
+      toast.error("Erro ao processar imagem");
+      return;
+    }
     setPreview(URL.createObjectURL(compressed));
   };
 
