@@ -30,6 +30,9 @@ const UserStoryUpload = ({ open, onClose, onPublished }: Props) => {
       const compressedFile = new File([blob], file.name, { type: "image/jpeg" });
       setImageFile(compressedFile);
       setPreview(URL.createObjectURL(compressedFile));
+    } catch {
+      toast.error("Erro ao processar imagem");
+    }
   };
 
   const handlePublish = async () => {
