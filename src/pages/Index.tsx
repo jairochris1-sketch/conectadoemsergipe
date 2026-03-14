@@ -81,9 +81,9 @@ const Index = () => {
             <MarketplaceHighlights />
           </div>
 
-          <StoreStoriesBar />
+          <UserStoriesBar />
 
-          <FollowedStoresNewProducts />
+          <StoreStoriesBar />
 
           <HomepageMarketplace />
 
