@@ -14,8 +14,6 @@ import StoreStoriesBar from "@/components/StoreStoriesBar";
 import UserStoriesBar from "@/components/UserStoriesBar";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
-import { useAuth } from "@/context/AuthContext";
-import { useLanguage } from "@/context/LanguageContext";
 
 const Index = () => {
   const { user, logout } = useAuth();
