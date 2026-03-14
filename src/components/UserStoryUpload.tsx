@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Camera, Image, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { compressImage } from "@/lib/imageCompression";
+import { validateAndCompressImage } from "@/lib/imageCompression";
 
 interface Props {
   open: boolean;
