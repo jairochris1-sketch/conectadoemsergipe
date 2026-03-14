@@ -27,13 +27,9 @@ const UserStoryUpload = ({ open, onClose, onPublished }: Props) => {
     }
     try {
       const { blob } = await validateAndCompressImage(file);
-      const compressed = new File([blob], file.name, { type: "image/jpeg" });
-      setImageFile(compressed);
-    } catch {
-      toast.error("Erro ao processar imagem");
-      return;
-    }
-    setPreview(URL.createObjectURL(compressed));
+      const compressedFile = new File([blob], file.name, { type: "image/jpeg" });
+      setImageFile(compressedFile);
+      setPreview(URL.createObjectURL(compressedFile));
   };
 
   const handlePublish = async () => {
