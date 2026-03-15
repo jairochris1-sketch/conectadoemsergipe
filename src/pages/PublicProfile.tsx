@@ -36,6 +36,8 @@ const PublicProfile = () => {
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const badge = useVerificationBadge(userId);
+  const [userStories, setUserStories] = useState<UserWithStories | null>(null);
+  const [storyViewerOpen, setStoryViewerOpen] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -47,6 +49,33 @@ const PublicProfile = () => {
       .then(({ data }) => {
         setProfile(data);
         setLoading(false);
+      });
+
+    // Load user stories
+    supabase
+      .from("user_stories")
+      .select("*")
+      .eq("user_id", userId)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .then(({ data: stories }) => {
+        if (stories && stories.length > 0) {
+          supabase
+            .from("profiles")
+            .select("user_id, name, photo_url")
+            .eq("user_id", userId)
+            .single()
+            .then(({ data: prof }) => {
+              if (prof) {
+                setUserStories({
+                  userId: prof.user_id,
+                  userName: prof.name || "Usuário",
+                  userPhoto: prof.photo_url || "/placeholder.svg",
+                  stories: stories as any,
+                });
+              }
+            });
+        }
       });
   }, [userId]);
 
