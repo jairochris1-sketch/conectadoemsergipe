@@ -13,6 +13,8 @@ import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
+import UserStoryViewer from "@/components/UserStoryViewer";
+import type { UserWithStories } from "@/components/UserStoriesBar";
 
 interface PublicProfile {
   user_id: string;
