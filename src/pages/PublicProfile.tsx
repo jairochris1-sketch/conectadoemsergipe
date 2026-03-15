@@ -13,6 +13,8 @@ import { useSocial } from "@/context/SocialContext";
 import { useFollowers } from "@/hooks/useFollowers";
 import { supabase } from "@/integrations/supabase/client";
 import ProfileLinksDisplay from "@/components/ProfileLinksDisplay";
+import UserStoryViewer from "@/components/UserStoryViewer";
+import type { UserWithStories } from "@/components/UserStoriesBar";
 
 interface PublicProfile {
   user_id: string;
@@ -34,6 +36,8 @@ const PublicProfile = () => {
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const badge = useVerificationBadge(userId);
+  const [userStories, setUserStories] = useState<UserWithStories | null>(null);
+  const [storyViewerOpen, setStoryViewerOpen] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -45,6 +49,33 @@ const PublicProfile = () => {
       .then(({ data }) => {
         setProfile(data);
         setLoading(false);
+      });
+
+    // Load user stories
+    supabase
+      .from("user_stories")
+      .select("*")
+      .eq("user_id", userId)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .then(({ data: stories }) => {
+        if (stories && stories.length > 0) {
+          supabase
+            .from("profiles")
+            .select("user_id, name, photo_url")
+            .eq("user_id", userId)
+            .single()
+            .then(({ data: prof }) => {
+              if (prof) {
+                setUserStories({
+                  userId: prof.user_id,
+                  userName: prof.name || "Usuário",
+                  userPhoto: prof.photo_url || "/placeholder.svg",
+                  stories: stories as any,
+                });
+              }
+            });
+        }
       });
   }, [userId]);
 
@@ -109,11 +140,24 @@ const PublicProfile = () => {
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="shrink-0 flex justify-center sm:justify-start">
-                  <img
-                    src={profile.photo_url || "/placeholder.svg"}
-                    alt={profile.name}
-                    className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border border-border object-cover"
-                  />
+                  {userStories ? (
+                    <button
+                      onClick={() => setStoryViewerOpen(true)}
+                      className="p-[3px] rounded-full bg-gradient-to-tr from-primary via-accent to-destructive"
+                    >
+                      <img
+                        src={profile.photo_url || "/placeholder.svg"}
+                        alt={profile.name}
+                        className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border-2 border-card object-cover rounded-full"
+                      />
+                    </button>
+                  ) : (
+                    <img
+                      src={profile.photo_url || "/placeholder.svg"}
+                      alt={profile.name}
+                      className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border border-border object-cover"
+                    />
+                  )}
                 </div>
                 <div className="text-[11px] space-y-1 min-w-0">
                   <p><b>{t("name")}:</b> {profile.name}</p>
@@ -163,6 +207,14 @@ const PublicProfile = () => {
         </div>
       </div>
       <FacebookFooter />
+
+      {storyViewerOpen && userStories && (
+        <UserStoryViewer
+          users={[userStories]}
+          initialUserIndex={0}
+          onClose={() => setStoryViewerOpen(false)}
+        />
+      )}
     </div>
   );
 };
