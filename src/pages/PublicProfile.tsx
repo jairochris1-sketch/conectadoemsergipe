@@ -207,6 +207,14 @@ const PublicProfile = () => {
         </div>
       </div>
       <FacebookFooter />
+
+      {storyViewerOpen && userStories && (
+        <UserStoryViewer
+          users={[userStories]}
+          initialUserIndex={0}
+          onClose={() => setStoryViewerOpen(false)}
+        />
+      )}
     </div>
   );
 };
