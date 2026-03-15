@@ -140,11 +140,24 @@ const PublicProfile = () => {
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="shrink-0 flex justify-center sm:justify-start">
-                  <img
-                    src={profile.photo_url || "/placeholder.svg"}
-                    alt={profile.name}
-                    className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border border-border object-cover"
-                  />
+                  {userStories ? (
+                    <button
+                      onClick={() => setStoryViewerOpen(true)}
+                      className="p-[3px] rounded-full bg-gradient-to-tr from-primary via-accent to-destructive"
+                    >
+                      <img
+                        src={profile.photo_url || "/placeholder.svg"}
+                        alt={profile.name}
+                        className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border-2 border-card object-cover rounded-full"
+                      />
+                    </button>
+                  ) : (
+                    <img
+                      src={profile.photo_url || "/placeholder.svg"}
+                      alt={profile.name}
+                      className="w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] border border-border object-cover"
+                    />
+                  )}
                 </div>
                 <div className="text-[11px] space-y-1 min-w-0">
                   <p><b>{t("name")}:</b> {profile.name}</p>
